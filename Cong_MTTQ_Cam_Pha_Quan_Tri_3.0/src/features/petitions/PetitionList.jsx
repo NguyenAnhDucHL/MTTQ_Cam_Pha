@@ -72,8 +72,8 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
               placeholder="Tìm tiêu đề, người gửi, SĐT..."
               value={search}
               onChange={handleSearch}
-              className="h-9 text-sm w-64 transition-all focus:w-72"
-              style={{ paddingLeft: '2.25rem' }}
+              className="pl-9 w-[300px]"
+              style={{ padding: '8px 12px 8px 36px', height: '40px', width: '300px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
             />
           </div>
           <Button variant="outline" size="sm" onClick={onRefresh} className="h-8 gap-1">
@@ -118,10 +118,10 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
                   </td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelected(p); }} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
+                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelected(p); }} style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', gap: '6px', fontWeight: 600 }}>
                         <Eye className="w-4 h-4" /> Chi tiết
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={(e) => handleDelete(p.id, e)} style={{ height: '32px', gap: '4px', fontWeight: 600, background: deletingId === p.id ? '#991b1b' : '' }}>
+                      <Button variant="destructive" size="sm" onClick={(e) => handleDelete(p.id, e)} style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', gap: '6px', fontWeight: 600, background: deletingId === p.id ? '#991b1b' : '#ef4444', color: '#fff', border: 'none' }}>
                         <Trash2 className="w-4 h-4" /> {deletingId === p.id ? 'Xác nhận xóa' : 'Xóa'}
                       </Button>
                     </div>

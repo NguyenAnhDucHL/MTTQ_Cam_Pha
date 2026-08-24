@@ -112,14 +112,14 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
         {/* Actions */}
         <div style={{ paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <Button variant="destructive" onClick={(e) => { e.stopPropagation(); onDelete(petition.id); }} style={{ fontWeight: 600, background: deletingId === petition.id ? '#991b1b' : '#ef4444', color: '#fff' }}>
+            <Button variant="destructive" onClick={(e) => { e.stopPropagation(); onDelete(petition.id); }} style={{ fontWeight: 600, background: deletingId === petition.id ? '#991b1b' : '#ef4444', color: '#fff', padding: '10px 16px', borderRadius: '6px', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               {deletingId === petition.id ? 'Xác nhận xóa' : '🗑️ Xóa'}
             </Button>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <Button variant="outline" onClick={onClose} style={{ fontWeight: 600 }}>Đóng</Button>
+            <Button variant="outline" onClick={onClose} style={{ fontWeight: 600, padding: '10px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', color: '#334155', display: 'inline-flex', alignItems: 'center' }}>Đóng</Button>
             {petition.status === 'pending' && (
-              <Button variant="success" onClick={handleResolve} disabled={isUpdating} style={{ fontWeight: 600, background: '#10b981', color: '#fff' }}>
+              <Button variant="success" onClick={handleResolve} disabled={isUpdating} style={{ fontWeight: 600, background: '#10b981', color: '#fff', padding: '10px 16px', borderRadius: '6px', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                 {isUpdating ? '⏳ Đang xử lý...' : '✅ Đánh dấu đã giải quyết'}
               </Button>
             )}

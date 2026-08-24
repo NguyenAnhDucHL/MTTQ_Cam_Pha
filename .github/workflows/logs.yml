@@ -12,5 +12,5 @@ jobs:
           password: ${{ secrets.VNPT_PASS }}
           port: 22
           script: |
-            cd mttq_deploy
+            cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0
             docker-compose logs

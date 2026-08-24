@@ -6,6 +6,9 @@ import { fetchApi } from "../lib/api";
 function Home() {
     const [activeTab, setActiveTab] = useState('submit');
     const [petitions, setPetitions] = useState([]);
+    const [trackingCode, setTrackingCode] = useState('');
+    const [trackResult, setTrackResult] = useState(null);
+    const [trackError, setTrackError] = useState('');
 
     useEffect(() => {
         if (activeTab === 'search') {
@@ -22,8 +25,23 @@ function Home() {
         }
     };
 
+    const handleTrack = async () => {
+        setTrackError('');
+        setTrackResult(null);
+        if (!trackingCode.trim()) {
+            setTrackError('Vui lòng nhập mã tra cứu.');
+            return;
+        }
+        try {
+            const res = await fetchApi(`/api/petitions/track/${trackingCode.trim()}`);
+            setTrackResult(res);
+        } catch (e) {
+            setTrackError(e.message || 'Lỗi tra cứu');
+        }
+    };
+
     return (
-        <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <header className="header-top">
                 <div className="header-container">
                     <div className="brand-info">
@@ -56,7 +74,7 @@ function Home() {
                     </div>
                     <a href="https://www.quangninh.gov.vn/donvi/campha/Trang/ChiTietBVGioiThieu.aspx?bvid=19" target="_blank" rel="noreferrer" className="nav-item nav-item-link" title="Mở trang Tổ chức, bộ máy UBMTTQ phường">
                         🏛️ Tổ chức, bộ máy UBMTTQ phường
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '2px', opacity: 0.7}}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '2px', opacity: 0.7 }}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     </a>
                 </div>
             </nav>
@@ -71,27 +89,70 @@ function Home() {
 
                 {activeTab === 'search' && (
                     <section className="tab-content active">
-                        <h2 className="section-title">Tra cứu & Danh sách phản ánh</h2>
+                        <h2 className="section-title">Tra cứu kết quả giải quyết</h2>
+                        <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '30px' }}>
+                            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Nhập mã tra cứu (VD: CP-240824-A1B2)"
+                                    value={trackingCode}
+                                    onChange={(e) => setTrackingCode(e.target.value)}
+                                    style={{ flex: 1, padding: '12px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '15px' }}
+                                />
+                                <button
+                                    onClick={handleTrack}
+                                    style={{ background: '#166534', color: 'white', padding: '12px 24px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                                >
+                                    🔍 Tra Cứu
+                                </button>
+                            </div>
+                            {trackError && <div style={{ color: '#ef4444', marginTop: '12px', fontSize: '14px' }}>{trackError}</div>}
+
+                            {trackResult && (
+                                <div style={{ marginTop: '20px', padding: '20px', background: '#f8fafc', borderLeft: '4px solid #166534', borderRadius: '4px' }}>
+                                    <h4 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>{trackResult.title}</h4>
+                                    <div style={{ display: 'flex', gap: '24px', fontSize: '14px', color: '#475569', marginBottom: '12px' }}>
+                                        <div><strong>Mã đơn:</strong> {trackResult.trackingCode}</div>
+                                        <div><strong>Ngày gửi:</strong> {new Date(trackResult.createdAt).toLocaleString('vi-VN')}</div>
+                                        <div><strong>Lĩnh vực:</strong> {trackResult.category}</div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <strong style={{ fontSize: '14px', color: '#475569' }}>Trạng thái hiện tại:</strong>
+                                        <Badge variant={
+                                            trackResult.status === 'resolved' ? 'success' :
+                                                trackResult.status === 'rejected' ? 'danger' :
+                                                    trackResult.status === 'processing' ? 'primary' : 'warning'
+                                        }>
+                                            {trackResult.status === 'resolved' ? 'Đã giải quyết' :
+                                                trackResult.status === 'rejected' ? 'Bị từ chối' :
+                                                    trackResult.status === 'processing' ? 'Đang xử lý' : 'Chờ xử lý'}
+                                        </Badge>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <h2 className="section-title">Danh sách phản ánh công khai</h2>
                         {petitions.length === 0 ? (
-                            <div style={{textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1'}}>
+                            <div style={{ textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
                                 Chưa có phản ánh nào được ghi nhận.
                             </div>
                         ) : (
-                            <div style={{display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))'}}>
+                            <div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
                                 {petitions.map(p => (
-                                    <div key={p.id} style={{border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '12px'}}>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+                                    <div key={p.id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                             <Badge variant={p.status === 'pending' ? 'warning' : 'success'}>
                                                 {p.status === 'pending' ? '⏳ Chờ xử lý' : '✅ Đã giải quyết'}
                                             </Badge>
-                                            <span style={{fontSize: '12px', color: '#94a3b8'}}>{new Date(p.createdAt).toLocaleDateString('vi-VN')}</span>
+                                            <span style={{ fontSize: '12px', color: '#94a3b8' }}>{new Date(p.createdAt).toLocaleDateString('vi-VN')}</span>
                                         </div>
-                                        <h4 style={{fontWeight: 600, color: '#1e293b', fontSize: '15px'}}>{p.title}</h4>
-                                        <div style={{fontSize: '14px', color: '#64748b'}}>
+                                        <h4 style={{ fontWeight: 600, color: '#1e293b', fontSize: '15px' }}>{p.title}</h4>
+                                        <div style={{ fontSize: '14px', color: '#64748b' }}>
                                             <p><strong>Lĩnh vực:</strong> {p.category}</p>
                                             <p><strong>Người gửi:</strong> {p.fullName}</p>
                                         </div>
-                                        <p style={{fontSize: '14px', color: '#475569', marginTop: '8px'}}>{p.content}</p>
+                                        <p style={{ fontSize: '14px', color: '#475569', marginTop: '8px' }}>{p.content}</p>
                                     </div>
                                 ))}
                             </div>
@@ -102,7 +163,7 @@ function Home() {
                 {activeTab === 'docs' && (
                     <section className="tab-content active">
                         <h2 className="section-title">Văn bản, Thông báo & Chỉ đạo điều hành</h2>
-                        <div style={{textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1'}}>
+                        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
                             Đang cập nhật tính năng tra cứu văn bản...
                         </div>
                     </section>

@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 function AdminDashboard() {
     const [petitions, setPetitions] = useState([]);
+    const [stats, setStats] = useState({ total: 0, statusCounts: [] });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('tong-quan');
     const navigate = useNavigate();
@@ -26,6 +27,15 @@ function AdminDashboard() {
         }
     };
 
+    const loadStats = async () => {
+        try {
+            const data = await fetchApi('/api/admin/stats');
+            setStats(data);
+        } catch (err) {
+            console.error('Failed to load stats:', err);
+        }
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -33,8 +43,10 @@ function AdminDashboard() {
             return;
         }
 
-        if (activeTab === 'tong-quan' || activeTab === 'phan-anh') {
+        if (activeTab === 'phan-anh') {
             loadPetitions();
+        } else if (activeTab === 'tong-quan') {
+            loadStats();
         }
     }, [activeTab, navigate]);
 
@@ -112,19 +124,19 @@ function AdminDashboard() {
                             <div className="card" style={{ borderLeft: '4px solid var(--accent-blue)' }}>
                                 <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--accent-blue)' }}>TỔNG SỐ PHẢN ÁNH</div>
                                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent-blue)' }}>
-                                    {petitions.length}
+                                    {stats.total || 0}
                                 </div>
                             </div>
                             <div className="card" style={{ borderLeft: '4px solid var(--warning-orange)' }}>
                                 <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--warning-orange)' }}>ĐANG CHỜ XỬ LÝ</div>
                                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--warning-orange)' }}>
-                                    {petitions.filter(p => p.status === 'pending').length}
+                                    {stats.statusCounts.find(s => s.status === 'pending')?.count || 0}
                                 </div>
                             </div>
                             <div className="card" style={{ borderLeft: '4px solid var(--success-green)' }}>
                                 <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--success-green)' }}>ĐÃ GIẢI QUYẾT</div>
                                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success-green)' }}>
-                                    {petitions.filter(p => p.status === 'resolved').length}
+                                    {stats.statusCounts.find(s => s.status === 'resolved')?.count || 0}
                                 </div>
                             </div>
                         </div>

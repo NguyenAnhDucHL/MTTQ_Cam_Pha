@@ -7,6 +7,15 @@ import { fetchApi } from '../../lib/api';
 
 export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus, onDelete, deletingId }) {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [notes, setNotes] = useState('');
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
+
+  // Update notes when petition changes
+  React.useEffect(() => {
+    if (petition) {
+      setNotes(petition.adminNotes || '');
+    }
+  }, [petition]);
 
   if (!petition) return null;
 
@@ -27,12 +36,29 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
     }
   };
 
+  const handleSaveNotes = async () => {
+    setIsSavingNotes(true);
+    try {
+      await fetchApi(`/api/admin/petitions/${petition.id}/notes`, {
+        method: 'PATCH',
+        body: JSON.stringify({ adminNotes: notes })
+      });
+      toast.success('Đã lưu ghi chú thành công!');
+      // Update local object so it doesn't revert on next render (hacky but works for now without Redux)
+      petition.adminNotes = notes;
+    } catch (err) {
+      toast.error(err.message || 'Lỗi kết nối tới máy chủ.');
+    } finally {
+      setIsSavingNotes(false);
+    }
+  };
+
   const images = petition.imagePaths ? petition.imagePaths.split(',').filter(Boolean) : [];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Chi tiết Hồ sơ Phản ánh">
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '8px' }}>
-        
+
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
           <div>
@@ -47,7 +73,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
             </div>
           </div>
           <div style={{ textAlign: 'right', fontSize: '0.875rem', color: '#64748b' }}>
-            Ngày gửi:<br/>
+            Ngày gửi:<br />
             <span style={{ fontWeight: 600, color: '#334155' }}>
               {new Date(petition.createdAt).toLocaleString('vi-VN')}
             </span>
@@ -94,41 +120,58 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
               {images.map((img, idx) => {
                 const isPdf = img.toLowerCase().endsWith('.pdf');
                 return (
-                <a 
-                  key={idx} 
-                  href={`/uploads/${img}`} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  style={{ 
-                    display: 'block', 
-                    borderRadius: '8px', 
-                    overflow: 'hidden', 
-                    border: '1px solid #e2e8f0',
-                    aspectRatio: '1',
-                    background: '#f8fafc',
-                    position: 'relative',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  {isPdf ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
-                      <span style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</span>
-                      <span style={{ fontSize: '0.75rem', padding: '0 8px', textAlign: 'center', wordBreak: 'break-all' }}>{img.substring(img.indexOf('-') + 1).slice(0, 15)}...</span>
-                    </div>
-                  ) : (
-                    <img 
-                      src={`/uploads/${img}`} 
-                      alt={`Đính kèm ${idx + 1}`}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.2s' }}
-                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                    />
-                  )}
-                </a>
-              )})}
+                  <a
+                    key={idx}
+                    href={`/uploads/${img}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'block',
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      border: '1px solid #e2e8f0',
+                      aspectRatio: '1',
+                      background: '#f8fafc',
+                      position: 'relative',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    {isPdf ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
+                        <span style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</span>
+                        <span style={{ fontSize: '0.75rem', padding: '0 8px', textAlign: 'center', wordBreak: 'break-all' }}>{img.substring(img.indexOf('-') + 1).slice(0, 15)}...</span>
+                      </div>
+                    ) : (
+                      <img
+                        src={`/uploads/${img}`}
+                        alt={`Đính kèm ${idx + 1}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.2s' }}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                      />
+                    )}
+                  </a>
+                )
+              })}
             </div>
           </div>
         )}
+
+        {/* Admin Notes */}
+        <div style={{ marginTop: '8px' }}>
+          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '8px' }}>Ghi chú xử lý (Nội bộ Admin)</label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            style={{ width: '100%', minHeight: '80px', padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', resize: 'vertical' }}
+            placeholder="Nhập ghi chú xử lý nội bộ... (Người dân không nhìn thấy ghi chú này)"
+          />
+          <div style={{ textAlign: 'right', marginTop: '8px' }}>
+            <Button variant="outline" onClick={handleSaveNotes} disabled={isSavingNotes || notes === petition.adminNotes} style={{ fontSize: '13px', padding: '6px 12px' }}>
+              {isSavingNotes ? 'Đang lưu...' : '💾 Lưu ghi chú'}
+            </Button>
+          </div>
+        </div>
 
         {/* Actions */}
         <div style={{ paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

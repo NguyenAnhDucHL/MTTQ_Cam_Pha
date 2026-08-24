@@ -82,6 +82,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
         content TEXT,
         imagePaths TEXT,
         status TEXT DEFAULT 'pending',
+        trackingCode TEXT,
+        adminNotes TEXT,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )`);
 
@@ -187,16 +189,21 @@ app.post('/api/petitions', petitionLimiter, (req, res) => {
       const files = req.files;
       const imagePaths = files ? files.map(file => file.filename).join(',') : '';
 
-      const sql = `INSERT INTO petitions (fullName, phone, cccd, ward, address, title, category, content, imagePaths)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      const params = [fullName, phone, cccd, ward, address, title, category, content, imagePaths];
+      // Generate random 4-character string
+      const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const dateStr = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+      const trackingCode = `CP-${dateStr}-${randomStr}`;
+
+      const sql = `INSERT INTO petitions (fullName, phone, cccd, ward, address, title, category, content, imagePaths, trackingCode)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const params = [fullName, phone, cccd, ward, address, title, category, content, imagePaths, trackingCode];
 
       db.run(sql, params, function (err) {
         if (err) {
           console.error(err);
           res.status(500).json({ error: 'Failed to save petition.' });
         } else {
-          res.status(201).json({ message: 'Petition saved successfully.', id: this.lastID });
+          res.status(201).json({ message: 'Petition saved successfully.', id: this.lastID, trackingCode });
         }
       });
     }); // Đóng callback của checkDuplicatePetition
@@ -217,7 +224,7 @@ app.get('/api/petitions', (req, res) => {
 
 // 3. Get all petitions (Protected - Admin only) - Shows all data
 app.get('/api/admin/petitions', authenticateToken, (req, res) => {
-  db.all('SELECT id, fullName, phone, cccd, ward, address, title, category, content, imagePaths, status, createdAt FROM petitions ORDER BY createdAt DESC', [], (err, rows) => {
+  db.all('SELECT id, fullName, phone, cccd, ward, address, title, category, content, imagePaths, status, createdAt, trackingCode, adminNotes FROM petitions ORDER BY createdAt DESC', [], (err, rows) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Failed to retrieve petitions.' });
@@ -228,21 +235,81 @@ app.get('/api/admin/petitions', authenticateToken, (req, res) => {
 });
 
 // 3b. Update petition status (Admin only)
-app.put('/api/admin/petitions/:id/status', authenticateToken, (req, res) => {
+app.patch('/api/admin/petitions/:id/status', authenticateToken, (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
+
+  if (!['pending', 'processing', 'resolved', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Trạng thái không hợp lệ.' });
+  }
 
   db.run('UPDATE petitions SET status = ? WHERE id = ?', [status, id], function (err) {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'Failed to update status.' });
+      res.status(500).json({ error: 'Lỗi khi cập nhật trạng thái.' });
+    } else if (this.changes === 0) {
+      res.status(404).json({ error: 'Không tìm thấy phản ánh.' });
     } else {
-      res.status(200).json({ message: 'Status updated successfully.' });
+      res.json({ message: 'Cập nhật trạng thái thành công.' });
     }
   });
 });
 
-// 3c. Delete petition (Admin only)
+// 3c. Update admin notes (Admin only)
+app.patch('/api/admin/petitions/:id/notes', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const { adminNotes } = req.body;
+
+  db.run('UPDATE petitions SET adminNotes = ? WHERE id = ?', [adminNotes, id], function (err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Lỗi khi cập nhật ghi chú.' });
+    } else if (this.changes === 0) {
+      res.status(404).json({ error: 'Không tìm thấy phản ánh.' });
+    } else {
+      res.json({ message: 'Cập nhật ghi chú thành công.' });
+    }
+  });
+});
+
+// 3d. Get admin stats
+app.get('/api/admin/stats', authenticateToken, (req, res) => {
+  db.all('SELECT status, count(*) as count FROM petitions GROUP BY status', [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Lỗi khi lấy thống kê.' });
+    }
+
+    // Also get total count
+    db.get('SELECT count(*) as total FROM petitions', [], (err2, totalRow) => {
+      if (err2) return res.status(500).json({ error: 'Lỗi khi lấy thống kê.' });
+
+      res.json({
+        total: totalRow.total,
+        statusCounts: rows
+      });
+    });
+  });
+});
+
+
+
+// 3e. Track petition by code (Public)
+app.get('/api/petitions/track/:code', (req, res) => {
+  const code = req.params.code;
+  db.get('SELECT id, title, category, status, createdAt, trackingCode FROM petitions WHERE trackingCode = ?', [code], (err, row) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Lỗi hệ thống.' });
+    } else if (!row) {
+      res.status(404).json({ error: 'Không tìm thấy đơn phản ánh với mã này.' });
+    } else {
+      res.json(row);
+    }
+  });
+});
+
+// 3f. Delete petition (Admin only)
 app.delete('/api/admin/petitions/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
   db.run('DELETE FROM petitions WHERE id = ?', [id], function (err) {

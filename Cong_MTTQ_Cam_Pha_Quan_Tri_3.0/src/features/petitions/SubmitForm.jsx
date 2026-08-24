@@ -8,6 +8,7 @@ import { fetchApi } from '../../lib/api';
 export function SubmitForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0);
+  const [trackingCode, setTrackingCode] = useState(null);
   const [files, setFiles] = useState([]);
   const [wardsList, setWardsList] = useState([]);
   const fileInputRef = useRef(null);
@@ -34,7 +35,7 @@ export function SubmitForm() {
     if (draft) {
       try {
         setFormData(JSON.parse(draft));
-      } catch (e) {}
+      } catch (e) { }
     }
 
     // Load cooldown
@@ -129,7 +130,7 @@ export function SubmitForm() {
     });
 
     try {
-      await fetchApi('/api/petitions', {
+      const response = await fetchApi('/api/petitions', {
         method: 'POST',
         body: submitData
       });
@@ -142,10 +143,11 @@ export function SubmitForm() {
       });
       setFiles([]);
       if (fileInputRef.current) fileInputRef.current.value = '';
-      
+
       localStorage.removeItem('petitionDraft');
       localStorage.setItem('lastPetitionSent', Date.now().toString());
       setCooldownTime(3 * 60);
+      setTrackingCode(response.trackingCode);
 
     } catch (error) {
       toast.error(error.message || 'Có lỗi xảy ra khi gửi phản ánh.');
@@ -154,8 +156,41 @@ export function SubmitForm() {
     }
   };
 
+  if (trackingCode) {
+    return (
+      <div className="submit-form-container" style={{ textAlign: 'center', padding: '40px 20px' }}>
+        <div style={{ fontSize: '48px', marginBottom: '20px' }}>✅</div>
+        <h2 style={{ color: '#166534', marginBottom: '15px' }}>Gửi phản ánh thành công!</h2>
+        <p style={{ fontSize: '1.1rem', color: '#475569', marginBottom: '20px' }}>
+          Cảm ơn bạn đã đóng góp ý kiến. Chính quyền sẽ xem xét và xử lý trong thời gian sớm nhất.
+        </p>
+        <div style={{ background: '#f8fafc', border: '1px dashed #cbd5e1', padding: '20px', borderRadius: '8px', display: 'inline-block' }}>
+          <div style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '8px' }}>MÃ TRA CỨU CỦA BẠN</div>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', letterSpacing: '2px' }}>
+            {trackingCode}
+          </div>
+          <Button
+            style={{ marginTop: '15px' }}
+            onClick={() => {
+              navigator.clipboard.writeText(trackingCode);
+              toast.success('Đã sao chép mã!');
+            }}
+          >
+            📋 Copy Mã Tra Cứu
+          </Button>
+        </div>
+        <div style={{ marginTop: '30px' }}>
+          <p style={{ color: '#ef4444', fontSize: '0.9rem' }}>* Lưu ý: Hãy lưu lại mã tra cứu này để theo dõi tiến độ giải quyết.</p>
+          <Button variant="secondary" onClick={() => setTrackingCode(null)} style={{ marginTop: '15px' }}>
+            Gửi phản ánh khác
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} id="feedbackForm">
+    <form className="submit-form-container" onSubmit={handleSubmit} id="feedbackForm">
       <div className="form-grid">
         {/* Left Column: Personal Info */}
         <div className="card">
@@ -240,8 +275,8 @@ export function SubmitForm() {
 
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
         <button type="submit" className="btn-submit" disabled={isSubmitting || cooldownTime > 0}>
-          {cooldownTime > 0 
-            ? `Vui lòng đợi ${Math.floor(cooldownTime / 60)}:${(cooldownTime % 60).toString().padStart(2, '0')} để gửi tiếp` 
+          {cooldownTime > 0
+            ? `Vui lòng đợi ${Math.floor(cooldownTime / 60)}:${(cooldownTime % 60).toString().padStart(2, '0')} để gửi tiếp`
             : isSubmitting ? 'Đang gửi...' : '🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ'}
         </button>
       </div>

@@ -12,7 +12,9 @@ jobs:
           password: ${{ secrets.VNPT_PASS }}
           port: 22
           script: |
-            echo "=== Checking Host Nginx config ==="
-            cat /etc/nginx/conf.d/*.conf || true
-            cat /etc/nginx/sites-enabled/* || true
-            cat /etc/nginx/nginx.conf || true
+            echo "=== Checking Nginx Processes ==="
+            ps aux | grep nginx || true
+            echo "=== Checking open ports ==="
+            netstat -tulpn | grep 8082 || true
+            echo "=== Checking Docker networks ==="
+            docker network ls || true

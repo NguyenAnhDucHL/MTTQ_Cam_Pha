@@ -23,6 +23,12 @@ jobs:
           port: 22
           script: |
             set -e
+            
+            echo ">>> Dọn dẹp bản deploy cũ (nếu có) để tránh kẹt port 8082..."
+            if [ -d "/root/mttq_deploy" ]; then
+              cd /root/mttq_deploy && docker-compose down || true
+            fi
+            
             # Thay đổi tên thư mục này nếu trên VPS của bạn dùng tên khác
             cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0 || exit 1
             
@@ -32,6 +38,7 @@ jobs:
             
             echo ">>> Build và khởi động lại Docker containers..."
             docker-compose build
+            docker-compose down || true
             docker-compose up -d
             
             echo "=== Trạng thái Container ==="

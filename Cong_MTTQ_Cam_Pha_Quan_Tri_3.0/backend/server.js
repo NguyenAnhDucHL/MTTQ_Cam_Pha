@@ -161,6 +161,19 @@ app.put('/api/admin/petitions/:id/status', authenticateToken, (req, res) => {
   });
 });
 
+// 3c. Delete petition (Admin only)
+app.delete('/api/admin/petitions/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  db.run('DELETE FROM petitions WHERE id = ?', [id], function (err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to delete petition.' });
+    } else {
+      res.status(200).json({ message: 'Petition deleted successfully.' });
+    }
+  });
+});
+
 // 4. Login (Issues JWT)
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;

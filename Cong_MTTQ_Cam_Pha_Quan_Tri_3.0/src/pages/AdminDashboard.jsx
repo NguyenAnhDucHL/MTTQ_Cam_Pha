@@ -50,6 +50,8 @@ function AdminDashboard() {
         }
     }, [activeTab, navigate]);
 
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         toast.info("Đã đăng xuất");
@@ -64,12 +66,20 @@ function AdminDashboard() {
         setPetitions(petitions.filter(p => p.id !== id));
     };
 
+    const navItemClick = (tabId) => {
+        setActiveTab(tabId);
+        setIsMenuOpen(false);
+    };
+
     return (
         <div>
             {/* Top Header */}
             <header className="header-top">
                 <div className="header-container">
                     <div className="brand-info">
+                        <button className="mobile-menu-toggle" onClick={() => setIsMenuOpen(true)}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        </button>
                         <div className="logo-emblem">
                             <img
                                 src="/logo-mttq.png"
@@ -91,25 +101,34 @@ function AdminDashboard() {
                 </div>
             </header>
 
+            {/* Mobile Overlay */}
+            <div className={`mobile-overlay ${isMenuOpen ? 'show' : ''}`} onClick={() => setIsMenuOpen(false)}></div>
+
             {/* Navigation Bar */}
-            <nav className="main-nav">
+            <nav className={`main-nav ${isMenuOpen ? 'open' : ''}`}>
+                <div className="mobile-nav-header">
+                    <span style={{ fontWeight: 700, color: 'var(--primary-red)' }}>MENU QUẢN TRỊ</span>
+                    <button className="mobile-menu-close" onClick={() => setIsMenuOpen(false)}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
                 <div className="nav-container">
-                    <div className={`nav-item ${activeTab === 'tong-quan' ? 'active' : ''}`} onClick={() => setActiveTab('tong-quan')}>
+                    <div className={`nav-item ${activeTab === 'tong-quan' ? 'active' : ''}`} onClick={() => navItemClick('tong-quan')}>
                         Tổng quan
                     </div>
-                    <div className={`nav-item ${activeTab === 'phan-anh' ? 'active' : ''}`} onClick={() => setActiveTab('phan-anh')}>
+                    <div className={`nav-item ${activeTab === 'phan-anh' ? 'active' : ''}`} onClick={() => navItemClick('phan-anh')}>
                         Phản ánh, kiến nghị
                     </div>
-                    <div className={`nav-item ${activeTab === 'khu-pho' ? 'active' : ''}`} onClick={() => setActiveTab('khu-pho')}>
+                    <div className={`nav-item ${activeTab === 'khu-pho' ? 'active' : ''}`} onClick={() => navItemClick('khu-pho')}>
                         Quản lý Khu phố
                     </div>
-                    <div className={`nav-item ${activeTab === 'van-ban' ? 'active' : ''}`} onClick={() => setActiveTab('van-ban')}>
+                    <div className={`nav-item ${activeTab === 'van-ban' ? 'active' : ''}`} onClick={() => navItemClick('van-ban')}>
                         Văn bản & Thông báo
                     </div>
-                    <div className={`nav-item ${activeTab === 'noi-dung' ? 'active' : ''}`} onClick={() => setActiveTab('noi-dung')}>
+                    <div className={`nav-item ${activeTab === 'noi-dung' ? 'active' : ''}`} onClick={() => navItemClick('noi-dung')}>
                         Nội dung Cổng
                     </div>
-                    <div className={`nav-item ${activeTab === 'tai-khoan' ? 'active' : ''}`} onClick={() => setActiveTab('tai-khoan')}>
+                    <div className={`nav-item ${activeTab === 'tai-khoan' ? 'active' : ''}`} onClick={() => navItemClick('tai-khoan')}>
                         Tài khoản
                     </div>
                 </div>

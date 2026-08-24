@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { User, Edit, Trash2, Shield, Mail, Loader2, X, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { fetchApi } from '../../lib/api';
 
@@ -29,15 +28,19 @@ export function AdminAccounts() {
     loadAccounts();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) {
-      try {
-        await fetchApi(`/api/admin/accounts/${id}`, { method: 'DELETE' });
-        toast.success('Đã xóa tài khoản thành công');
-        loadAccounts();
-      } catch (error) {
-        toast.error('Có lỗi xảy ra khi xóa');
-      }
+  const handleDelete = async (id, name) => {
+    if (name === 'admin') {
+      toast.error('Không thể xóa tài khoản quản trị gốc!');
+      return;
+    }
+    if (!window.confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) return;
+    
+    try {
+      await fetchApi(`/api/admin/accounts/${id}`, { method: 'DELETE' });
+      toast.success('Đã xóa tài khoản thành công');
+      loadAccounts();
+    } catch (error) {
+      toast.error(error.message || 'Có lỗi xảy ra khi xóa');
     }
   };
 
@@ -48,6 +51,10 @@ export function AdminAccounts() {
   };
 
   const openEditModal = (account) => {
+    if (account.name === 'admin') {
+      toast.error('Không thể sửa đổi tài khoản quản trị gốc từ giao diện này!');
+      return;
+    }
     setModalMode('edit');
     setCurrentAccount({ id: account.id, username: account.name, password: '' });
     setIsModalOpen(true);
@@ -91,96 +98,90 @@ export function AdminAccounts() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 relative">
-      <div className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">Danh sách tài khoản</h3>
-          <p className="text-sm text-gray-500 mt-1">Quản lý người dùng và phân quyền hệ thống</p>
-        </div>
+    <div className="card" style={{ position: 'relative' }}>
+      <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+        <span>Danh sách Tài khoản</span>
         <button 
           onClick={openAddModal}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 w-full sm:w-auto shadow-sm whitespace-nowrap"
+          className="btn-submit" 
+          style={{ width: 'auto', padding: '8px 16px', fontSize: '0.9rem' }}
         >
-          <Plus size={16} /> Thêm tài khoản
+          + Thêm tài khoản
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[600px]">
+      <div style={{ overflowX: 'auto', marginTop: '10px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
           <thead>
-            <tr className="bg-gray-50/80 text-gray-500 text-xs uppercase tracking-wider">
-              <th className="px-6 py-4 font-medium border-b border-gray-100">Người dùng</th>
-              <th className="px-6 py-4 font-medium border-b border-gray-100">Vai trò</th>
-              <th className="px-6 py-4 font-medium border-b border-gray-100">Trạng thái</th>
-              <th className="px-6 py-4 font-medium border-b border-gray-100 text-center">Thao tác</th>
+            <tr style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
+              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b' }}>Người dùng</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b' }}>Vai trò</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b' }}>Trạng thái</th>
+              <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600, color: '#64748b', width: '100px' }}>Thao tác</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {loading ? (
               <tr>
-                <td colSpan="4" className="p-8 text-center text-gray-500">
-                  <div className="flex items-center justify-center gap-2">
-                    <Loader2 className="animate-spin text-gray-400" size={20} />
-                    Đang tải dữ liệu...
-                  </div>
+                <td colSpan="4" style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
+                  Đang tải dữ liệu...
                 </td>
               </tr>
             ) : accounts.length === 0 ? (
               <tr>
-                <td colSpan="4" className="p-8 text-center text-gray-500">
+                <td colSpan="4" style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
                   Không có dữ liệu tài khoản
                 </td>
               </tr>
             ) : (
               accounts.map(account => (
-                <tr key={account.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 shrink-0 border border-red-100">
-                        <User size={18} />
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900">{account.name}</div>
-                        <div className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                          <Mail size={12} />
-                          {account.email}
-                        </div>
-                      </div>
-                    </div>
+                <tr key={account.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '12px 16px' }}>
+                    <div style={{ fontWeight: 500, color: '#0f172a' }}>{account.name}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>{account.email}</div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5">
-                      <Shield size={14} className={account.role === 'admin' ? 'text-red-500' : 'text-blue-500'} />
-                      <span className={`text-sm font-medium ${account.role === 'admin' ? 'text-red-600' : 'text-blue-600'}`}>
-                        {account.role === 'admin' ? 'Quản trị viên' : 'Cán bộ'}
-                      </span>
-                    </div>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span style={{ 
+                      color: account.role === 'admin' ? 'var(--primary-red)' : '#3b82f6',
+                      fontWeight: 600,
+                      fontSize: '0.85rem'
+                    }}>
+                      {account.role === 'admin' ? 'Quản trị viên' : 'Cán bộ'}
+                    </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${account.status === 'active'
-                      ? 'bg-green-100 text-green-700 border border-green-200'
-                      : 'bg-gray-100 text-gray-600 border border-gray-200'
-                      }`}>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span style={{ 
+                      background: account.status === 'active' ? '#dcfce7' : '#f1f5f9',
+                      color: account.status === 'active' ? '#166534' : '#475569',
+                      padding: '4px 10px',
+                      borderRadius: '20px',
+                      fontSize: '0.8rem',
+                      fontWeight: 600
+                    }}>
                       {account.status === 'active' ? 'Hoạt động' : 'Đã khóa'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center">
-                    <div className="flex justify-center gap-2">
-                      <button 
+                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                    <span style={{ display: 'inline-flex', gap: '6px' }}>
+                      <button
                         onClick={() => openEditModal(account)}
-                        className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100" 
-                        title="Chỉnh sửa"
+                        title="Sửa"
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#fef3c7'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'none'}
                       >
-                        <Edit size={16} />
+                        ✏️
                       </button>
                       <button
-                        onClick={() => handleDelete(account.id)}
-                        className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                        onClick={() => handleDelete(account.id, account.name)}
                         title="Xóa"
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#fee2e2'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'none'}
                       >
-                        <Trash2 size={16} />
+                        🗑️
                       </button>
-                    </div>
+                    </span>
                   </td>
                 </tr>
               ))
@@ -191,61 +192,73 @@ export function AdminAccounts() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[99999] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h3 className="text-lg font-semibold text-gray-900">
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.5)', zIndex: 99999,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '20px'
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: '8px', width: '100%', maxWidth: '400px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)', overflow: 'hidden',
+            display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>
                 {modalMode === 'add' ? 'Thêm tài khoản mới' : 'Chỉnh sửa tài khoản'}
               </h3>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+                style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#64748b' }}
               >
-                <X size={20} />
+                ✕
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
+            <form onSubmit={handleSubmit} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
                   Tên đăng nhập
                 </label>
                 <input
                   type="text"
                   value={currentAccount.username}
                   onChange={(e) => setCurrentAccount({...currentAccount, username: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors"
+                  className="form-control"
+                  style={{ width: '100%' }}
                   placeholder="Nhập tên đăng nhập"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Mật khẩu {modalMode === 'edit' && <span className="text-gray-400 font-normal">(Bỏ trống nếu không đổi)</span>}
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
+                  Mật khẩu {modalMode === 'edit' && <span style={{ fontWeight: 'normal', color: '#94a3b8' }}>(Bỏ trống nếu không đổi)</span>}
                 </label>
                 <input
                   type="password"
                   value={currentAccount.password}
                   onChange={(e) => setCurrentAccount({...currentAccount, password: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors"
+                  className="form-control"
+                  style={{ width: '100%' }}
                   placeholder="Nhập mật khẩu"
                 />
               </div>
 
-              <div className="mt-4 flex gap-3 justify-end">
+              <div style={{ marginTop: '10px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-sm transition-colors"
+                  style={{ padding: '8px 16px', background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '5px', cursor: 'pointer', fontWeight: 600 }}
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 min-w-[100px]"
+                  className="btn-submit"
+                  style={{ padding: '8px 16px', width: 'auto', opacity: isSubmitting ? 0.7 : 1 }}
                 >
-                  {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : 'Lưu lại'}
+                  {isSubmitting ? 'Đang lưu...' : 'Lưu lại'}
                 </button>
               </div>
             </form>

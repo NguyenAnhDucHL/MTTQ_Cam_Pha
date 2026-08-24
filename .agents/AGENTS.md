@@ -55,9 +55,11 @@ Hệ thống này đã trải qua những pha sập toàn diện vì các lỗi 
 - **Hành động:** Khi có thay đổi Database Schema trên hệ thống đang chạy thật, LUÔN LUÔN phải viết `ALTER TABLE ADD COLUMN` sau block `CREATE TABLE`. 
 - **Ví dụ:** `db.run("ALTER TABLE users ADD COLUMN age INTEGER", () => {});` (truyền callback rỗng để bỏ qua lỗi nếu cột đã có).
 
-### Quy tắc 4: Đồng bộ hóa Route Path giữa Frontend và Backend
-- **Vấn đề:** Lỗi rất dễ mắc phải là Backend định nghĩa route `/api/admin/login` nhưng Frontend lại gọi `fetch('/api/auth/login')`, gây ra lỗi 404 ngầm.
-- **Hành động:** Phải có một file cấu hình chung (Constants) chứa mọi endpoint API cho Frontend, hoặc luôn tìm kiếm và kiểm tra mã nguồn Frontend/Backend xem route có khớp nhau 100% không trước khi kết luận lỗi mạng. Luôn test API độc lập bằng lệnh `curl`.
+### Quy tắc 4: Đồng bộ hóa Route Path & HTTP Method giữa Frontend và Backend
+- **Vấn đề:** Có 2 lỗi cực kỳ dễ mắc phải gây ra lỗi 404 ngầm: 
+  1. Sai đường dẫn: Backend định nghĩa `/api/admin/login` nhưng Frontend lại gọi `/api/auth/login`.
+  2. Sai HTTP Method: Frontend gọi lệnh `PUT /petitions/:id/status` nhưng Backend lại định nghĩa bằng `router.patch('/petitions/:id/status')`. (PUT khác với PATCH).
+- **Hành động:** Phải có một file cấu hình chung (Constants) chứa mọi endpoint API cho Frontend, hoặc luôn tìm kiếm và kiểm tra mã nguồn Frontend/Backend xem route (đường dẫn) và Method (GET, POST, PUT, PATCH, DELETE) có khớp nhau 100% không trước khi kết luận lỗi mạng. Luôn test API độc lập bằng lệnh `curl`.
 
 ### Quy tắc 5: Kiểm tra import CSS (Tránh Dead Code)
 - **Vấn đề:** Có những lúc file `index.css` tồn tại nhưng lại không hề được load ở bất cứ đâu (chỉ load `global.css`), dẫn đến việc ngồi code cả tiếng đồng hồ nhưng giao diện không nhận CSS (như sự cố vỡ Desktop View ngày 24/08/2026).

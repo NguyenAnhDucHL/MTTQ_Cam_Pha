@@ -23,7 +23,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
     setIsUpdating(true);
     try {
       await fetchApi(`/mttq-api/admin/petitions/${petition.id}/status`, {
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify({ status: 'resolved' })
       });
       toast.success('Đã cập nhật trạng thái thành công!');

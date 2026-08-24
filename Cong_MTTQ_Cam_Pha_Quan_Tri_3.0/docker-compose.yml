@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
   frontend:
+    image: ghcr.io/nguyenanhduchl/mttq-frontend:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,6 +17,7 @@ services:
           memory: 100M
 
   backend:
+    image: ghcr.io/nguyenanhduchl/mttq-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile

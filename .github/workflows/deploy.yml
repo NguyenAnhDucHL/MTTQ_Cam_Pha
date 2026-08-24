@@ -6,23 +6,51 @@ on:
       - main
       - master
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker images
+        run: |
+          cd Cong_MTTQ_Cam_Pha_Quan_Tri_3.0
+          docker-compose build
+          docker-compose push
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    
+    steps:
       - name: Execute remote ssh commands to deploy
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.VNPT_HOST }}
           username: ${{ secrets.VNPT_USER }}
           password: ${{ secrets.VNPT_PASS }}
           port: 22
+          envs: GITHUB_TOKEN,GITHUB_ACTOR
           script: |
             set -e
+            
+            echo ">>> Đăng nhập vào Github Container Registry trên VPS..."
+            echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
             
             echo ">>> Dọn dẹp bản deploy cũ (nếu có) để giải phóng cổng 8082..."
             if [ -d "/root/mttq_deploy" ]; then
@@ -39,7 +67,7 @@ jobs:
             
             cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0 || exit 1
             
-            echo ">>> Kéo code mới nhất từ Github..."
+            echo ">>> Kéo code mới nhất từ Github (chỉ lấy file cấu hình, không build)..."
             git fetch origin main
             git reset --hard origin/main
             
@@ -53,10 +81,10 @@ jobs:
               cp -r /root/mttq_deploy/backend/uploads /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/backend/ || true
             fi
             
-            echo ">>> Build và khởi động lại Docker containers..."
+            echo ">>> Khởi động Docker containers bằng Image tải từ Github..."
             docker-compose down --remove-orphans || true
             sleep 3
-            docker-compose build
+            docker-compose pull
             docker-compose up -d
             
             echo "=== Trạng thái Container ==="

@@ -7,25 +7,10 @@ import { fetchApi } from '../lib/api';
 import { toast } from 'sonner';
 
 function AdminDashboard() {
-    const [petitions, setPetitions] = useState([]);
     const [stats, setStats] = useState({ total: 0, pending: 0, processing: 0, resolved: 0, rejected: 0 });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('tong-quan');
     const navigate = useNavigate();
-
-    const loadPetitions = async () => {
-        setLoading(true);
-        try {
-            const data = await fetchApi('/mttq-api/admin/petitions');
-            setPetitions(data);
-        } catch (err) {
-            if (err.message !== 'Unauthorized') {
-                toast.error("Không thể tải danh sách phản ánh.");
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const loadStats = async () => {
         try {
@@ -33,6 +18,8 @@ function AdminDashboard() {
             setStats(data);
         } catch (err) {
             console.error('Failed to load stats:', err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -43,9 +30,7 @@ function AdminDashboard() {
             return;
         }
 
-        if (activeTab === 'phan-anh') {
-            loadPetitions();
-        } else if (activeTab === 'tong-quan') {
+        if (activeTab === 'tong-quan') {
             loadStats();
         }
     }, [activeTab, navigate]);
@@ -56,14 +41,6 @@ function AdminDashboard() {
         localStorage.removeItem('token');
         toast.info("Đã đăng xuất");
         navigate('/admin/login');
-    };
-
-    const handleUpdateStatus = (id, newStatus) => {
-        setPetitions(petitions.map(p => p.id === id ? { ...p, status: newStatus } : p));
-    };
-
-    const handleDelete = (id) => {
-        setPetitions(petitions.filter(p => p.id !== id));
     };
 
     const navItemClick = (tabId) => {

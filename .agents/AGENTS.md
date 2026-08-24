@@ -80,4 +80,4 @@ Hệ thống này đã trải qua những pha sập toàn diện vì các lỗi 
 ---
 **Trạng thái:** KÍCH HOẠT  
 **Dự án:** Cổng MTTQ Cẩm Phả
-**See also:** [mttq-rule-commit.md](rules/mttq-rule-commit.md) | [mttq-rule-db-migration.md](rules/mttq-rule-db-migration.md) | [mttq-rule-api-error-handling.md](rules/mttq-rule-api-error-handling.md) | [mttq-rule-css-dead-code.md](rules/mttq-rule-css-dead-code.md) | [mttq-workflow-deploy.md](workflows/mttq-workflow-deploy.md)
+**See also:** [mttq-rule-bloody-lessons.md](rules/mttq-rule-bloody-lessons.md) | [mttq-rule-commit.md](rules/mttq-rule-commit.md) | [mttq-rule-db-migration.md](rules/mttq-rule-db-migration.md) | [mttq-rule-api-error-handling.md](rules/mttq-rule-api-error-handling.md) | [mttq-rule-css-dead-code.md](rules/mttq-rule-css-dead-code.md) | [mttq-workflow-deploy.md](workflows/mttq-workflow-deploy.md)

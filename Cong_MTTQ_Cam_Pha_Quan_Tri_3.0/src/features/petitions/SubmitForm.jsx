@@ -15,6 +15,7 @@ export function SubmitForm() {
     phone: '',
     cccd: '',
     address: '',
+    ward: '',
     title: '',
     category: 'Giao thông',
     content: ''
@@ -57,7 +58,7 @@ export function SubmitForm() {
       toast.success('Gửi phản ánh thành công!');
       // Reset form
       setFormData({
-        fullName: '', phone: '', cccd: '', address: '',
+        fullName: '', phone: '', cccd: '', address: '', ward: '',
         title: '', category: 'Giao thông', content: ''
       });
       setFiles([]);
@@ -86,7 +87,11 @@ export function SubmitForm() {
           <Input name="cccd" value={formData.cccd} onChange={handleChange} placeholder="0142..." />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Địa chỉ</label>
+          <label className="text-sm font-medium">Địa bàn / Khu phố <span className="text-red-500">*</span></label>
+          <Input name="ward" value={formData.ward} onChange={handleChange} placeholder="Phường, Khu phố..." required />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</label>
           <Input name="address" value={formData.address} onChange={handleChange} placeholder="Số nhà, Tên đường..." />
         </div>
       </div>

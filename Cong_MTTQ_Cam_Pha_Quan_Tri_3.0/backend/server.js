@@ -31,6 +31,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         fullName TEXT,
         phone TEXT,
         cccd TEXT,
+        ward TEXT,
         address TEXT,
         title TEXT,
         category TEXT,
@@ -99,7 +100,7 @@ const upload = multer({ storage: storage });
 
 // 1. Submit a petition (Public)
 app.post('/api/petitions', upload.array('images', 5), (req, res) => {
-  let { fullName, phone, cccd, address, title, category, content } = req.body;
+  let { fullName, phone, cccd, ward, address, title, category, content } = req.body;
 
   // Basic input sanitization (trim spaces)
   fullName = fullName ? fullName.trim() : '';
@@ -108,9 +109,9 @@ app.post('/api/petitions', upload.array('images', 5), (req, res) => {
   const files = req.files;
   const imagePaths = files ? files.map(file => file.filename).join(',') : '';
 
-  const sql = `INSERT INTO petitions (fullName, phone, cccd, address, title, category, content, imagePaths)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-  const params = [fullName, phone, cccd, address, title, category, content, imagePaths];
+  const sql = `INSERT INTO petitions (fullName, phone, cccd, ward, address, title, category, content, imagePaths)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const params = [fullName, phone, cccd, ward, address, title, category, content, imagePaths];
 
   db.run(sql, params, function (err) {
     if (err) {
@@ -136,7 +137,7 @@ app.get('/api/petitions', (req, res) => {
 
 // 3. Get all petitions (Protected - Admin only) - Shows all data
 app.get('/api/admin/petitions', authenticateToken, (req, res) => {
-  db.all('SELECT id, fullName, phone, cccd, address, title, category, content, imagePaths, status, createdAt FROM petitions ORDER BY createdAt DESC', [], (err, rows) => {
+  db.all('SELECT id, fullName, phone, cccd, ward, address, title, category, content, imagePaths, status, createdAt FROM petitions ORDER BY createdAt DESC', [], (err, rows) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Failed to retrieve petitions.' });

@@ -64,9 +64,18 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus 
             <p className="font-medium text-slate-800">{petition.cccd || 'Không cung cấp'}</p>
           </div>
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Địa chỉ</p>
+            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Địa bàn / Khu phố</p>
+            <p className="font-medium text-slate-800">{petition.ward || 'Không cung cấp'}</p>
+          </div>
+          <div className="col-span-2">
+            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</p>
             <p className="font-medium text-slate-800">{petition.address || 'Không cung cấp'}</p>
           </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-slate-800 mb-2">Tiêu đề phản ánh:</h4>
+          <p className="text-slate-800 font-medium bg-slate-50 p-3 rounded-lg border">{petition.title}</p>
         </div>
 
         <div>

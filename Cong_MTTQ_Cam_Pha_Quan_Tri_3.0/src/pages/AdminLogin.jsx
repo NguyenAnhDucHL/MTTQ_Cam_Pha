@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
 import { toast } from 'sonner';
-import { ShieldCheck, User, KeyRound, ArrowLeft } from 'lucide-react';
 
 function AdminLogin() {
     const [username, setUsername] = useState('');
@@ -36,65 +33,195 @@ function AdminLogin() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 font-sans">
-            <div className="bg-white p-8 sm:p-10 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
-                <div className="flex flex-col items-center mb-8">
-                    <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-md mb-4">
-                        <ShieldCheck className="w-8 h-8 text-white" />
+        <div style={{
+            minHeight: '100vh',
+            background: 'linear-gradient(160deg, #da251c 0%, #991b1b 50%, #1e293b 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            fontFamily: "'Roboto', sans-serif"
+        }}>
+            <div style={{
+                background: '#fff',
+                borderRadius: '16px',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+                width: '100%',
+                maxWidth: '440px',
+                overflow: 'hidden'
+            }}>
+                {/* Header đỏ */}
+                <div style={{
+                    background: 'linear-gradient(135deg, #da251c 0%, #991b1b 100%)',
+                    padding: '32px 20px 28px',
+                    textAlign: 'center'
+                }}>
+                    <div style={{
+                        width: '80px',
+                        height: '80px',
+                        borderRadius: '50%',
+                        background: '#fff',
+                        border: '3px solid #fbbf24',
+                        margin: '0 auto 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                    }}>
+                        <img
+                            src="/logo-mttq.png"
+                            alt="Logo MTTQ"
+                            style={{ width: '74px', height: '74px', borderRadius: '50%', objectFit: 'cover' }}
+                            onError={e => {
+                                e.target.style.display = 'none';
+                                e.target.parentNode.innerHTML = '<span style="font-size:2rem">🛡️</span>';
+                            }}
+                        />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-800 text-center uppercase">Quản trị Hệ thống</h2>
-                    <p className="text-sm text-slate-500 mt-2 text-center">UBND Phường Cẩm Phả</p>
+                    <h1 style={{
+                        color: '#fff',
+                        fontSize: '1.3rem',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        margin: '0 0 6px',
+                        textShadow: '0 1px 3px rgba(0,0,0,0.3)'
+                    }}>
+                        Cổng Quản trị Hệ thống
+                    </h1>
+                    <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.88rem', margin: 0 }}>
+                        MTTQ Việt Nam Phường Cẩm Phả
+                    </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-5">
-                    <div className="space-y-1">
-                        <label className="text-sm font-medium text-slate-700">Tên đăng nhập</label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <User className="h-5 w-5 text-slate-400" />
+                {/* Form đăng nhập */}
+                <div style={{ padding: '32px 32px 28px' }}>
+                    <form onSubmit={handleLogin}>
+                        <div style={{ marginBottom: '18px' }}>
+                            <label style={{
+                                display: 'block',
+                                fontWeight: 600,
+                                fontSize: '0.88rem',
+                                color: '#374151',
+                                marginBottom: '7px'
+                            }}>
+                                Tên đăng nhập
+                            </label>
+                            <div style={{ position: 'relative' }}>
+                                <span style={{
+                                    position: 'absolute', left: '12px', top: '50%',
+                                    transform: 'translateY(-50%)', fontSize: '1rem', color: '#9ca3af'
+                                }}>👤</span>
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={e => setUsername(e.target.value)}
+                                    required
+                                    placeholder="Nhập tên đăng nhập"
+                                    style={{
+                                        width: '100%',
+                                        padding: '11px 14px 11px 38px',
+                                        border: '1.5px solid #e5e7eb',
+                                        borderRadius: '8px',
+                                        fontSize: '0.95rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s',
+                                        boxSizing: 'border-box'
+                                    }}
+                                    onFocus={e => e.target.style.borderColor = '#da251c'}
+                                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+                                />
                             </div>
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                                placeholder="Nhập tài khoản"
-                                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                            />
                         </div>
-                    </div>
 
-                    <div className="space-y-1">
-                        <label className="text-sm font-medium text-slate-700">Mật khẩu</label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <KeyRound className="h-5 w-5 text-slate-400" />
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={{
+                                display: 'block',
+                                fontWeight: 600,
+                                fontSize: '0.88rem',
+                                color: '#374151',
+                                marginBottom: '7px'
+                            }}>
+                                Mật khẩu
+                            </label>
+                            <div style={{ position: 'relative' }}>
+                                <span style={{
+                                    position: 'absolute', left: '12px', top: '50%',
+                                    transform: 'translateY(-50%)', fontSize: '1rem', color: '#9ca3af'
+                                }}>🔒</span>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    required
+                                    placeholder="Nhập mật khẩu"
+                                    style={{
+                                        width: '100%',
+                                        padding: '11px 14px 11px 38px',
+                                        border: '1.5px solid #e5e7eb',
+                                        borderRadius: '8px',
+                                        fontSize: '0.95rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s',
+                                        boxSizing: 'border-box'
+                                    }}
+                                    onFocus={e => e.target.style.borderColor = '#da251c'}
+                                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+                                />
                             </div>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                placeholder="Nhập mật khẩu"
-                                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                            />
                         </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            style={{
+                                width: '100%',
+                                padding: '13px',
+                                background: loading ? '#f87171' : 'linear-gradient(135deg, #da251c 0%, #991b1b 100%)',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '1rem',
+                                fontWeight: 700,
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                letterSpacing: '0.5px',
+                                boxShadow: '0 4px 12px rgba(218,37,28,0.35)',
+                                transition: 'opacity 0.2s'
+                            }}
+                            onMouseEnter={e => { if (!loading) e.target.style.opacity = '0.9'; }}
+                            onMouseLeave={e => { e.target.style.opacity = '1'; }}
+                        >
+                            {loading ? '⏳ Đang xác thực...' : '🔐 Đăng nhập'}
+                        </button>
+                    </form>
+
+                    <div style={{ textAlign: 'center', marginTop: '20px', borderTop: '1px solid #f3f4f6', paddingTop: '18px' }}>
+                        <a href="/" style={{
+                            color: '#6b7280',
+                            fontSize: '0.88rem',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.color = '#da251c'}
+                        onMouseLeave={e => e.currentTarget.style.color = '#6b7280'}
+                        >
+                            ← Quay lại trang chủ
+                        </a>
                     </div>
+                </div>
 
-                    <Button 
-                        type="submit" 
-                        disabled={loading}
-                        className="w-full h-11 mt-6 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors border-0"
-                    >
-                        {loading ? 'Đang xử lý...' : 'Đăng nhập'}
-                    </Button>
-                </form>
-
-                <div className="mt-6 text-center">
-                    <a href="/" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
-                        <ArrowLeft className="w-4 h-4 mr-1" />
-                        Quay lại trang chủ
-                    </a>
+                {/* Footer */}
+                <div style={{
+                    background: '#f8fafc',
+                    borderTop: '1px solid #e5e7eb',
+                    padding: '12px 20px',
+                    textAlign: 'center',
+                    fontSize: '0.78rem',
+                    color: '#9ca3af'
+                }}>
+                    © 2026 Ủy ban MTTQ Việt Nam Phường Cẩm Phả
                 </div>
             </div>
         </div>

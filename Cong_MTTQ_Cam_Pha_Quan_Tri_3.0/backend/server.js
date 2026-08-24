@@ -16,11 +16,7 @@ app.set('trust proxy', 1);
 // Security HTTP headers
 app.use(helmet());
 
-// CORS Configuration
-app.use(cors({
-  origin: config.env === 'production' ? 'https://your-frontend-domain.com' : 'http://localhost:3000',
-  credentials: true
-}));
+app.use(cors());
 
 // Body parsers
 app.use(express.json({ limit: '10kb' }));

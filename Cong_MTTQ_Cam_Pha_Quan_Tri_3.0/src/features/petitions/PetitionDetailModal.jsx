@@ -81,7 +81,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
         {/* Content */}
         <div>
           <h4 style={{ fontWeight: 600, color: '#1e293b', margin: '0 0 8px 0' }}>Nội dung chi tiết:</h4>
-          <div style={{ padding: '16px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', color: '#334155', whiteSpace: 'pre-wrap', lineHeight: '1.6', fontSize: '0.95rem' }}>
+          <div style={{ padding: '16px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', color: '#334155', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: '1.6', fontSize: '0.95rem' }}>
             {petition.content}
           </div>
         </div>

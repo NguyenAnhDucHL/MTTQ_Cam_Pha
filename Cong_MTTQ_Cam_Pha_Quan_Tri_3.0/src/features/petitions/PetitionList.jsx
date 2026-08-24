@@ -20,7 +20,7 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [deletingId, setDeletingId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   const filtered = petitions.filter(p => {
     const q = search.toLowerCase();
@@ -35,25 +35,23 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
 
   const handleSearch = e => { setSearch(e.target.value); setPage(1); };
 
-  const handleDelete = async (id, e) => {
+  const handleDeleteRequest = (id, e) => {
     if (e) e.stopPropagation();
-    
-    if (deletingId !== id) {
-      setDeletingId(id);
-      setTimeout(() => setDeletingId(null), 3000); // reset after 3s
-      return;
-    }
+    setDeleteConfirmId(id);
+  };
 
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
     try {
-      await fetchApi(`/api/admin/petitions/${id}`, { method: 'DELETE' });
+      await fetchApi(`/api/admin/petitions/${deleteConfirmId}`, { method: 'DELETE' });
       toast.success('Đã xóa thành công');
-      setDeletingId(null);
       if (rows.length === 1 && page > 1) setPage(p => p - 1);
-      if (selected?.id === id) setSelected(null);
-      onDelete?.(id);
+      if (selected?.id === deleteConfirmId) setSelected(null);
+      onDelete?.(deleteConfirmId);
     } catch (err) {
       toast.error(err.message || 'Không thể xóa');
-      setDeletingId(null);
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
@@ -121,8 +119,8 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
                       <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelected(p); }} style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', gap: '6px', fontWeight: 600 }}>
                         <Eye className="w-4 h-4" /> Chi tiết
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={(e) => handleDelete(p.id, e)} style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', gap: '6px', fontWeight: 600, background: deletingId === p.id ? '#991b1b' : '#ef4444', color: '#fff', border: 'none' }}>
-                        <Trash2 className="w-4 h-4" /> {deletingId === p.id ? 'Xác nhận xóa' : 'Xóa'}
+                      <Button variant="destructive" size="sm" onClick={(e) => handleDeleteRequest(p.id, e)} style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', gap: '6px', fontWeight: 600, background: '#ef4444', color: '#fff', border: 'none' }}>
+                        <Trash2 className="w-4 h-4" /> Xóa
                       </Button>
                     </div>
                   </td>
@@ -166,9 +164,29 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
         isOpen={!!selected}
         onClose={() => setSelected(null)}
         onUpdateStatus={onUpdateStatus}
-        onDelete={(id) => handleDelete(id, null)}
-        deletingId={deletingId}
+        onDelete={(id) => handleDeleteRequest(id, null)}
       />
+
+      {/* Delete Confirmation Modal */}
+      <import_Modal isOpen={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)} title="Xác nhận xóa">
+        <div style={{ textAlign: 'center', padding: '10px 0 20px' }}>
+          <div style={{ fontSize: '3rem', margin: '0 auto 16px', color: '#ef4444', display: 'flex', justifyContent: 'center' }}>
+            ⚠️
+          </div>
+          <p style={{ fontSize: '1.05rem', color: '#334155', margin: '0 0 24px', lineHeight: '1.5' }}>
+            Bạn có chắc chắn muốn xóa phản ánh này không?<br/>
+            Hành động này <strong style={{ color: '#ef4444' }}>không thể hoàn tác</strong>.
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+            <Button variant="outline" onClick={() => setDeleteConfirmId(null)} style={{ padding: '10px 24px', borderRadius: '6px', fontWeight: 600, border: '1px solid #cbd5e1', background: '#fff', color: '#334155' }}>
+              Hủy
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete} style={{ padding: '10px 24px', borderRadius: '6px', fontWeight: 600, background: '#ef4444', color: '#fff', border: 'none' }}>
+              Xác nhận xóa
+            </Button>
+          </div>
+        </div>
+      </import_Modal>
     </div>
   );
 }

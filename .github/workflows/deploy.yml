@@ -71,6 +71,10 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             
+            echo ">>> Cập nhật cấu hình Nginx..."
+            cp /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/mttq_ssl.conf /etc/nginx/conf.d/ || true
+            nginx -s reload || true
+            
             echo ">>> Đảm bảo không bị mất dữ liệu cũ (database & ảnh)..."
             if [ -f "/root/mttq_deploy/backend/database.sqlite" ] && [ ! -f "/root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/backend/database.sqlite" ]; then
               echo "Copy database cũ sang..."

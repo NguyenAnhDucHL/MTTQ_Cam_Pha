@@ -1,156 +1,117 @@
 import React, { useState } from 'react';
-import { PetitionDetailModal } from './PetitionDetailModal';
 import { toast } from 'sonner';
 import { fetchApi } from '../../lib/api';
-import { Search, RefreshCw, Trash2, Eye } from 'lucide-react';
+import { Badge } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { PetitionDetailModal } from './PetitionDetailModal';
+import { Search, RefreshCw, Eye, Trash2 } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 10;
 
-const STATUS_MAP = {
-  pending: { label: 'Chờ xử lý', className: 'status-badge status-pending' },
-  processing: { label: 'Đang xử lý', className: 'status-badge status-processing' },
-  resolved: { label: 'Đã giải quyết', className: 'status-badge status-completed' },
-  rejected: { label: 'Từ chối', className: 'status-badge status-rejected' },
+const STATUS_CFG = {
+  pending:    { label: 'Chờ xử lý',    variant: 'warning'  },
+  processing: { label: 'Đang xử lý',   variant: 'warning'  },
+  resolved:   { label: 'Đã giải quyết',variant: 'success'  },
+  rejected:   { label: 'Từ chối',       variant: 'default'  },
 };
 
 export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh }) {
-  const [selectedPetition, setSelectedPetition] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selected, setSelected]     = useState(null);
+  const [page, setPage]             = useState(1);
+  const [search, setSearch]         = useState('');
 
-  // Search
   const filtered = petitions.filter(p => {
-    const q = searchTerm.toLowerCase();
-    return (
-      (p.title && p.title.toLowerCase().includes(q)) ||
-      (p.fullName && p.fullName.toLowerCase().includes(q)) ||
-      (p.phone && p.phone.toLowerCase().includes(q))
-    );
+    const q = search.toLowerCase();
+    return (p.title?.toLowerCase().includes(q) ||
+            p.fullName?.toLowerCase().includes(q) ||
+            p.phone?.toLowerCase().includes(q));
   });
 
-  // Pagination
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
-  const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-  const current = filtered.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+  const start      = (page - 1) * ITEMS_PER_PAGE;
+  const rows       = filtered.slice(start, start + ITEMS_PER_PAGE);
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
+  const handleSearch = e => { setSearch(e.target.value); setPage(1); };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa phản ánh này?')) return;
+    if (!window.confirm('Xóa phản ánh này?')) return;
     try {
       await fetchApi(`/api/admin/petitions/${id}`, { method: 'DELETE' });
-      toast.success('Đã xóa phản ánh thành công');
-      if (current.length === 1 && currentPage > 1) setCurrentPage(p => p - 1);
-      if (onDelete) onDelete(id);
+      toast.success('Đã xóa thành công');
+      if (rows.length === 1 && page > 1) setPage(p => p - 1);
+      onDelete?.(id);
     } catch (err) {
-      toast.error(err.message || 'Không thể xóa phản ánh.');
+      toast.error(err.message || 'Không thể xóa');
     }
   };
 
   return (
-    <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+    <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
       {/* Toolbar */}
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '14px 20px', background: '#f8fafc', borderBottom: '1px solid var(--border-color)',
-        flexWrap: 'wrap', gap: '10px'
-      }}>
-        <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--dark-blue)' }}>
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-b border-slate-200">
+        <span className="font-semibold text-slate-700">
           Danh sách Phản ánh, kiến nghị
-          {filtered.length > 0 && (
-            <span style={{ marginLeft: '8px', fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 400 }}>
-              ({filtered.length} kết quả)
-            </span>
-          )}
+          {filtered.length > 0 && <span className="ml-2 text-xs text-slate-400 font-normal">({filtered.length} kết quả)</span>}
         </span>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <div className="search-box" style={{ position: 'relative', minWidth: 0 }}>
-            <Search style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', width: '15px', height: '15px', color: 'var(--text-muted)' }} />
-            <input
-              type="text"
-              placeholder="Tìm kiếm tiêu đề, người gửi, SĐT..."
-              value={searchTerm}
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+            <Input
+              placeholder="Tìm tiêu đề, người gửi, SĐT..."
+              value={search}
               onChange={handleSearch}
-              className="form-control"
-              style={{ paddingLeft: '32px', width: '250px', height: '36px', fontSize: '0.88rem' }}
+              className="pl-8 h-8 text-sm w-56"
             />
           </div>
-          <button
-            onClick={onRefresh}
-            className="btn-download"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', height: '36px', cursor: 'pointer' }}
-          >
-            <RefreshCw style={{ width: '13px', height: '13px' }} />
-            Làm mới
-          </button>
+          <Button variant="outline" size="sm" onClick={onRefresh} className="h-8 gap-1">
+            <RefreshCw className="w-3.5 h-3.5" /> Làm mới
+          </Button>
         </div>
       </div>
 
       {/* Table */}
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-          <thead>
-            <tr style={{ background: '#f1f5f9', borderBottom: '2px solid var(--border-color)' }}>
-              {['Trạng thái', 'Tiêu đề', 'Lĩnh vực', 'Người gửi', 'Ngày gửi', 'Thao tác'].map(h => (
-                <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 700, fontSize: '0.82rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-50 border-b border-slate-200">
+            <tr>
+              {['Trạng thái','Tiêu đề','Lĩnh vực','Người gửi','Ngày gửi','Thao tác'].map(h => (
+                <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody>
-            {current.length === 0 ? (
+          <tbody className="divide-y divide-slate-100">
+            {rows.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  {searchTerm ? '🔍 Không tìm thấy kết quả phù hợp' : '📋 Chưa có phản ánh nào'}
+                <td colSpan={6} className="py-16 text-center text-slate-400">
+                  {search ? '🔍 Không tìm thấy kết quả phù hợp' : '📋 Chưa có phản ánh nào'}
                 </td>
               </tr>
-            ) : current.map(p => {
-              const st = STATUS_MAP[p.status] || STATUS_MAP.pending;
+            ) : rows.map(p => {
+              const cfg = STATUS_CFG[p.status] || STATUS_CFG.pending;
               return (
-                <tr key={p.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.15s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#fafafa'}
-                  onMouseLeave={e => e.currentTarget.style.background = ''}
-                >
-                  <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}>
-                    <span className={st.className}>{st.label}</span>
+                <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <Badge variant={cfg.variant}>{cfg.label}</Badge>
                   </td>
-                  <td style={{ padding: '12px 14px', fontWeight: 600, color: 'var(--dark-blue)', maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={p.title}>
+                  <td className="px-4 py-3 font-medium text-slate-800 max-w-[200px] truncate" title={p.title}>
                     {p.title}
                   </td>
-                  <td style={{ padding: '12px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{p.category}</td>
-                  <td style={{ padding: '12px 14px', color: 'var(--text-dark)', whiteSpace: 'nowrap' }}>{p.fullName}</td>
-                  <td style={{ padding: '12px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{p.category}</td>
+                  <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{p.fullName}</td>
+                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
                     {new Date(p.createdAt).toLocaleDateString('vi-VN')}
                   </td>
-                  <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}>
-                    <div style={{ display: 'inline-flex', gap: '6px' }}>
-                      <button
-                        onClick={() => setSelectedPetition(p)}
-                        title="Xem chi tiết"
-                        className="btn-download"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
-                      >
-                        <Eye style={{ width: '13px', height: '13px' }} />
-                        Chi tiết
-                      </button>
-                      <button
-                        onClick={() => handleDelete(p.id)}
-                        title="Xóa"
-                        style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '4px',
-                          padding: '6px 10px', borderRadius: '4px', border: '1px solid #fca5a5',
-                          background: '#fef2f2', color: '#dc2626', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 500
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.background = '#dc2626'; e.currentTarget.style.color = '#fff'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#dc2626'; }}
-                      >
-                        <Trash2 style={{ width: '13px', height: '13px' }} />
-                        Xóa
-                      </button>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setSelected(p)} className="h-7 gap-1">
+                        <Eye className="w-3.5 h-3.5" /> Chi tiết
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={() => handleDelete(p.id)} className="h-7 gap-1">
+                        <Trash2 className="w-3.5 h-3.5" /> Xóa
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -162,58 +123,36 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
 
       {/* Pagination */}
       {filtered.length > 0 && (
-        <div style={{
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '12px 20px', borderTop: '1px solid var(--border-color)', background: '#f8fafc',
-          fontSize: '0.85rem', color: 'var(--text-muted)', flexWrap: 'wrap', gap: '8px'
-        }}>
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-t border-slate-200 bg-slate-50 text-sm text-slate-500">
           <span>
-            Hiển thị <strong style={{ color: 'var(--dark-blue)' }}>{startIdx + 1}</strong>–
-            <strong style={{ color: 'var(--dark-blue)' }}>{Math.min(startIdx + ITEMS_PER_PAGE, filtered.length)}</strong>{' '}
-            trong tổng <strong style={{ color: 'var(--dark-blue)' }}>{filtered.length}</strong> phản ánh
+            Hiển thị <strong className="text-slate-700">{start + 1}</strong>–
+            <strong className="text-slate-700">{Math.min(start + ITEMS_PER_PAGE, filtered.length)}</strong>
+            {' '}trong <strong className="text-slate-700">{filtered.length}</strong> phản ánh
           </span>
           {totalPages > 1 && (
-            <div style={{ display: 'flex', gap: '4px' }}>
-              <button
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="btn-download"
-                style={{ cursor: currentPage === 1 ? 'default' : 'pointer', opacity: currentPage === 1 ? 0.5 : 1 }}
-              >
-                ← Trước
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  style={{
-                    padding: '5px 10px', border: '1px solid', borderRadius: '4px', cursor: 'pointer',
-                    fontWeight: 600, minWidth: '34px', fontSize: '0.85rem',
-                    borderColor: currentPage === page ? 'var(--primary-red)' : '#cbd5e1',
-                    background: currentPage === page ? 'var(--primary-red)' : '#fff',
-                    color: currentPage === page ? '#fff' : '#334155',
-                  }}
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1} className="h-7 px-2">←</Button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(pg => (
+                <Button
+                  key={pg}
+                  size="sm"
+                  variant={page === pg ? 'default' : 'outline'}
+                  onClick={() => setPage(pg)}
+                  className="h-7 w-7 p-0"
                 >
-                  {page}
-                </button>
+                  {pg}
+                </Button>
               ))}
-              <button
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className="btn-download"
-                style={{ cursor: currentPage === totalPages ? 'default' : 'pointer', opacity: currentPage === totalPages ? 0.5 : 1 }}
-              >
-                Sau →
-              </button>
+              <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages} className="h-7 px-2">→</Button>
             </div>
           )}
         </div>
       )}
 
       <PetitionDetailModal
-        petition={selectedPetition}
-        isOpen={!!selectedPetition}
-        onClose={() => setSelectedPetition(null)}
+        petition={selected}
+        isOpen={!!selected}
+        onClose={() => setSelected(null)}
         onUpdateStatus={onUpdateStatus}
       />
     </div>

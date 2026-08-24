@@ -42,6 +42,8 @@ export function SubmitForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent double click
+
     const { fullName, phone, cccd, ward, title, content } = formData;
 
     if (!fullName || !phone || !ward || !title || !content) {

@@ -444,6 +444,13 @@ textarea:focus {
     transform: translateY(1px);
 }
 
+.btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: #94a3b8;
+    transform: none;
+}
+
 /* Success Card Notice */
 .success-banner {
     display: none;

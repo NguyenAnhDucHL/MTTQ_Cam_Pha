@@ -7,6 +7,9 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const xssClean = require('xss-clean');
+const hpp = require('hpp');
 
 const app = express();
 const port = 3001;
@@ -16,9 +19,24 @@ const JWT_SECRET = 'mttq-campha-super-secret-key-2026'; // In production, use en
 app.set('trust proxy', 1);
 
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Security HTTP headers
+app.use(helmet());
+
+// CORS Configuration - Only allow the frontend URL (in production this should be the actual domain)
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? 'https://your-frontend-domain.com' : 'http://localhost:3000',
+  credentials: true
+}));
+
+app.use(express.json({ limit: '10kb' })); // Body limit is 10kb
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Data Sanitization against XSS
+app.use(xssClean());
+
+// Prevent HTTP Parameter Pollution
+app.use(hpp());
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Anti-Spam: Rate Limiters
@@ -164,7 +182,20 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '_'));
   }
 });
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Chỉ cho phép tải lên định dạng ảnh (JPG, PNG, WEBP).'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max file size
+  fileFilter: fileFilter
+});
 
 // API Endpoints
 
@@ -222,7 +253,7 @@ app.get('/api/petitions', (req, res) => {
 
   db.get('SELECT COUNT(*) as total FROM petitions', [], (err, row) => {
     if (err) return res.status(500).json({ error: 'Failed to retrieve count.' });
-    
+
     db.all('SELECT id, fullName, title, category, content, imagePaths, status, createdAt FROM petitions ORDER BY createdAt DESC LIMIT ? OFFSET ?', [limit, offset], (err2, rows) => {
       if (err2) return res.status(500).json({ error: 'Failed to retrieve petitions.' });
       res.status(200).json({
@@ -258,10 +289,10 @@ app.get('/api/admin/petitions', authenticateToken, (req, res) => {
 
   db.get(`SELECT COUNT(*) as total FROM petitions WHERE ${whereClause}`, params, (err, row) => {
     if (err) return res.status(500).json({ error: 'Failed to retrieve count.' });
-    
+
     const sql = `SELECT id, fullName, phone, cccd, ward, address, title, category, content, imagePaths, status, createdAt, trackingCode, adminNotes 
                  FROM petitions WHERE ${whereClause} ORDER BY createdAt DESC LIMIT ? OFFSET ?`;
-                 
+
     db.all(sql, [...params, limit, offset], (err2, rows) => {
       if (err2) return res.status(500).json({ error: 'Failed to retrieve petitions.' });
       res.status(200).json({

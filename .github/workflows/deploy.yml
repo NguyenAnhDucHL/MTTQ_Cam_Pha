@@ -14,26 +14,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy files to VPS via SCP
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.VNPT_HOST }}
-          username: ${{ secrets.VNPT_USER }}
-          password: ${{ secrets.VNPT_PASS }}
-          source: "."
-          target: "/root/mttq_deploy"
-          rm: false
-          exclude: ".git,node_modules,.github,backend/database.sqlite,backend/uploads"
-
-      - name: Execute Docker Compose on VPS
+      - name: Execute remote ssh commands to deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VNPT_HOST }}
           username: ${{ secrets.VNPT_USER }}
           password: ${{ secrets.VNPT_PASS }}
+          port: 22
           script: |
             set -e
-            cd /root/mttq_deploy/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0 || cd /root/mttq_deploy
+            # Thay đổi tên thư mục này nếu trên VPS của bạn dùng tên khác
+            cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0 || exit 1
+            
+            echo ">>> Kéo code mới nhất từ Github..."
+            git fetch origin main
+            git reset --hard origin/main
             
             echo ">>> Build và khởi động lại Docker containers..."
             docker-compose build

@@ -20,6 +20,7 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [deletingId, setDeletingId] = useState(null);
 
   const filtered = petitions.filter(p => {
     const q = search.toLowerCase();
@@ -36,14 +37,23 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
 
   const handleDelete = async (id, e) => {
     if (e) e.stopPropagation();
-    if (!window.confirm('Xóa phản ánh này?')) return;
+    
+    if (deletingId !== id) {
+      setDeletingId(id);
+      setTimeout(() => setDeletingId(null), 3000); // reset after 3s
+      return;
+    }
+
     try {
       await fetchApi(`/api/admin/petitions/${id}`, { method: 'DELETE' });
       toast.success('Đã xóa thành công');
+      setDeletingId(null);
       if (rows.length === 1 && page > 1) setPage(p => p - 1);
+      if (selected?.id === id) setSelected(null);
       onDelete?.(id);
     } catch (err) {
       toast.error(err.message || 'Không thể xóa');
+      setDeletingId(null);
     }
   };
 
@@ -111,8 +121,8 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
                       <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelected(p); }} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
                         <Eye className="w-4 h-4" /> Chi tiết
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={(e) => handleDelete(p.id, e)} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
-                        <Trash2 className="w-4 h-4" /> Xóa
+                      <Button variant="destructive" size="sm" onClick={(e) => handleDelete(p.id, e)} style={{ height: '32px', gap: '4px', fontWeight: 600, background: deletingId === p.id ? '#991b1b' : '' }}>
+                        <Trash2 className="w-4 h-4" /> {deletingId === p.id ? 'Xác nhận xóa' : 'Xóa'}
                       </Button>
                     </div>
                   </td>
@@ -156,6 +166,8 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
         isOpen={!!selected}
         onClose={() => setSelected(null)}
         onUpdateStatus={onUpdateStatus}
+        onDelete={(id) => handleDelete(id, null)}
+        deletingId={deletingId}
       />
     </div>
   );

@@ -5,7 +5,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { fetchApi } from '../../lib/api';
 
-export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus }) {
+export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus, onDelete, deletingId }) {
   const [isUpdating, setIsUpdating] = useState(false);
 
   if (!petition) return null;
@@ -110,14 +110,21 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus 
         )}
 
         {/* Actions */}
-        {petition.status === 'pending' && (
-          <div style={{ paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-            <Button variant="outline" onClick={onClose} style={{ fontWeight: 600 }}>Đóng</Button>
-            <Button variant="success" onClick={handleResolve} disabled={isUpdating} style={{ fontWeight: 600, background: '#10b981', color: '#fff' }}>
-              {isUpdating ? '⏳ Đang xử lý...' : '✅ Đánh dấu đã giải quyết'}
+        <div style={{ paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <Button variant="destructive" onClick={(e) => { e.stopPropagation(); onDelete(petition.id); }} style={{ fontWeight: 600, background: deletingId === petition.id ? '#991b1b' : '#ef4444', color: '#fff' }}>
+              {deletingId === petition.id ? 'Xác nhận xóa' : '🗑️ Xóa'}
             </Button>
           </div>
-        )}
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <Button variant="outline" onClick={onClose} style={{ fontWeight: 600 }}>Đóng</Button>
+            {petition.status === 'pending' && (
+              <Button variant="success" onClick={handleResolve} disabled={isUpdating} style={{ fontWeight: 600, background: '#10b981', color: '#fff' }}>
+                {isUpdating ? '⏳ Đang xử lý...' : '✅ Đánh dấu đã giải quyết'}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </Modal>
   );

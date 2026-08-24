@@ -36,7 +36,14 @@ export function SubmitForm() {
 
   const handleFileChange = (e) => {
     if (e.target.files) {
-      setFiles(Array.from(e.target.files));
+      const selectedFiles = Array.from(e.target.files);
+      if (selectedFiles.length > 20) {
+        toast.error('Chỉ được phép tải lên tối đa 20 tệp/ảnh.');
+        e.target.value = ''; // Reset input
+        setFiles([]);
+        return;
+      }
+      setFiles(selectedFiles);
     }
   };
 
@@ -181,6 +188,7 @@ export function SubmitForm() {
               <div className="upload-icon">📁</div>
               <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
               <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px' }}>Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 10MB)</div>
+              <div style={{ fontSize: '0.85rem', color: '#ef4444', marginTop: '4px', fontWeight: 500 }}>* Lưu ý: Hệ thống chỉ cho phép tải lên tối đa 20 ảnh/tệp đính kèm.</div>
               <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }} onChange={handleFileChange} accept="image/*" />
             </div>
             {files.length > 0 && (

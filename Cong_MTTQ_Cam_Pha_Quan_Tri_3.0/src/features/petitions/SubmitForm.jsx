@@ -34,8 +34,36 @@ export function SubmitForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.fullName || !formData.phone || !formData.title || !formData.content) {
+    const { fullName, phone, cccd, ward, title, content } = formData;
+    
+    if (!fullName || !phone || !ward || !title || !content) {
       toast.error('Vui lòng điền đầy đủ các trường bắt buộc (*)');
+      return;
+    }
+
+    if (fullName.length < 2) {
+      toast.error('Họ và tên phải dài ít nhất 2 ký tự');
+      return;
+    }
+
+    const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+    if (!phoneRegex.test(phone)) {
+      toast.error('Số điện thoại không hợp lệ');
+      return;
+    }
+
+    if (cccd && cccd.length !== 12) {
+      toast.error('Số CCCD phải bao gồm đúng 12 chữ số');
+      return;
+    }
+
+    if (title.length < 5) {
+      toast.error('Tiêu đề phản ánh quá ngắn (tối thiểu 5 ký tự)');
+      return;
+    }
+
+    if (content.length < 10) {
+      toast.error('Nội dung phản ánh quá ngắn (tối thiểu 10 ký tự)');
       return;
     }
 

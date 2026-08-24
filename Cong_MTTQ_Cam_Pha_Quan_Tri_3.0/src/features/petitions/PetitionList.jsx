@@ -10,27 +10,27 @@ import { Search, RefreshCw, Eye, Trash2 } from 'lucide-react';
 const ITEMS_PER_PAGE = 10;
 
 const STATUS_CFG = {
-  pending:    { label: 'Chờ xử lý',    variant: 'warning'  },
-  processing: { label: 'Đang xử lý',   variant: 'warning'  },
-  resolved:   { label: 'Đã giải quyết',variant: 'success'  },
-  rejected:   { label: 'Từ chối',       variant: 'default'  },
+  pending: { label: 'Chờ xử lý', variant: 'warning' },
+  processing: { label: 'Đang xử lý', variant: 'warning' },
+  resolved: { label: 'Đã giải quyết', variant: 'success' },
+  rejected: { label: 'Từ chối', variant: 'default' },
 };
 
 export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh }) {
-  const [selected, setSelected]     = useState(null);
-  const [page, setPage]             = useState(1);
-  const [search, setSearch]         = useState('');
+  const [selected, setSelected] = useState(null);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
   const filtered = petitions.filter(p => {
     const q = search.toLowerCase();
     return (p.title?.toLowerCase().includes(q) ||
-            p.fullName?.toLowerCase().includes(q) ||
-            p.phone?.toLowerCase().includes(q));
+      p.fullName?.toLowerCase().includes(q) ||
+      p.phone?.toLowerCase().includes(q));
   });
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
-  const start      = (page - 1) * ITEMS_PER_PAGE;
-  const rows       = filtered.slice(start, start + ITEMS_PER_PAGE);
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const rows = filtered.slice(start, start + ITEMS_PER_PAGE);
 
   const handleSearch = e => { setSearch(e.target.value); setPage(1); };
 
@@ -56,12 +56,13 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
         </span>
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
               placeholder="Tìm tiêu đề, người gửi, SĐT..."
               value={search}
               onChange={handleSearch}
-              className="pl-8 h-8 text-sm w-56"
+              className="h-9 text-sm w-64 transition-all focus:w-72"
+              style={{ paddingLeft: '2.25rem' }}
             />
           </div>
           <Button variant="outline" size="sm" onClick={onRefresh} className="h-8 gap-1">
@@ -72,17 +73,17 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
+        <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
+          <thead style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
             <tr>
-              {['Trạng thái','Tiêu đề','Lĩnh vực','Người gửi','Ngày gửi','Thao tác'].map(h => (
-                <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">
+              {['Trạng thái', 'Tiêu đề', 'Lĩnh vực', 'Người gửi', 'Ngày gửi', 'Thao tác'].map(h => (
+                <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontSize: '0.8rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.025em', whiteSpace: 'nowrap' }}>
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody style={{ backgroundColor: '#fff' }}>
             {rows.length === 0 ? (
               <tr>
                 <td colSpan={6} className="py-16 text-center text-slate-400">
@@ -92,25 +93,25 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
             ) : rows.map(p => {
               const cfg = STATUS_CFG[p.status] || STATUS_CFG.pending;
               return (
-                <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 whitespace-nowrap">
+                <tr key={p.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.2s' }} onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'} onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                     <Badge variant={cfg.variant}>{cfg.label}</Badge>
                   </td>
-                  <td className="px-4 py-3 font-medium text-slate-800 max-w-[200px] truncate" title={p.title}>
+                  <td style={{ padding: '12px 16px', fontWeight: 500, color: '#1e293b', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={p.title}>
                     {p.title}
                   </td>
-                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{p.category}</td>
-                  <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{p.fullName}</td>
-                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
+                  <td style={{ padding: '12px 16px', color: '#64748b', whiteSpace: 'nowrap' }}>{p.category}</td>
+                  <td style={{ padding: '12px 16px', color: '#475569', whiteSpace: 'nowrap', fontWeight: 500 }}>{p.fullName}</td>
+                  <td style={{ padding: '12px 16px', color: '#64748b', whiteSpace: 'nowrap' }}>
                     {new Date(p.createdAt).toLocaleDateString('vi-VN')}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={() => setSelected(p)} className="h-7 gap-1">
-                        <Eye className="w-3.5 h-3.5" /> Chi tiết
+                      <Button variant="outline" size="sm" onClick={() => setSelected(p)} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
+                        <Eye className="w-4 h-4" /> Chi tiết
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleDelete(p.id)} className="h-7 gap-1">
-                        <Trash2 className="w-3.5 h-3.5" /> Xóa
+                      <Button variant="destructive" size="sm" onClick={() => handleDelete(p.id)} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
+                        <Trash2 className="w-4 h-4" /> Xóa
                       </Button>
                     </div>
                   </td>
@@ -131,7 +132,7 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
           </span>
           {totalPages > 1 && (
             <div className="flex items-center gap-1">
-              <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1} className="h-7 px-2">←</Button>
+              <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="h-7 px-2">←</Button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(pg => (
                 <Button
                   key={pg}
@@ -143,7 +144,7 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
                   {pg}
                 </Button>
               ))}
-              <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages} className="h-7 px-2">→</Button>
+              <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="h-7 px-2">→</Button>
             </div>
           )}
         </div>

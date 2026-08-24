@@ -20,7 +20,7 @@ function Home() {
 
     const loadPetitions = async (currentPage) => {
         try {
-            const res = await fetchApi(`/api/petitions?page=${currentPage}&limit=9`);
+            const res = await fetchApi(`/mttq-api/petitions?page=${currentPage}&limit=9`);
             // Response is now { data, total, page, limit }
             setPetitions(res.data || []);
             setTotalPages(Math.ceil((res.total || 0) / 9));
@@ -37,7 +37,7 @@ function Home() {
             return;
         }
         try {
-            const res = await fetchApi(`/api/petitions/track/${trackingCode.trim()}`);
+            const res = await fetchApi(`/mttq-api/petitions/track/${trackingCode.trim()}`);
             setTrackResult(res);
         } catch (e) {
             setTrackError(e.message || 'Lỗi tra cứu');

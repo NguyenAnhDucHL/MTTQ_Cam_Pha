@@ -15,7 +15,7 @@ export function AdminAccounts() {
   const loadAccounts = async () => {
     try {
       setLoading(true);
-      const data = await fetchApi('/api/admin/accounts');
+      const data = await fetchApi('/mttq-api/admin/accounts');
       setAccounts(data);
     } catch (error) {
       toast.error('Không thể tải danh sách tài khoản');
@@ -36,7 +36,7 @@ export function AdminAccounts() {
     if (!window.confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) return;
     
     try {
-      await fetchApi(`/api/admin/accounts/${id}`, { method: 'DELETE' });
+      await fetchApi(`/mttq-api/admin/accounts/${id}`, { method: 'DELETE' });
       toast.success('Đã xóa tài khoản thành công');
       loadAccounts();
     } catch (error) {
@@ -74,14 +74,14 @@ export function AdminAccounts() {
     try {
       setIsSubmitting(true);
       if (modalMode === 'add') {
-        await fetchApi('/api/admin/accounts', {
+        await fetchApi('/mttq-api/admin/accounts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: currentAccount.username, password: currentAccount.password })
         });
         toast.success('Thêm tài khoản thành công');
       } else {
-        await fetchApi(`/api/admin/accounts/${currentAccount.id}`, {
+        await fetchApi(`/mttq-api/admin/accounts/${currentAccount.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: currentAccount.username, password: currentAccount.password })

@@ -31,7 +31,7 @@ export function PetitionList() {
     setLoading(true);
     try {
       const q = new URLSearchParams({ page, limit: ITEMS_PER_PAGE, status: statusFilter, search }).toString();
-      const res = await fetchApi(`/api/admin/petitions?${q}`);
+      const res = await fetchApi(`/mttq-api/admin/petitions?${q}`);
       setPetitions(res.data || []);
       setTotal(res.total || 0);
     } catch (err) {
@@ -74,7 +74,7 @@ export function PetitionList() {
   const confirmDelete = async () => {
     if (!deleteConfirmId) return;
     try {
-      await fetchApi(`/api/admin/petitions/${deleteConfirmId}`, { method: 'DELETE' });
+      await fetchApi(`/mttq-api/admin/petitions/${deleteConfirmId}`, { method: 'DELETE' });
       toast.success('Đã xóa thành công');
       if (rows.length === 1 && page > 1) setPage(p => p - 1);
       else loadData();

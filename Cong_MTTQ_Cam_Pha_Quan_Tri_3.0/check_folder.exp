@@ -1,0 +1,6 @@
+#!/usr/bin/expect
+set timeout 10
+spawn ssh -o StrictHostKeyChecking=no root@14.225.172.225 "ls -la /root/mttq_deploy"
+expect "password:"
+send "sMOh_1{k~*AczwlP$\r"
+expect eof

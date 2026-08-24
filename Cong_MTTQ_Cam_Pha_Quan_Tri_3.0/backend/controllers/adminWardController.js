@@ -4,7 +4,7 @@ const createWard = (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: 'Vui lòng nhập tên khu phố' });
 
-  db.run('INSERT INTO wards (name) VALUES (?)', [name], function(err) {
+  db.run('INSERT INTO wards (name) VALUES (?)', [name], function (err) {
     if (err) return res.status(500).json({ error: 'Khu phố đã tồn tại hoặc lỗi hệ thống' });
     res.status(201).json({ id: this.lastID, name });
   });
@@ -20,10 +20,10 @@ const getWards = (req, res) => {
 const updateWard = (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
-  
+
   if (!name) return res.status(400).json({ error: 'Vui lòng nhập tên khu phố' });
 
-  db.run('UPDATE wards SET name = ? WHERE id = ?', [name, id], function(err) {
+  db.run('UPDATE wards SET name = ? WHERE id = ?', [name, id], function (err) {
     if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
     res.status(200).json({ message: 'Cập nhật thành công' });
   });
@@ -31,7 +31,7 @@ const updateWard = (req, res) => {
 
 const deleteWard = (req, res) => {
   const { id } = req.params;
-  db.run('DELETE FROM wards WHERE id = ?', [id], function(err) {
+  db.run('DELETE FROM wards WHERE id = ?', [id], function (err) {
     if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
     res.status(200).json({ message: 'Xóa thành công' });
   });

@@ -15,7 +15,7 @@ export function AdminWards() {
   const loadWards = async () => {
     try {
       setLoading(true);
-      const data = await fetchApi('/api/wards');
+      const data = await fetchApi('/mttq-api/wards');
       setWards(data);
     } catch (error) {
       toast.error('Không thể tải danh sách khu phố');
@@ -35,7 +35,7 @@ export function AdminWards() {
       return;
     }
     try {
-      await fetchApi('/api/admin/wards', {
+      await fetchApi('/mttq-api/admin/wards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newWardName.trim() })
@@ -51,7 +51,7 @@ export function AdminWards() {
   const handleDelete = async (id) => {
     if (!window.confirm('Bạn có chắc chắn muốn xóa khu phố này?')) return;
     try {
-      await fetchApi(`/api/admin/wards/${id}`, { method: 'DELETE' });
+      await fetchApi(`/mttq-api/admin/wards/${id}`, { method: 'DELETE' });
       toast.success('Đã xóa khu phố');
       // Adjust page if last item on page deleted
       const newTotal = wards.length - 1;
@@ -71,7 +71,7 @@ export function AdminWards() {
   const handleUpdate = async (id) => {
     if (!editName.trim()) return;
     try {
-      await fetchApi(`/api/admin/wards/${id}`, {
+      await fetchApi(`/mttq-api/admin/wards/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: editName.trim() })

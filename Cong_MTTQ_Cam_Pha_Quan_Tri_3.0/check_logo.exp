@@ -1,0 +1,6 @@
+#!/usr/bin/expect
+set timeout 10
+spawn ssh -o StrictHostKeyChecking=no root@14.225.172.225 "ls -la /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/public"
+expect "password:"
+send "sMOh_1{k~*AczwlP$\r"
+expect eof

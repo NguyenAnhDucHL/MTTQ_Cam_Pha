@@ -26,7 +26,7 @@ export function SubmitForm() {
 
   useEffect(() => {
     // Fetch dynamic wards on component mount
-    fetchApi('/api/wards')
+    fetchApi('/mttq-api/wards')
       .then(data => setWardsList(data))
       .catch(err => console.error('Failed to load wards:', err));
 
@@ -130,7 +130,7 @@ export function SubmitForm() {
     });
 
     try {
-      const response = await fetchApi('/api/petitions', {
+      const response = await fetchApi('/mttq-api/petitions', {
         method: 'POST',
         body: submitData
       });

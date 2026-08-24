@@ -22,7 +22,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
   const handleResolve = async () => {
     setIsUpdating(true);
     try {
-      await fetchApi(`/api/admin/petitions/${petition.id}/status`, {
+      await fetchApi(`/mttq-api/admin/petitions/${petition.id}/status`, {
         method: 'PUT',
         body: JSON.stringify({ status: 'resolved' })
       });
@@ -39,7 +39,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
   const handleSaveNotes = async () => {
     setIsSavingNotes(true);
     try {
-      await fetchApi(`/api/admin/petitions/${petition.id}/notes`, {
+      await fetchApi(`/mttq-api/admin/petitions/${petition.id}/notes`, {
         method: 'PATCH',
         body: JSON.stringify({ adminNotes: notes })
       });
@@ -122,7 +122,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
                 return (
                   <a
                     key={idx}
-                    href={`/uploads/${img}`}
+                    href={`/mttq-uploads/${img}`}
                     target="_blank"
                     rel="noreferrer"
                     style={{
@@ -143,7 +143,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
                       </div>
                     ) : (
                       <img
-                        src={`/uploads/${img}`}
+                        src={`/mttq-uploads/${img}`}
                         alt={`Đính kèm ${idx + 1}`}
                         style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.2s' }}
                         onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}

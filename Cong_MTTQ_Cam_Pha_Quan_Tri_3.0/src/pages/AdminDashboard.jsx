@@ -16,7 +16,7 @@ function AdminDashboard() {
     const loadPetitions = async () => {
         setLoading(true);
         try {
-            const data = await fetchApi('/api/admin/petitions');
+            const data = await fetchApi('/mttq-api/admin/petitions');
             setPetitions(data);
         } catch (err) {
             if (err.message !== 'Unauthorized') {
@@ -29,7 +29,7 @@ function AdminDashboard() {
 
     const loadStats = async () => {
         try {
-            const data = await fetchApi('/api/admin/stats');
+            const data = await fetchApi('/mttq-api/admin/stats');
             setStats(data);
         } catch (err) {
             console.error('Failed to load stats:', err);

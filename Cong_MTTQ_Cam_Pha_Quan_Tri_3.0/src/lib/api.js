@@ -32,10 +32,20 @@ export const fetchApi = async (endpoint, options = {}) => {
 
   // Check if response is empty before parsing JSON
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (err) {
+    if (!response.ok) {
+      if (response.status === 413) throw new Error('Dung lượng tệp tải lên quá lớn.');
+      throw new Error(`Lỗi hệ thống (${response.status})`);
+    }
+    // If it's OK but not JSON, maybe return text
+    return text;
+  }
 
   if (!response.ok) {
-    throw new Error(data?.error || 'Lỗi hệ thống');
+    throw new Error(data?.error || `Lỗi hệ thống (${response.status})`);
   }
 
   return data;

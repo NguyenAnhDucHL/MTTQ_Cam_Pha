@@ -90,21 +90,42 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
         {images && images.length > 0 && (
           <div>
             <h4 style={{ fontWeight: 600, color: '#1e293b', margin: '0 0 10px 0' }}>Tài liệu đính kèm ({images.length}):</h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {images.map((img, idx) => (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px' }}>
+              {images.map((img, idx) => {
+                const isPdf = img.toLowerCase().endsWith('.pdf');
+                return (
                 <a 
                   key={idx} 
                   href={`/uploads/${img}`} 
                   target="_blank" 
                   rel="noreferrer"
-                  style={{ padding: '8px 12px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', borderRadius: '6px', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', fontWeight: 500 }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#dbeafe'}
-                  onMouseLeave={e => e.currentTarget.style.background = '#eff6ff'}
+                  style={{ 
+                    display: 'block', 
+                    borderRadius: '8px', 
+                    overflow: 'hidden', 
+                    border: '1px solid #e2e8f0',
+                    aspectRatio: '1',
+                    background: '#f8fafc',
+                    position: 'relative',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                  }}
                 >
-                  <span style={{ fontSize: '1.1rem' }}>📎</span>
-                  Ảnh đính kèm {idx + 1}
+                  {isPdf ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
+                      <span style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</span>
+                      <span style={{ fontSize: '0.75rem', padding: '0 8px', textAlign: 'center', wordBreak: 'break-all' }}>{img.substring(img.indexOf('-') + 1).slice(0, 15)}...</span>
+                    </div>
+                  ) : (
+                    <img 
+                      src={`/uploads/${img}`} 
+                      alt={`Đính kèm ${idx + 1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.2s' }}
+                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                    />
+                  )}
                 </a>
-              ))}
+              )})}
             </div>
           </div>
         )}

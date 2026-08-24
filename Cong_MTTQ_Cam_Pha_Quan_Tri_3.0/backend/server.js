@@ -119,8 +119,20 @@ const upload = multer({ storage: storage });
 // API Endpoints
 
 // 1. Submit a petition (Public)
-app.post('/api/petitions', upload.array('images', 5), (req, res) => {
-  let { fullName, phone, cccd, ward, address, title, category, content } = req.body;
+app.post('/api/petitions', (req, res) => {
+  const uploadMiddleware = upload.array('images', 20); // Tăng giới hạn lên 20 ảnh
+
+  uploadMiddleware(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading (e.g., too many files)
+      return res.status(400).json({ error: 'Lỗi tải ảnh: Số lượng hoặc dung lượng ảnh vượt quá giới hạn cho phép.' });
+    } else if (err) {
+      // An unknown error occurred when uploading
+      console.error('Multer error:', err);
+      return res.status(500).json({ error: 'Đã xảy ra lỗi không xác định khi tải ảnh.' });
+    }
+
+    let { fullName, phone, cccd, ward, address, title, category, content } = req.body;
 
   // Basic input sanitization (trim spaces)
   fullName = fullName ? fullName.trim() : '';
@@ -141,6 +153,7 @@ app.post('/api/petitions', upload.array('images', 5), (req, res) => {
       res.status(201).json({ message: 'Petition saved successfully.', id: this.lastID });
     }
   });
+  }); // Đóng callback của uploadMiddleware
 });
 
 // 2. Get all petitions (Public) - Hides sensitive data

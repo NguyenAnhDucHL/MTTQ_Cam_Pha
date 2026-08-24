@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 function AdminDashboard() {
     const [petitions, setPetitions] = useState([]);
-    const [stats, setStats] = useState({ total: 0, statusCounts: [] });
+    const [stats, setStats] = useState({ total: 0, pending: 0, processing: 0, resolved: 0, rejected: 0 });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('tong-quan');
     const navigate = useNavigate();
@@ -130,13 +130,13 @@ function AdminDashboard() {
                             <div className="card" style={{ borderLeft: '4px solid var(--warning-orange)' }}>
                                 <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--warning-orange)' }}>ĐANG CHỜ XỬ LÝ</div>
                                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--warning-orange)' }}>
-                                    {stats.statusCounts.find(s => s.status === 'pending')?.count || 0}
+                                    {stats.pending || 0}
                                 </div>
                             </div>
                             <div className="card" style={{ borderLeft: '4px solid var(--success-green)' }}>
                                 <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--success-green)' }}>ĐÃ GIẢI QUYẾT</div>
                                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success-green)' }}>
-                                    {stats.statusCounts.find(s => s.status === 'resolved')?.count || 0}
+                                    {stats.resolved || 0}
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-version: '3.3'
+version: '2.4'
 
 services:
   frontend:
@@ -11,10 +11,7 @@ services:
     depends_on:
       - backend
     restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 100M
+    mem_limit: 100m
 
   backend:
     image: ghcr.io/nguyenanhduchl/mttq-backend:latest
@@ -25,7 +22,4 @@ services:
       - ./backend/database.sqlite:/app/database.sqlite
       - ./backend/uploads:/app/uploads
     restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 800M
+    mem_limit: 800m

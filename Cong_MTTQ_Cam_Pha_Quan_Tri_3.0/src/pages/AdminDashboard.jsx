@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '../features/admin/Sidebar';
 import { PetitionList } from '../features/petitions/PetitionList';
+import { AdminWards } from '../features/admin/AdminWards';
 import { fetchApi } from '../lib/api';
 import { toast } from 'sonner';
 
@@ -99,6 +100,13 @@ function AdminDashboard() {
                                 onRefresh={loadPetitions}
                             />
                         )}
+                    </div>
+                )}
+
+                {activeTab === 'wards' && (
+                    <div className="animate-in fade-in duration-300">
+                        <h1 className="text-2xl font-bold text-slate-800 mb-6">Quản lý Khu phố</h1>
+                        <AdminWards />
                     </div>
                 )}
 

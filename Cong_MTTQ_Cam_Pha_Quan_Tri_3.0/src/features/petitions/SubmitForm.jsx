@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -8,6 +8,7 @@ import { fetchApi } from '../../lib/api';
 export function SubmitForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [files, setFiles] = useState([]);
+  const [wardsList, setWardsList] = useState([]);
   const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -20,6 +21,13 @@ export function SubmitForm() {
     category: 'Giao thông',
     content: ''
   });
+
+  useEffect(() => {
+    // Fetch dynamic wards on component mount
+    fetchApi('/api/wards')
+      .then(data => setWardsList(data))
+      .catch(err => console.error('Failed to load wards:', err));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -125,23 +133,10 @@ export function SubmitForm() {
           <div className="form-group" id="grp-area">
             <label className="form-label">Địa bàn / Khu phố <span className="required">*</span></label>
             <select name="ward" value={formData.ward} onChange={handleChange} className="form-select">
-                <option value="">-- Chọn Khu phố sinh sống / xảy ra vụ việc --</option>
-                <option value="Khu phố 1">Khu phố 1</option>
-                <option value="Khu phố 2">Khu phố 2</option>
-                <option value="Khu phố 3">Khu phố 3</option>
-                <option value="Khu phố 4">Khu phố 4</option>
-                <option value="Khu phố 5">Khu phố 5</option>
-                <option value="Khu phố 6">Khu phố 6</option>
-                <option value="Khu phố 7">Khu phố 7</option>
-                <option value="Khu phố 8">Khu phố 8</option>
-                <option value="Khu phố 9">Khu phố 9</option>
-                <option value="Khu phố 10">Khu phố 10</option>
-                <option value="Khu phố 11">Khu phố 11</option>
-                <option value="Khu phố 12">Khu phố 12</option>
-                <option value="Khu phố 13">Khu phố 13</option>
-                <option value="Khu phố 14">Khu phố 14</option>
-                <option value="Khu phố 15">Khu phố 15</option>
-                <option value="Khu phố 16">Khu phố 16</option>
+              <option value="">-- Chọn Khu phố sinh sống / xảy ra vụ việc --</option>
+              {wardsList.map(w => (
+                <option key={w.id} value={w.name}>{w.name}</option>
+              ))}
             </select>
           </div>
 
@@ -159,12 +154,12 @@ export function SubmitForm() {
           <div className="form-group" id="grp-category">
             <label className="form-label">Lĩnh vực phản ánh <span className="required">*</span></label>
             <select name="category" value={formData.category} onChange={handleChange} className="form-select">
-                <option value="Giao thông">Trật tự đô thị - Giao thông</option>
-                <option value="An ninh trật tự - PCCC">An ninh trật tự - Phòng cháy chữa cháy</option>
-                <option value="Môi trường - Vệ sinh công cộng">Môi trường - Vệ sinh công cộng</option>
-                <option value="Hạ tầng - Cấp thoát nước">Hạ tầng đô thị - Điện, nước, chiếu sáng</option>
-                <option value="An sinh xã hội - Policy">An sinh xã hội - Chế độ chính sách</option>
-                <option value="Khác">Lĩnh vực khác</option>
+              <option value="Giao thông">Trật tự đô thị - Giao thông</option>
+              <option value="An ninh trật tự - PCCC">An ninh trật tự - Phòng cháy chữa cháy</option>
+              <option value="Môi trường - Vệ sinh công cộng">Môi trường - Vệ sinh công cộng</option>
+              <option value="Hạ tầng - Cấp thoát nước">Hạ tầng đô thị - Điện, nước, chiếu sáng</option>
+              <option value="An sinh xã hội - Policy">An sinh xã hội - Chế độ chính sách</option>
+              <option value="Khác">Lĩnh vực khác</option>
             </select>
           </div>
 
@@ -175,29 +170,29 @@ export function SubmitForm() {
 
           <div className="form-group" id="grp-content">
             <label className="form-label">Nội dung chi tiết <span className="required">*</span></label>
-            <textarea name="content" value={formData.content} onChange={handleChange} rows="4" className="form-control" style={{minHeight: '120px', padding: '10px'}} placeholder="Mô tả cụ thể thời gian, địa điểm, sự việc phản ánh hoặc đề xuất kiến nghị..."></textarea>
+            <textarea name="content" value={formData.content} onChange={handleChange} rows="4" className="form-control" style={{ minHeight: '120px', padding: '10px' }} placeholder="Mô tả cụ thể thời gian, địa điểm, sự việc phản ánh hoặc đề xuất kiến nghị..."></textarea>
           </div>
 
           <div className="form-group">
             <label className="form-label">Đính kèm ảnh / Tệp tài liệu (nếu có)</label>
             <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
-                <div className="upload-icon">📁</div>
-                <div style={{fontSize: '0.9rem', fontWeight: 500}}>Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
-                <div style={{fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px'}}>Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 10MB)</div>
-                <input type="file" ref={fileInputRef} multiple style={{display: 'none'}} onChange={handleFileChange} accept="image/*" />
+              <div className="upload-icon">📁</div>
+              <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
+              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px' }}>Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 10MB)</div>
+              <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }} onChange={handleFileChange} accept="image/*" />
             </div>
             {files.length > 0 && (
-                <div className="file-list" style={{marginTop: '10px', fontSize: '14px', color: '#166534'}}>
-                    Đã chọn {files.length} tệp.
-                </div>
+              <div className="file-list" style={{ marginTop: '10px', fontSize: '14px', color: '#166534' }}>
+                Đã chọn {files.length} tệp.
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <div style={{marginTop: '20px', textAlign: 'center'}}>
+      <div style={{ marginTop: '20px', textAlign: 'center' }}>
         <button type="submit" className="btn-submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Đang gửi...' : '🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ'}
+          {isSubmitting ? 'Đang gửi...' : '🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ'}
         </button>
       </div>
     </form>

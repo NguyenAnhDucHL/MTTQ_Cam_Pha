@@ -47,6 +47,26 @@ const db = new sqlite3.Database(dbPath, (err) => {
         password TEXT
       )`);
 
+      // 1b. Create Wards table
+      db.run(`CREATE TABLE IF NOT EXISTS wards (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`);
+
+      // Seed wards if empty
+      db.get('SELECT COUNT(*) as count FROM wards', (err, row) => {
+        if (!err && row.count === 0) {
+          const stmt = db.prepare('INSERT INTO wards (name) VALUES (?)');
+          // Add 16 default wards
+          for (let i = 1; i <= 16; i++) {
+            stmt.run(`Khu phố ${i}`);
+          }
+          stmt.finalize();
+        }
+      });
+
+
       // 2. Performance Optimization: Add Index on createdAt for faster sorting
       db.run(`CREATE INDEX IF NOT EXISTS idx_petitions_createdAt ON petitions (createdAt DESC)`);
 
@@ -171,6 +191,73 @@ app.delete('/api/admin/petitions/:id', authenticateToken, (req, res) => {
       res.status(500).json({ error: 'Failed to delete petition.' });
     } else {
       res.status(200).json({ message: 'Petition deleted successfully.' });
+    }
+  });
+});
+
+// --- WARDS API ---
+// Get all wards (Public)
+app.get('/api/wards', (req, res) => {
+  db.all('SELECT id, name, createdAt FROM wards', [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve wards.' });
+    } else {
+      // Custom sort to handle "Khu phố 1" vs "Khu phố 10" properly
+      rows.sort((a, b) => {
+        const numA = parseInt(a.name.replace(/\D/g, '')) || 0;
+        const numB = parseInt(b.name.replace(/\D/g, '')) || 0;
+        return numA - numB || a.name.localeCompare(b.name);
+      });
+      res.status(200).json(rows);
+    }
+  });
+});
+
+// Add a new ward (Admin only)
+app.post('/api/admin/wards', authenticateToken, (req, res) => {
+  const { name } = req.body;
+  if (!name || name.trim() === '') {
+    return res.status(400).json({ error: 'Tên khu phố không được để trống' });
+  }
+  
+  db.run('INSERT INTO wards (name) VALUES (?)', [name.trim()], function(err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Khu phố đã tồn tại hoặc có lỗi xảy ra.' });
+    } else {
+      res.status(201).json({ id: this.lastID, name: name.trim() });
+    }
+  });
+});
+
+// Update a ward (Admin only)
+app.put('/api/admin/wards/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  if (!name || name.trim() === '') {
+    return res.status(400).json({ error: 'Tên khu phố không được để trống' });
+  }
+
+  db.run('UPDATE wards SET name = ? WHERE id = ?', [name.trim(), id], function(err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Có lỗi xảy ra khi cập nhật.' });
+    } else {
+      res.status(200).json({ message: 'Cập nhật thành công.' });
+    }
+  });
+});
+
+// Delete a ward (Admin only)
+app.delete('/api/admin/wards/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  db.run('DELETE FROM wards WHERE id = ?', [id], function(err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Có lỗi xảy ra khi xóa.' });
+    } else {
+      res.status(200).json({ message: 'Xóa khu phố thành công.' });
     }
   });
 });

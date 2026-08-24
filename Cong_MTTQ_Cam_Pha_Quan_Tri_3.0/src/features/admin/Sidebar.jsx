@@ -6,6 +6,7 @@ import {
   FileText,
   Users,
   Settings,
+  MapPin,
   LogOut
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
@@ -14,6 +15,7 @@ export function Sidebar({ activeTab, setActiveTab, onLogout }) {
   const navItems = [
     { id: 'overview', label: 'Tổng quan', icon: LayoutDashboard },
     { id: 'petitions', label: 'Phản ánh, kiến nghị', icon: MessageSquare },
+    { id: 'wards', label: 'Quản lý Khu phố', icon: MapPin },
     { id: 'docs', label: 'Văn bản & Thông báo', icon: FileText },
     { id: 'content', label: 'Nội dung Cổng', icon: Settings },
     { id: 'account', label: 'Tài khoản', icon: Users },

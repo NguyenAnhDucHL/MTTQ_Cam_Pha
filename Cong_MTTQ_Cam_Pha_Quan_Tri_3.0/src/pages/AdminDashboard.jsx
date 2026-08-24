@@ -58,10 +58,10 @@ function AdminDashboard() {
                 <div className="header-container">
                     <div className="brand-info">
                         <div className="logo-emblem">
-                            <img 
-                                src="/logo-mttq.png" 
-                                alt="Logo MTTQ" 
-                                className="mttq-logo" 
+                            <img
+                                src="/logo-mttq.png"
+                                alt="Logo MTTQ"
+                                className="mttq-logo"
                                 onError={(e) => { e.target.src = 'https://upload.wikimedia.org/wikipedia/vi/4/4b/Huy_hi%E1%BB%87u_M%E1%BA%B7t_tr%E1%BA%ADn_T%E1%BB%95_qu%E1%BB%91c_Vi%E1%BB%87t_Nam.png'; }}
                             />
                         </div>
@@ -107,15 +107,21 @@ function AdminDashboard() {
                 {activeTab === 'tong-quan' && (
                     <div className="tab-content active">
                         <h2 className="section-title">Tổng quan hệ thống</h2>
-                        <div className="form-grid">
+                        <div className="form-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-blue)' }}>
+                                <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--accent-blue)' }}>TỔNG SỐ PHẢN ÁNH</div>
+                                <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent-blue)' }}>
+                                    {petitions.length}
+                                </div>
+                            </div>
                             <div className="card" style={{ borderLeft: '4px solid var(--warning-orange)' }}>
-                                <div className="text-muted" style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px' }}>ĐANG CHỜ XỬ LÝ</div>
+                                <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--warning-orange)' }}>ĐANG CHỜ XỬ LÝ</div>
                                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--warning-orange)' }}>
                                     {petitions.filter(p => p.status === 'pending').length}
                                 </div>
                             </div>
                             <div className="card" style={{ borderLeft: '4px solid var(--success-green)' }}>
-                                <div className="text-muted" style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px' }}>ĐÃ GIẢI QUYẾT</div>
+                                <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--success-green)' }}>ĐÃ GIẢI QUYẾT</div>
                                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success-green)' }}>
                                     {petitions.filter(p => p.status === 'resolved').length}
                                 </div>

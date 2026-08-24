@@ -27,7 +27,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus 
     }
   };
 
-  const images = petition.images ? JSON.parse(petition.images) : [];
+  const images = petition.imagePaths ? petition.imagePaths.split(',').filter(Boolean) : [];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Chi tiết Hồ sơ Phản ánh">

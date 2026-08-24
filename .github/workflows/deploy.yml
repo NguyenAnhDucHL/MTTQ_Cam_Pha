@@ -84,8 +84,9 @@ jobs:
             echo ">>> Khởi động Docker containers bằng Image tải từ Github..."
             docker-compose down --remove-orphans || true
             sleep 3
-            docker-compose pull
-            docker-compose up -d
+            docker pull ghcr.io/nguyenanhduchl/mttq-backend:latest
+            docker pull ghcr.io/nguyenanhduchl/mttq-frontend:latest
+            docker-compose up -d --no-build
             
             echo "=== Trạng thái Container ==="
             docker-compose ps

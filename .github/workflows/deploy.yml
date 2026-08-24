@@ -94,3 +94,6 @@ jobs:
             
             echo "=== Trạng thái Container ==="
             docker-compose ps
+
+            echo ">>> Dọn dẹp các Docker image rác (dangling images)..."
+            docker image prune -f

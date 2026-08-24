@@ -11,6 +11,7 @@ function Home() {
     const [trackError, setTrackError] = useState('');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         if (activeTab === 'search') {
@@ -49,6 +50,9 @@ function Home() {
             <header className="header-top">
                 <div className="header-container">
                     <div className="brand-info">
+                        <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        </button>
                         <div className="logo-emblem">
                             <img src="/logo-mttq.png" alt="Logo Mặt trận Tổ quốc Việt Nam" className="mttq-logo" />
                         </div>
@@ -65,18 +69,28 @@ function Home() {
                 </div>
             </header>
 
-            <nav className="main-nav">
+            <div className={`mobile-overlay ${isMobileMenuOpen ? 'show' : ''}`} onClick={() => setIsMobileMenuOpen(false)}></div>
+            <nav className={`main-nav ${isMobileMenuOpen ? 'open' : ''}`}>
+                <div className="mobile-nav-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src="/logo-mttq.png" alt="Logo" style={{ width: '40px', height: '40px' }} />
+                        <span style={{ fontWeight: 700, color: 'var(--primary-red)' }}>MTTQ Cẩm Phả</span>
+                    </div>
+                    <button className="mobile-menu-close" onClick={() => setIsMobileMenuOpen(false)}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
                 <div className="nav-container">
-                    <div className={`nav-item ${activeTab === 'submit' ? 'active' : ''}`} onClick={() => setActiveTab('submit')}>
+                    <div className={`nav-item ${activeTab === 'submit' ? 'active' : ''}`} onClick={() => { setActiveTab('submit'); setIsMobileMenuOpen(false); }}>
                         📝 Gửi phản ánh, kiến nghị
                     </div>
-                    <div className={`nav-item ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>
+                    <div className={`nav-item ${activeTab === 'search' ? 'active' : ''}`} onClick={() => { setActiveTab('search'); setIsMobileMenuOpen(false); }}>
                         🔍 Tra cứu & Danh sách phản ánh
                     </div>
-                    <div className={`nav-item ${activeTab === 'docs' ? 'active' : ''}`} onClick={() => setActiveTab('docs')}>
+                    <div className={`nav-item ${activeTab === 'docs' ? 'active' : ''}`} onClick={() => { setActiveTab('docs'); setIsMobileMenuOpen(false); }}>
                         📄 Văn bản, Thông báo
                     </div>
-                    <a href="https://www.quangninh.gov.vn/donvi/campha/Trang/ChiTietBVGioiThieu.aspx?bvid=19" target="_blank" rel="noreferrer" className="nav-item nav-item-link" title="Mở trang Tổ chức, bộ máy UBMTTQ phường">
+                    <a href="https://www.quangninh.gov.vn/donvi/campha/Trang/ChiTietBVGioiThieu.aspx?bvid=19" target="_blank" rel="noreferrer" className="nav-item nav-item-link" title="Mở trang Tổ chức, bộ máy UBMTTQ phường" onClick={() => setIsMobileMenuOpen(false)}>
                         🏛️ Tổ chức, bộ máy UBMTTQ phường
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '2px', opacity: 0.7 }}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     </a>

@@ -72,14 +72,30 @@ export function SubmitForm() {
   const handleFileChange = (e) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
-      if (selectedFiles.length > 20) {
-        toast.error('Chỉ được phép tải lên tối đa 20 tệp/ảnh.');
-        e.target.value = ''; // Reset input
-        setFiles([]);
-        return;
-      }
-      setFiles(selectedFiles);
+      const validFiles = selectedFiles.filter(file => {
+        if (file.size > 25 * 1024 * 1024) {
+          toast.error(`Tệp ${file.name} quá lớn (vượt quá 25MB).`);
+          return false;
+        }
+        return true;
+      });
+
+      setFiles(prev => {
+        const newFiles = [...prev, ...validFiles];
+        if (newFiles.length > 20) {
+          toast.error('Chỉ được phép tải lên tối đa 20 tệp/ảnh.');
+          return newFiles.slice(0, 20);
+        }
+        return newFiles;
+      });
+
+      // Reset input value to allow selecting the same file again
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
+  };
+
+  const removeFile = (index) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -260,13 +276,35 @@ export function SubmitForm() {
             <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
               <div className="upload-icon">📁</div>
               <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
-              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px' }}>Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 10MB)</div>
+              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px' }}>Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 25MB)</div>
               <div style={{ fontSize: '0.85rem', color: '#ef4444', marginTop: '4px', fontWeight: 500 }}>* Lưu ý: Hệ thống chỉ cho phép tải lên tối đa 20 ảnh/tệp đính kèm.</div>
-              <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }} onChange={handleFileChange} accept="image/*" />
+              <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }} onChange={handleFileChange} accept="image/*,application/pdf" />
             </div>
             {files.length > 0 && (
-              <div className="file-list" style={{ marginTop: '10px', fontSize: '14px', color: '#166534' }}>
-                Đã chọn {files.length} tệp.
+              <div style={{ marginTop: '15px' }}>
+                <div style={{ fontSize: '14px', color: '#166534', marginBottom: '10px', fontWeight: '500' }}>
+                  Đã chọn {files.length} tệp (Nhấp dấu x để xóa):
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '10px' }}>
+                  {files.map((file, index) => (
+                    <div key={index} style={{ position: 'relative', width: '80px', height: '80px', border: '1px solid #e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
+                      <button 
+                        type="button"
+                        onClick={() => removeFile(index)} 
+                        style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}
+                      >
+                        &times;
+                      </button>
+                      {file.type.startsWith('image/') ? (
+                        <img src={URL.createObjectURL(file)} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontSize: '24px', title: file.name }}>
+                          📄
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

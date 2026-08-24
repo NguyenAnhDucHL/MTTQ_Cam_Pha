@@ -39,7 +39,7 @@ function AdminLogin() {
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-slate-100">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
-                
+
                 {/* Header */}
                 <div className="flex flex-col items-center py-8 px-6 bg-red-600">
                     <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-4 shadow-md border-4 border-yellow-400">
@@ -71,7 +71,7 @@ function AdminLogin() {
                                     onChange={e => setUsername(e.target.value)}
                                     required
                                     placeholder="Nhập tên đăng nhập"
-                                    style={{ paddingLeft: '2.5rem' }} 
+                                    style={{ paddingLeft: '2.5rem' }}
                                 />
                             </div>
                         </div>

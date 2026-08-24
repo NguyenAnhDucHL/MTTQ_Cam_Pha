@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PetitionList } from '../features/petitions/PetitionList';
 import { AdminWards } from '../features/admin/AdminWards';
+import { AdminAccounts } from '../features/admin/AdminAccounts';
 import { fetchApi } from '../lib/api';
 import { toast } from 'sonner';
 
@@ -155,7 +156,13 @@ function AdminDashboard() {
                     </div>
                 )}
 
-                {(activeTab === 'van-ban' || activeTab === 'noi-dung' || activeTab === 'tai-khoan') && (
+                {activeTab === 'tai-khoan' && (
+                    <div className="tab-content active">
+                        <AdminAccounts />
+                    </div>
+                )}
+
+                {(activeTab === 'van-ban' || activeTab === 'noi-dung') && (
                     <div className="tab-content active">
                         <div className="card" style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
                             <p style={{ fontSize: '1.2rem' }}>Tính năng đang được phát triển...</p>

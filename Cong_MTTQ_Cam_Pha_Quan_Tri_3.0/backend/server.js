@@ -262,6 +262,26 @@ app.delete('/api/admin/wards/:id', authenticateToken, (req, res) => {
   });
 });
 
+// Get all accounts (Admin only)
+app.get('/api/admin/accounts', authenticateToken, (req, res) => {
+  db.all('SELECT id, username FROM admins', [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve accounts.' });
+    } else {
+      const accounts = rows.map(r => ({
+        id: r.id,
+        name: r.username,
+        email: `${r.username}@campha.gov.vn`, // Simulated email
+        role: 'admin',
+        status: 'active',
+        lastLogin: '---'
+      }));
+      res.status(200).json(accounts);
+    }
+  });
+});
+
 // 4. Login (Issues JWT)
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;

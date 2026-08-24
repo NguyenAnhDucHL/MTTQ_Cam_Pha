@@ -87,6 +87,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )`);
 
+      db.run(`CREATE INDEX IF NOT EXISTS idx_petitions_status ON petitions(status);`);
+      db.run(`CREATE INDEX IF NOT EXISTS idx_petitions_ward ON petitions(ward);`);
+      db.run(`CREATE INDEX IF NOT EXISTS idx_petitions_createdAt ON petitions(createdAt);`);
+
       db.run(`CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE,
@@ -212,25 +216,61 @@ app.post('/api/petitions', petitionLimiter, (req, res) => {
 
 // 2. Get all petitions (Public) - Hides sensitive data
 app.get('/api/petitions', (req, res) => {
-  db.all('SELECT id, fullName, title, category, content, imagePaths, status, createdAt FROM petitions ORDER BY createdAt DESC', [], (err, rows) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to retrieve petitions.' });
-    } else {
-      res.status(200).json(rows);
-    }
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  db.get('SELECT COUNT(*) as total FROM petitions', [], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to retrieve count.' });
+    
+    db.all('SELECT id, fullName, title, category, content, imagePaths, status, createdAt FROM petitions ORDER BY createdAt DESC LIMIT ? OFFSET ?', [limit, offset], (err2, rows) => {
+      if (err2) return res.status(500).json({ error: 'Failed to retrieve petitions.' });
+      res.status(200).json({
+        data: rows,
+        total: row.total,
+        page,
+        limit
+      });
+    });
   });
 });
 
 // 3. Get all petitions (Protected - Admin only) - Shows all data
 app.get('/api/admin/petitions', authenticateToken, (req, res) => {
-  db.all('SELECT id, fullName, phone, cccd, ward, address, title, category, content, imagePaths, status, createdAt, trackingCode, adminNotes FROM petitions ORDER BY createdAt DESC', [], (err, rows) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to retrieve petitions.' });
-    } else {
-      res.status(200).json(rows);
-    }
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const offset = (page - 1) * limit;
+  const statusFilter = req.query.status;
+  const search = req.query.search;
+
+  let whereClause = '1=1';
+  let params = [];
+
+  if (statusFilter && statusFilter !== 'all') {
+    whereClause += ' AND status = ?';
+    params.push(statusFilter);
+  }
+
+  if (search) {
+    whereClause += ' AND (title LIKE ? OR phone LIKE ? OR trackingCode LIKE ?)';
+    params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+  }
+
+  db.get(`SELECT COUNT(*) as total FROM petitions WHERE ${whereClause}`, params, (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to retrieve count.' });
+    
+    const sql = `SELECT id, fullName, phone, cccd, ward, address, title, category, content, imagePaths, status, createdAt, trackingCode, adminNotes 
+                 FROM petitions WHERE ${whereClause} ORDER BY createdAt DESC LIMIT ? OFFSET ?`;
+                 
+    db.all(sql, [...params, limit, offset], (err2, rows) => {
+      if (err2) return res.status(500).json({ error: 'Failed to retrieve petitions.' });
+      res.status(200).json({
+        data: rows,
+        total: row.total,
+        page,
+        limit
+      });
+    });
   });
 });
 

@@ -151,12 +151,7 @@ function AdminDashboard() {
                                 Đang tải dữ liệu...
                             </div>
                         ) : (
-                            <PetitionList
-                                petitions={petitions}
-                                onUpdateStatus={handleUpdateStatus}
-                                onDelete={handleDelete}
-                                onRefresh={loadPetitions}
-                            />
+                            <PetitionList />
                         )}
                     </div>
                 )}

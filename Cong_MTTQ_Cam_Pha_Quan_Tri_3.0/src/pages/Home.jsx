@@ -9,17 +9,21 @@ function Home() {
     const [trackingCode, setTrackingCode] = useState('');
     const [trackResult, setTrackResult] = useState(null);
     const [trackError, setTrackError] = useState('');
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         if (activeTab === 'search') {
-            loadPetitions();
+            loadPetitions(page);
         }
-    }, [activeTab]);
+    }, [activeTab, page]);
 
-    const loadPetitions = async () => {
+    const loadPetitions = async (currentPage) => {
         try {
-            const data = await fetchApi('/api/petitions');
-            setPetitions(data);
+            const res = await fetchApi(`/api/petitions?page=${currentPage}&limit=9`);
+            // Response is now { data, total, page, limit }
+            setPetitions(res.data || []);
+            setTotalPages(Math.ceil((res.total || 0) / 9));
         } catch (e) {
             console.error('Failed to load petitions:', e);
         }
@@ -142,8 +146,8 @@ function Home() {
                                 {petitions.map(p => (
                                     <div key={p.id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                            <Badge variant={p.status === 'pending' ? 'warning' : 'success'}>
-                                                {p.status === 'pending' ? '⏳ Chờ xử lý' : '✅ Đã giải quyết'}
+                                            <Badge variant={p.status === 'pending' ? 'warning' : p.status === 'processing' ? 'primary' : p.status === 'rejected' ? 'danger' : 'success'}>
+                                                {p.status === 'pending' ? '⏳ Chờ xử lý' : p.status === 'processing' ? '🔄 Đang xử lý' : p.status === 'rejected' ? '❌ Bị từ chối' : '✅ Đã giải quyết'}
                                             </Badge>
                                             <span style={{ fontSize: '12px', color: '#94a3b8' }}>{new Date(p.createdAt).toLocaleDateString('vi-VN')}</span>
                                         </div>
@@ -152,9 +156,32 @@ function Home() {
                                             <p><strong>Lĩnh vực:</strong> {p.category}</p>
                                             <p><strong>Người gửi:</strong> {p.fullName}</p>
                                         </div>
-                                        <p style={{ fontSize: '14px', color: '#475569', marginTop: '8px' }}>{p.content}</p>
+                                        <p style={{ fontSize: '14px', color: '#475569', marginTop: '8px' }}>{p.content.substring(0, 100)}{p.content.length > 100 ? '...' : ''}</p>
                                     </div>
                                 ))}
+                            </div>
+                        )}
+
+                        {/* Pagination UI */}
+                        {totalPages > 1 && (
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '30px' }}>
+                                <button
+                                    disabled={page === 1}
+                                    onClick={() => setPage(page - 1)}
+                                    style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: page === 1 ? '#f8fafc' : '#fff', cursor: page === 1 ? 'not-allowed' : 'pointer' }}
+                                >
+                                    Trang trước
+                                </button>
+                                <div style={{ padding: '8px 16px', background: '#f1f5f9', borderRadius: '6px', fontWeight: 600 }}>
+                                    Trang {page} / {totalPages}
+                                </div>
+                                <button
+                                    disabled={page === totalPages}
+                                    onClick={() => setPage(page + 1)}
+                                    style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: page === totalPages ? '#f8fafc' : '#fff', cursor: page === totalPages ? 'not-allowed' : 'pointer' }}
+                                >
+                                    Trang sau
+                                </button>
                             </div>
                         )}
                     </section>

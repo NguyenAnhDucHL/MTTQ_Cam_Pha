@@ -17,24 +17,54 @@ const STATUS_CFG = {
   rejected: { label: 'Từ chối', variant: 'default' },
 };
 
-export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh }) {
+export function PetitionList() {
+  const [petitions, setPetitions] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
-  const filtered = petitions.filter(p => {
-    const q = search.toLowerCase();
-    return (p.title?.toLowerCase().includes(q) ||
-      p.fullName?.toLowerCase().includes(q) ||
-      p.phone?.toLowerCase().includes(q));
-  });
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const q = new URLSearchParams({ page, limit: ITEMS_PER_PAGE, status: statusFilter, search }).toString();
+      const res = await fetchApi(`/api/admin/petitions?${q}`);
+      setPetitions(res.data || []);
+      setTotal(res.total || 0);
+    } catch (err) {
+      if (err.message !== 'Unauthorized') toast.error("Không thể tải danh sách phản ánh.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+  React.useEffect(() => {
+    loadData();
+  }, [page, statusFilter]);
+
+  // Using a timeout for search debounce
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1);
+      loadData();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
   const start = (page - 1) * ITEMS_PER_PAGE;
-  const rows = filtered.slice(start, start + ITEMS_PER_PAGE);
+  const rows = petitions;
 
-  const handleSearch = e => { setSearch(e.target.value); setPage(1); };
+  const handleSearch = e => setSearch(e.target.value);
+  const handleStatusFilter = e => { setStatusFilter(e.target.value); setPage(1); };
+  const onRefresh = () => loadData();
+
+  const onUpdateStatus = (id, status) => {
+    setPetitions(petitions.map(p => p.id === id ? { ...p, status } : p));
+  };
 
   const handleDeleteRequest = (id, e) => {
     if (e) e.stopPropagation();
@@ -47,8 +77,8 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
       await fetchApi(`/api/admin/petitions/${deleteConfirmId}`, { method: 'DELETE' });
       toast.success('Đã xóa thành công');
       if (rows.length === 1 && page > 1) setPage(p => p - 1);
+      else loadData();
       if (selected?.id === deleteConfirmId) setSelected(null);
-      onDelete?.(deleteConfirmId);
     } catch (err) {
       toast.error(err.message || 'Không thể xóa');
     } finally {
@@ -62,9 +92,20 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
       <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-b border-slate-200">
         <span className="font-semibold text-slate-700">
           Danh sách Phản ánh, kiến nghị
-          {filtered.length > 0 && <span className="ml-2 text-xs text-slate-400 font-normal">({filtered.length} kết quả)</span>}
+          <span className="ml-2 text-xs text-slate-400 font-normal">({total} kết quả)</span>
         </span>
         <div className="flex items-center gap-2">
+          <select 
+            value={statusFilter} 
+            onChange={handleStatusFilter}
+            style={{ padding: '8px 12px', height: '40px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', color: '#475569', outline: 'none' }}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="pending">Chờ xử lý</option>
+            <option value="processing">Đang xử lý</option>
+            <option value="resolved">Đã giải quyết</option>
+            <option value="rejected">Bị từ chối</option>
+          </select>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
@@ -133,12 +174,12 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
       </div>
 
       {/* Pagination */}
-      {filtered.length > 0 && (
+      {total > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-t border-slate-200 bg-slate-50 text-sm text-slate-500">
           <span>
             Hiển thị <strong className="text-slate-700">{start + 1}</strong>–
-            <strong className="text-slate-700">{Math.min(start + ITEMS_PER_PAGE, filtered.length)}</strong>
-            {' '}trong <strong className="text-slate-700">{filtered.length}</strong> phản ánh
+            <strong className="text-slate-700">{Math.min(start + ITEMS_PER_PAGE, total)}</strong>
+            {' '}trong <strong className="text-slate-700">{total}</strong> phản ánh
           </span>
           {totalPages > 1 && (
             <div className="flex items-center gap-1">

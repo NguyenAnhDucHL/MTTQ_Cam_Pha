@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const port = 3001;
@@ -16,6 +17,46 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Anti-Spam: Rate Limiters
+const petitionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each IP to 5 requests per `window` (here, per hour)
+  message: { error: 'Bạn đã gửi quá nhiều phản ánh. Vui lòng thử lại sau 1 giờ.' },
+  standardHeaders: true, 
+  legacyHeaders: false, 
+});
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 login requests per window
+  message: { error: 'Đăng nhập thất bại quá nhiều lần. Vui lòng thử lại sau 15 phút.' },
+  standardHeaders: true, 
+  legacyHeaders: false, 
+});
+
+// Middleware chống trùng lặp nội dung đơn (trong 10 phút)
+const recentPetitions = new Map();
+const checkDuplicatePetition = (req, res, next) => {
+  const { phone, title } = req.body;
+  if (!phone || !title) return next();
+  const key = `${phone}-${title}`;
+  const now = Date.now();
+  if (recentPetitions.has(key)) {
+    const lastSent = recentPetitions.get(key);
+    if (now - lastSent < 10 * 60 * 1000) { // 10 minutes
+      return res.status(429).json({ error: 'Bạn đã gửi một phản ánh giống hệt trong 10 phút qua. Xin vui lòng không gửi lại.' });
+    }
+  }
+  recentPetitions.set(key, now);
+  // Optional: clear memory map entries older than 10 mins to prevent memory leak
+  for (let [k, v] of recentPetitions.entries()) {
+    if (now - v > 10 * 60 * 1000) {
+      recentPetitions.delete(k);
+    }
+  }
+  next();
+};
 
 // Database setup
 const dbPath = path.join(__dirname, 'database.sqlite');
@@ -119,7 +160,7 @@ const upload = multer({ storage: storage });
 // API Endpoints
 
 // 1. Submit a petition (Public)
-app.post('/api/petitions', (req, res) => {
+app.post('/api/petitions', petitionLimiter, (req, res) => {
   const uploadMiddleware = upload.array('images', 20); // Tăng giới hạn lên 20 ảnh
 
   uploadMiddleware(req, res, function (err) {
@@ -132,7 +173,9 @@ app.post('/api/petitions', (req, res) => {
       return res.status(500).json({ error: 'Đã xảy ra lỗi không xác định khi tải ảnh.' });
     }
 
-    let { fullName, phone, cccd, ward, address, title, category, content } = req.body;
+    // Sau khi upload ảnh xong mới check duplicate (vì cần đọc req.body)
+    checkDuplicatePetition(req, res, () => {
+      let { fullName, phone, cccd, ward, address, title, category, content } = req.body;
 
   // Basic input sanitization (trim spaces)
   fullName = fullName ? fullName.trim() : '';
@@ -153,6 +196,7 @@ app.post('/api/petitions', (req, res) => {
       res.status(201).json({ message: 'Petition saved successfully.', id: this.lastID });
     }
   });
+    }); // Đóng callback của checkDuplicatePetition
   }); // Đóng callback của uploadMiddleware
 });
 
@@ -369,7 +413,7 @@ app.delete('/api/admin/accounts/:id', authenticateToken, (req, res) => {
 });
 
 // 4. Login (Issues JWT)
-app.post('/api/login', (req, res) => {
+app.post('/api/login', loginLimiter, (req, res) => {
   const { username, password } = req.body;
 
   db.get('SELECT id, username, password FROM admins WHERE username = ?', [username], async (err, row) => {

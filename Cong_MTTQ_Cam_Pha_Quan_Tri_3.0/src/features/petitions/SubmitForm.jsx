@@ -7,6 +7,7 @@ import { fetchApi } from '../../lib/api';
 
 export function SubmitForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
   const [files, setFiles] = useState([]);
   const [wardsList, setWardsList] = useState([]);
   const fileInputRef = useRef(null);
@@ -27,7 +28,40 @@ export function SubmitForm() {
     fetchApi('/api/wards')
       .then(data => setWardsList(data))
       .catch(err => console.error('Failed to load wards:', err));
+
+    // Load draft
+    const draft = localStorage.getItem('petitionDraft');
+    if (draft) {
+      try {
+        setFormData(JSON.parse(draft));
+      } catch (e) {}
+    }
+
+    // Load cooldown
+    const lastSent = localStorage.getItem('lastPetitionSent');
+    if (lastSent) {
+      const timePassed = Date.now() - parseInt(lastSent, 10);
+      const cooldownMs = 3 * 60 * 1000; // 3 minutes
+      if (timePassed < cooldownMs) {
+        setCooldownTime(Math.ceil((cooldownMs - timePassed) / 1000));
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    if (cooldownTime > 0) {
+      const timer = setTimeout(() => setCooldownTime(c => c - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownTime]);
+
+  useEffect(() => {
+    // Save draft automatically
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem('petitionDraft', JSON.stringify(formData));
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [formData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -108,6 +142,10 @@ export function SubmitForm() {
       });
       setFiles([]);
       if (fileInputRef.current) fileInputRef.current.value = '';
+      
+      localStorage.removeItem('petitionDraft');
+      localStorage.setItem('lastPetitionSent', Date.now().toString());
+      setCooldownTime(3 * 60);
 
     } catch (error) {
       toast.error(error.message || 'Có lỗi xảy ra khi gửi phản ánh.');
@@ -201,8 +239,10 @@ export function SubmitForm() {
       </div>
 
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <button type="submit" className="btn-submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Đang gửi...' : '🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ'}
+        <button type="submit" className="btn-submit" disabled={isSubmitting || cooldownTime > 0}>
+          {cooldownTime > 0 
+            ? `Vui lòng đợi ${Math.floor(cooldownTime / 60)}:${(cooldownTime % 60).toString().padStart(2, '0')} để gửi tiếp` 
+            : isSubmitting ? 'Đang gửi...' : '🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ'}
         </button>
       </div>
     </form>

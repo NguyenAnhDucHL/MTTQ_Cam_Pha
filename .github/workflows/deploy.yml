@@ -26,7 +26,8 @@ jobs:
             
             echo ">>> Dọn dẹp bản deploy cũ (nếu có) để giải phóng cổng 8082..."
             if [ -d "/root/mttq_deploy" ]; then
-              cd /root/mttq_deploy && docker-compose down || true
+              cd /root/mttq_deploy && docker-compose down --remove-orphans || true
+              sleep 2
             fi
             
             echo ">>> Kiểm tra mã nguồn trên VPS..."
@@ -53,8 +54,9 @@ jobs:
             fi
             
             echo ">>> Build và khởi động lại Docker containers..."
+            docker-compose down --remove-orphans || true
+            sleep 3
             docker-compose build
-            docker-compose down || true
             docker-compose up -d
             
             echo "=== Trạng thái Container ==="

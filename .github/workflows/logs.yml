@@ -13,6 +13,6 @@ jobs:
           script: |
             cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0
             echo "=== Checking Docker Nginx error logs ==="
-            docker-compose logs --tail=50 frontend || true
+            docker-compose logs --tail=200 frontend || true
             echo "=== Checking backend logs again ==="
-            docker-compose logs --tail=50 backend || true
+            docker-compose logs --tail=200 backend || true

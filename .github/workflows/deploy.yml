@@ -24,17 +24,33 @@ jobs:
           script: |
             set -e
             
-            echo ">>> Dọn dẹp bản deploy cũ (nếu có) để tránh kẹt port 8082..."
+            echo ">>> Dọn dẹp bản deploy cũ (nếu có) để giải phóng cổng 8082..."
             if [ -d "/root/mttq_deploy" ]; then
               cd /root/mttq_deploy && docker-compose down || true
             fi
             
-            # Thay đổi tên thư mục này nếu trên VPS của bạn dùng tên khác
+            echo ">>> Kiểm tra mã nguồn trên VPS..."
+            if [ ! -d "/root/MTTQ_Cam_Pha" ]; then
+              echo ">>> Chưa có source code! Đang tự động clone từ Github..."
+              cd /root
+              git clone https://github.com/NguyenAnhDucHL/MTTQ_Cam_Pha.git
+            fi
+            
             cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0 || exit 1
             
             echo ">>> Kéo code mới nhất từ Github..."
             git fetch origin main
             git reset --hard origin/main
+            
+            echo ">>> Đảm bảo không bị mất dữ liệu cũ (database & ảnh)..."
+            if [ -f "/root/mttq_deploy/backend/database.sqlite" ] && [ ! -f "/root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/backend/database.sqlite" ]; then
+              echo "Copy database cũ sang..."
+              cp /root/mttq_deploy/backend/database.sqlite /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/backend/ || true
+            fi
+            if [ -d "/root/mttq_deploy/backend/uploads" ] && [ ! -d "/root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/backend/uploads" ]; then
+              echo "Copy ảnh tải lên cũ sang..."
+              cp -r /root/mttq_deploy/backend/uploads /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0/backend/ || true
+            fi
             
             echo ">>> Build và khởi động lại Docker containers..."
             docker-compose build

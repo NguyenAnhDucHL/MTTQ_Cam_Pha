@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1e3a8a;
+  --color-primary-foreground: #ffffff;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  body {
+    background-color: theme('colors.slate.50');
+    color: theme('colors.slate.900');
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}

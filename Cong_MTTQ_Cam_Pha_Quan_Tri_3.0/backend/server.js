@@ -58,8 +58,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
       db.get('SELECT COUNT(*) as count FROM wards', (err, row) => {
         if (!err && row.count === 0) {
           const stmt = db.prepare('INSERT INTO wards (name) VALUES (?)');
-          // Add 16 default wards
-          for (let i = 1; i <= 16; i++) {
+          // Add 20 default wards
+          for (let i = 1; i <= 20; i++) {
             stmt.run(`Khu phố ${i}`);
           }
           stmt.finalize();
@@ -220,8 +220,8 @@ app.post('/api/admin/wards', authenticateToken, (req, res) => {
   if (!name || name.trim() === '') {
     return res.status(400).json({ error: 'Tên khu phố không được để trống' });
   }
-  
-  db.run('INSERT INTO wards (name) VALUES (?)', [name.trim()], function(err) {
+
+  db.run('INSERT INTO wards (name) VALUES (?)', [name.trim()], function (err) {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Khu phố đã tồn tại hoặc có lỗi xảy ra.' });
@@ -239,7 +239,7 @@ app.put('/api/admin/wards/:id', authenticateToken, (req, res) => {
     return res.status(400).json({ error: 'Tên khu phố không được để trống' });
   }
 
-  db.run('UPDATE wards SET name = ? WHERE id = ?', [name.trim(), id], function(err) {
+  db.run('UPDATE wards SET name = ? WHERE id = ?', [name.trim(), id], function (err) {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Có lỗi xảy ra khi cập nhật.' });
@@ -252,7 +252,7 @@ app.put('/api/admin/wards/:id', authenticateToken, (req, res) => {
 // Delete a ward (Admin only)
 app.delete('/api/admin/wards/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
-  db.run('DELETE FROM wards WHERE id = ?', [id], function(err) {
+  db.run('DELETE FROM wards WHERE id = ?', [id], function (err) {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Có lỗi xảy ra khi xóa.' });

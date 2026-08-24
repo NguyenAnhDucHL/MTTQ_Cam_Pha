@@ -51,6 +51,7 @@ function AdminLogin() {
                             onChange={(e) => setUsername(e.target.value)}
                             required
                             placeholder="Nhập tên đăng nhập"
+                            autoComplete="off"
                         />
                     </div>
 
@@ -62,6 +63,7 @@ function AdminLogin() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             placeholder="Nhập mật khẩu"
+                            autoComplete="new-password"
                         />
                     </div>
 

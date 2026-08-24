@@ -1,0 +1,38 @@
+name: Deploy to VNPT VPS
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Execute remote ssh commands to deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VNPT_HOST }}
+          username: ${{ secrets.VNPT_USER }}
+          password: ${{ secrets.VNPT_PASS }}
+          port: 22
+          script: |
+            set -e
+            # Thay đổi tên thư mục này nếu trên VPS của bạn dùng tên khác
+            cd /root/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0 || exit 1
+            
+            echo ">>> Kéo code mới nhất từ Github..."
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo ">>> Build và khởi động lại Docker containers..."
+            docker-compose build
+            docker-compose up -d
+            
+            echo "=== Trạng thái Container ==="
+            docker-compose ps

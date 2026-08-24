@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sidebar } from '../features/admin/Sidebar';
 import { PetitionList } from '../features/petitions/PetitionList';
 import { AdminWards } from '../features/admin/AdminWards';
 import { fetchApi } from '../lib/api';
@@ -9,7 +8,7 @@ import { toast } from 'sonner';
 function AdminDashboard() {
     const [petitions, setPetitions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('petitions');
+    const [activeTab, setActiveTab] = useState('tong-quan');
     const navigate = useNavigate();
 
     const loadPetitions = async () => {
@@ -33,7 +32,7 @@ function AdminDashboard() {
             return;
         }
 
-        if (activeTab === 'petitions') {
+        if (activeTab === 'tong-quan' || activeTab === 'phan-anh') {
             loadPetitions();
         }
     }, [activeTab, navigate]);
@@ -53,43 +52,83 @@ function AdminDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex font-sans">
-            <Sidebar
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                onLogout={handleLogout}
-            />
+        <div>
+            {/* Top Header */}
+            <header className="header-top">
+                <div className="header-container">
+                    <div className="brand-info">
+                        <div className="logo-emblem">
+                            <img 
+                                src="/logo-mttq.png" 
+                                alt="Logo MTTQ" 
+                                className="mttq-logo" 
+                                onError={(e) => { e.target.src = 'https://upload.wikimedia.org/wikipedia/vi/4/4b/Huy_hi%E1%BB%87u_M%E1%BA%B7t_tr%E1%BA%ADn_T%E1%BB%95_qu%E1%BB%91c_Vi%E1%BB%87t_Nam.png'; }}
+                            />
+                        </div>
+                        <div className="brand-text">
+                            <h1>Quản trị Hệ thống</h1>
+                            <p>Cổng thông tin MTTQ Phường Cẩm Phả</p>
+                        </div>
+                    </div>
+                    <div className="header-actions">
+                        <button onClick={handleLogout} className="btn-login" style={{ cursor: 'pointer', border: 'none' }}>
+                            Đăng xuất
+                        </button>
+                    </div>
+                </div>
+            </header>
 
-            <main className="flex-1 ml-64 p-8">
-                {activeTab === 'overview' && (
-                    <div className="animate-in fade-in duration-300">
-                        <h1 className="text-2xl font-bold text-slate-800 mb-6">Tổng quan hệ thống</h1>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-white p-6 rounded-xl border shadow-sm">
-                                <p className="text-sm font-medium text-slate-500 uppercase">Tổng số phản ánh</p>
-                                <p className="text-3xl font-bold text-slate-800 mt-2">{petitions.length}</p>
-                            </div>
-                            <div className="bg-white p-6 rounded-xl border shadow-sm border-amber-200">
-                                <p className="text-sm font-medium text-amber-600 uppercase">Đang chờ xử lý</p>
-                                <p className="text-3xl font-bold text-amber-700 mt-2">
+            {/* Navigation Bar */}
+            <nav className="main-nav">
+                <div className="nav-container">
+                    <div className={`nav-item ${activeTab === 'tong-quan' ? 'active' : ''}`} onClick={() => setActiveTab('tong-quan')}>
+                        Tổng quan
+                    </div>
+                    <div className={`nav-item ${activeTab === 'phan-anh' ? 'active' : ''}`} onClick={() => setActiveTab('phan-anh')}>
+                        Phản ánh, kiến nghị
+                    </div>
+                    <div className={`nav-item ${activeTab === 'khu-pho' ? 'active' : ''}`} onClick={() => setActiveTab('khu-pho')}>
+                        Quản lý Khu phố
+                    </div>
+                    <div className={`nav-item ${activeTab === 'van-ban' ? 'active' : ''}`} onClick={() => setActiveTab('van-ban')}>
+                        Văn bản & Thông báo
+                    </div>
+                    <div className={`nav-item ${activeTab === 'noi-dung' ? 'active' : ''}`} onClick={() => setActiveTab('noi-dung')}>
+                        Nội dung Cổng
+                    </div>
+                    <div className={`nav-item ${activeTab === 'tai-khoan' ? 'active' : ''}`} onClick={() => setActiveTab('tai-khoan')}>
+                        Tài khoản
+                    </div>
+                </div>
+            </nav>
+
+            {/* Main Content */}
+            <main className="main-wrapper">
+                {activeTab === 'tong-quan' && (
+                    <div className="tab-content active">
+                        <h2 className="section-title">Tổng quan hệ thống</h2>
+                        <div className="form-grid">
+                            <div className="card" style={{ borderLeft: '4px solid var(--warning-orange)' }}>
+                                <div className="text-muted" style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px' }}>ĐANG CHỜ XỬ LÝ</div>
+                                <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--warning-orange)' }}>
                                     {petitions.filter(p => p.status === 'pending').length}
-                                </p>
+                                </div>
                             </div>
-                            <div className="bg-white p-6 rounded-xl border shadow-sm border-emerald-200">
-                                <p className="text-sm font-medium text-emerald-600 uppercase">Đã giải quyết</p>
-                                <p className="text-3xl font-bold text-emerald-700 mt-2">
+                            <div className="card" style={{ borderLeft: '4px solid var(--success-green)' }}>
+                                <div className="text-muted" style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px' }}>ĐÃ GIẢI QUYẾT</div>
+                                <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success-green)' }}>
                                     {petitions.filter(p => p.status === 'resolved').length}
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {activeTab === 'petitions' && (
-                    <div className="animate-in fade-in duration-300">
-                        <h1 className="text-2xl font-bold text-slate-800 mb-6">Quản lý Phản ánh, kiến nghị</h1>
+                {activeTab === 'phan-anh' && (
+                    <div className="tab-content active">
+                        <h2 className="section-title">Quản lý Phản ánh, kiến nghị</h2>
                         {loading ? (
-                            <div className="flex items-center justify-center h-64 text-slate-500">
+                            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
                                 Đang tải dữ liệu...
                             </div>
                         ) : (
@@ -103,16 +142,18 @@ function AdminDashboard() {
                     </div>
                 )}
 
-                {activeTab === 'wards' && (
-                    <div className="animate-in fade-in duration-300">
-                        <h1 className="text-2xl font-bold text-slate-800 mb-6">Quản lý Khu phố</h1>
+                {activeTab === 'khu-pho' && (
+                    <div className="tab-content active">
+                        <h2 className="section-title">Quản lý Khu phố</h2>
                         <AdminWards />
                     </div>
                 )}
 
-                {(activeTab === 'docs' || activeTab === 'content' || activeTab === 'account') && (
-                    <div className="animate-in fade-in duration-300 flex items-center justify-center h-64 bg-white rounded-xl border shadow-sm border-dashed">
-                        <p className="text-slate-500 text-lg">Tính năng đang được phát triển...</p>
+                {(activeTab === 'van-ban' || activeTab === 'noi-dung' || activeTab === 'tai-khoan') && (
+                    <div className="tab-content active">
+                        <div className="card" style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
+                            <p style={{ fontSize: '1.2rem' }}>Tính năng đang được phát triển...</p>
+                        </div>
                     </div>
                 )}
             </main>

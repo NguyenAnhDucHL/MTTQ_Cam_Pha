@@ -95,8 +95,8 @@ export function PetitionList() {
           <span className="ml-2 text-xs text-slate-400 font-normal">({total} kết quả)</span>
         </span>
         <div className="flex items-center gap-2">
-          <select 
-            value={statusFilter} 
+          <select
+            value={statusFilter}
             onChange={handleStatusFilter}
             style={{ padding: '8px 12px', height: '40px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', color: '#475569', outline: 'none' }}
           >
@@ -216,7 +216,7 @@ export function PetitionList() {
             ⚠️
           </div>
           <p style={{ fontSize: '1.05rem', color: '#334155', margin: '0 0 24px', lineHeight: '1.5' }}>
-            Bạn có chắc chắn muốn xóa phản ánh này không?<br/>
+            Bạn có chắc chắn muốn xóa phản ánh này không?<br />
             Hành động này <strong style={{ color: '#ef4444' }}>không thể hoàn tác</strong>.
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>

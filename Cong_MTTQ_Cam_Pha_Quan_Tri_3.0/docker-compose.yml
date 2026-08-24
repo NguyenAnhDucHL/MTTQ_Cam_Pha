@@ -10,6 +10,10 @@ services:
     depends_on:
       - backend
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 100M
 
   backend:
     build:
@@ -18,5 +22,8 @@ services:
     volumes:
       - ./backend/database.sqlite:/app/database.sqlite
       - ./backend/uploads:/app/uploads
-
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 300M

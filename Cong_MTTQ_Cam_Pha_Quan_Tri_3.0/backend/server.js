@@ -282,6 +282,79 @@ app.get('/api/admin/accounts', authenticateToken, (req, res) => {
   });
 });
 
+// Add a new account (Admin only)
+app.post('/api/admin/accounts', authenticateToken, async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Tên đăng nhập và mật khẩu không được để trống' });
+  }
+
+  try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    db.run('INSERT INTO admins (username, password) VALUES (?, ?)', [username, hashedPassword], function (err) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Tên đăng nhập đã tồn tại hoặc có lỗi xảy ra.' });
+      } else {
+        res.status(201).json({ id: this.lastID, username });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Lỗi server' });
+  }
+});
+
+// Update an account (Admin only)
+app.put('/api/admin/accounts/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { username, password } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ error: 'Tên đăng nhập không được để trống' });
+  }
+
+  try {
+    if (password) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      db.run('UPDATE admins SET username = ?, password = ? WHERE id = ?', [username, hashedPassword, id], function (err) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Có lỗi xảy ra khi cập nhật.' });
+        } else {
+          res.status(200).json({ message: 'Cập nhật thành công.' });
+        }
+      });
+    } else {
+      db.run('UPDATE admins SET username = ? WHERE id = ?', [username, id], function (err) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Có lỗi xảy ra khi cập nhật.' });
+        } else {
+          res.status(200).json({ message: 'Cập nhật thành công.' });
+        }
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Lỗi server' });
+  }
+});
+
+// Delete an account (Admin only)
+app.delete('/api/admin/accounts/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  db.run('DELETE FROM admins WHERE id = ?', [id], function (err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Có lỗi xảy ra khi xóa.' });
+    } else {
+      res.status(200).json({ message: 'Xóa tài khoản thành công.' });
+    }
+  });
+});
+
 // 4. Login (Issues JWT)
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;

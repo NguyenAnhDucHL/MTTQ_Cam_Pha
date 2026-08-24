@@ -1,0 +1,40 @@
+name: VPS Fix Nginx
+on:
+  workflow_dispatch:
+
+jobs:
+  fix-nginx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and find nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VNPT_HOST }}
+          username: ${{ secrets.VNPT_USER }}
+          password: ${{ secrets.VNPT_PASS }}
+          port: 22
+          script: |
+            echo "=== Docker PS ==="
+            docker ps
+            
+            echo "=== Find mttq.vpdtcampha.vn config ==="
+            CONFIG_FILE=$(grep -rl "mttq.vpdtcampha.vn" /root/ 2>/dev/null | grep "\.conf" | grep -v "MTTQ_Cam_Pha" | grep -v "mttq_deploy" | head -n 1)
+            
+            if [ -n "$CONFIG_FILE" ]; then
+                echo "Found config at: $CONFIG_FILE"
+                cat "$CONFIG_FILE"
+                
+                # Check if client_max_body_size is already there
+                if grep -q "client_max_body_size" "$CONFIG_FILE"; then
+                    sed -i 's/client_max_body_size.*/client_max_body_size 500M;/g' "$CONFIG_FILE"
+                else
+                    sed -i '/server_name/a \    client_max_body_size 500M;' "$CONFIG_FILE"
+                fi
+                echo "=== Config updated ==="
+                
+                # Restart nginx containers
+                echo "Restarting Nginx containers..."
+                docker ps | grep nginx | awk '{print $1}' | xargs -r docker restart
+            else
+                echo "Could not find Nginx config for mttq.vpdtcampha.vn"
+            fi

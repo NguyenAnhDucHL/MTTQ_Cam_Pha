@@ -13,4 +13,4 @@ jobs:
           port: 22
           script: |
             cd mttq_deploy
-            docker-compose logs backend
+            docker-compose logs

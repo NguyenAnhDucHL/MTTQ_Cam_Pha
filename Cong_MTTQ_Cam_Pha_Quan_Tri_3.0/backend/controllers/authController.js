@@ -9,7 +9,7 @@ const login = (req, res) => {
     return res.status(400).json({ error: 'Vui lòng nhập tên đăng nhập và mật khẩu' });
   }
 
-  db.get('SELECT * FROM admins WHERE username = ?', [username], async (err, row) => {
+  db.get('SELECT id, username, password FROM admins WHERE username = ?', [username], async (err, row) => {
     if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
     if (row) {
       const match = await bcrypt.compare(password, row.password);

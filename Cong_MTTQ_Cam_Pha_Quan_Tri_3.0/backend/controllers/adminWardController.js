@@ -11,7 +11,7 @@ const createWard = (req, res) => {
 };
 
 const getWards = (req, res) => {
-  db.all('SELECT * FROM wards ORDER BY name ASC', [], (err, rows) => {
+  db.all('SELECT id, name FROM wards ORDER BY name ASC', [], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
     res.status(200).json(rows);
   });

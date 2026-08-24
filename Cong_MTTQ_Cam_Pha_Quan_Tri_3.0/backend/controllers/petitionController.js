@@ -51,12 +51,12 @@ const getPublicPetitions = (req, res) => {
 
 const trackPetition = (req, res) => {
   const code = req.params.code;
-  db.get('SELECT * FROM petitions WHERE trackingCode = ?', [code], (err, row) => {
+  db.get('SELECT id, fullName, phone, cccd, ward, address, title, category, content, imagePaths, status, createdAt, trackingCode, adminNotes FROM petitions WHERE trackingCode = ?', [code], (err, row) => {
     if (err) return res.status(500).json({ error: 'Failed to retrieve petition.' });
     if (!row) return res.status(404).json({ error: 'Không tìm thấy mã tra cứu này.' });
 
     // Lấy thêm log
-    db.all('SELECT * FROM tracking_logs WHERE petitionId = ? ORDER BY createdAt DESC', [row.id], (err2, logs) => {
+    db.all('SELECT id, action, notes, createdAt FROM tracking_logs WHERE petitionId = ? ORDER BY createdAt DESC', [row.id], (err2, logs) => {
       row.logs = logs || [];
       res.status(200).json(row);
     });

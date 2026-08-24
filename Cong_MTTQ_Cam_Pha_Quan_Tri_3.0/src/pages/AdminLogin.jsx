@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { User, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
 
 function AdminLogin() {
     const [username, setUsername] = useState('');
@@ -29,7 +26,7 @@ function AdminLogin() {
             } else {
                 toast.error(data.error || 'Tên đăng nhập hoặc mật khẩu không chính xác');
             }
-        } catch {
+        } catch (err) {
             toast.error('Không thể kết nối máy chủ!');
         } finally {
             setLoading(false);
@@ -37,100 +34,215 @@ function AdminLogin() {
     };
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center p-4"
-            style={{ background: 'linear-gradient(160deg, #da251c 0%, #991b1b 45%, #1e293b 100%)', fontFamily: "'Roboto', sans-serif" }}
-        >
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-
+        <div style={{
+            minHeight: '100vh',
+            background: 'linear-gradient(160deg, #da251c 0%, #991b1b 50%, #1e293b 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            fontFamily: "'Roboto', sans-serif"
+        }}>
+            <div style={{
+                background: '#fff',
+                borderRadius: '16px',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+                width: '100%',
+                maxWidth: '440px',
+                overflow: 'hidden'
+            }}>
                 {/* Header đỏ */}
-                <div
-                    className="flex flex-col items-center py-8 px-6"
-                    style={{ background: 'linear-gradient(135deg, #da251c 0%, #991b1b 100%)' }}
-                >
-                    <div
-                        className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-4 shadow-lg"
-                        style={{ border: '3px solid #fbbf24' }}
-                    >
+                <div style={{
+                    background: 'linear-gradient(135deg, #da251c 0%, #991b1b 100%)',
+                    padding: '32px 20px 28px',
+                    textAlign: 'center'
+                }}>
+                    <div style={{
+                        width: '80px',
+                        height: '80px',
+                        borderRadius: '50%',
+                        background: '#fff',
+                        border: '3px solid #fbbf24',
+                        margin: '0 auto 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                    }}>
                         <img
                             src="/logo-mttq.png"
                             alt="Logo MTTQ"
-                            className="w-full h-full rounded-full object-cover"
-                            onError={e => { e.target.src = '/logo.png'; }}
+                            style={{ width: '74px', height: '74px', borderRadius: '50%', objectFit: 'cover' }}
+                            onError={e => {
+                                e.target.style.display = 'none';
+                                e.target.parentNode.innerHTML = '<span style="font-size:2rem">🛡️</span>';
+                            }}
                         />
                     </div>
-                    <h1 className="text-white text-xl font-bold uppercase tracking-wide text-center" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+                    <h1 style={{
+                        color: '#fff',
+                        fontSize: '1.3rem',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        margin: '0 0 6px',
+                        textShadow: '0 1px 3px rgba(0,0,0,0.3)'
+                    }}>
                         Cổng Quản trị Hệ thống
                     </h1>
-                    <p className="text-red-100 text-sm mt-1 text-center">
+                    <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.88rem', margin: 0 }}>
                         MTTQ Việt Nam Phường Cẩm Phả
                     </p>
                 </div>
 
-                {/* Form */}
-                <div className="px-8 py-7">
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <div className="space-y-1">
-                            <label className="text-sm font-semibold text-slate-700">Tên đăng nhập</label>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <Input
+                {/* Form đăng nhập */}
+                <div style={{ padding: '32px 32px 28px' }}>
+                    <form onSubmit={handleLogin}>
+                        <div style={{ marginBottom: '18px' }}>
+                            <label style={{
+                                display: 'block',
+                                fontWeight: 600,
+                                fontSize: '0.88rem',
+                                color: '#374151',
+                                marginBottom: '7px'
+                            }}>
+                                Tên đăng nhập
+                            </label>
+                            <div style={{ position: 'relative' }}>
+                                <span style={{
+                                    position: 'absolute', left: '12px', top: '50%',
+                                    transform: 'translateY(-50%)', fontSize: '1rem', color: '#9ca3af'
+                                }}>👤</span>
+                                <input
                                     type="text"
                                     value={username}
                                     onChange={e => setUsername(e.target.value)}
                                     required
                                     placeholder="Nhập tên đăng nhập"
-                                    className="pl-9"
+                                    style={{
+                                        width: '100%',
+                                        padding: '11px 14px 11px 38px',
+                                        border: '1.5px solid #e5e7eb',
+                                        borderRadius: '8px',
+                                        fontSize: '0.95rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s',
+                                        boxSizing: 'border-box'
+                                    }}
+                                    onFocus={e => e.target.style.borderColor = '#da251c'}
+                                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-sm font-semibold text-slate-700">Mật khẩu</label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <Input
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={{
+                                display: 'block',
+                                fontWeight: 600,
+                                fontSize: '0.88rem',
+                                color: '#374151',
+                                marginBottom: '7px'
+                            }}>
+                                Mật khẩu
+                            </label>
+                            <div style={{ position: 'relative' }}>
+                                <span style={{
+                                    position: 'absolute', left: '12px', top: '50%',
+                                    transform: 'translateY(-50%)', fontSize: '1rem', color: '#9ca3af'
+                                }}>🔒</span>
+                                <input
                                     type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     required
                                     placeholder="Nhập mật khẩu"
-                                    className="pl-9 pr-10"
+                                    style={{
+                                        width: '100%',
+                                        padding: '11px 40px 11px 38px',
+                                        border: '1.5px solid #e5e7eb',
+                                        borderRadius: '8px',
+                                        fontSize: '0.95rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s',
+                                        boxSizing: 'border-box'
+                                    }}
+                                    onFocus={e => e.target.style.borderColor = '#da251c'}
+                                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(v => !v)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                                    style={{
+                                        position: 'absolute',
+                                        right: '12px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        padding: 0,
+                                        fontSize: '1.1rem',
+                                        color: '#9ca3af',
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}
                                     tabIndex={-1}
                                 >
-                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    {showPassword ? '👁️' : '🙈'}
                                 </button>
                             </div>
                         </div>
 
-                        <Button
+                        <button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-11 mt-2 font-bold text-base"
-                            style={{ background: loading ? '#f87171' : 'linear-gradient(135deg, #da251c, #991b1b)', boxShadow: '0 4px 12px rgba(218,37,28,0.3)', border: 'none' }}
+                            style={{
+                                width: '100%',
+                                padding: '13px',
+                                background: loading ? '#f87171' : 'linear-gradient(135deg, #da251c 0%, #991b1b 100%)',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '1rem',
+                                fontWeight: 700,
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                letterSpacing: '0.5px',
+                                boxShadow: '0 4px 12px rgba(218,37,28,0.35)',
+                                transition: 'opacity 0.2s'
+                            }}
+                            onMouseEnter={e => { if (!loading) e.target.style.opacity = '0.9'; }}
+                            onMouseLeave={e => { e.target.style.opacity = '1'; }}
                         >
                             {loading ? '⏳ Đang xác thực...' : '🔐 Đăng nhập'}
-                        </Button>
+                        </button>
                     </form>
 
-                    <div className="text-center mt-5 pt-5 border-t border-slate-100">
-                        <a
-                            href="/"
-                            className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-red-600 transition-colors"
+                    <div style={{ textAlign: 'center', marginTop: '20px', borderTop: '1px solid #f3f4f6', paddingTop: '18px' }}>
+                        <a href="/" style={{
+                            color: '#6b7280',
+                            fontSize: '0.88rem',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.color = '#da251c'}
+                        onMouseLeave={e => e.currentTarget.style.color = '#6b7280'}
                         >
-                            <ArrowLeft className="w-4 h-4" />
-                            Quay lại trang chủ
+                            ← Quay lại trang chủ
                         </a>
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="bg-slate-50 border-t border-slate-100 py-3 text-center text-xs text-slate-400">
+                <div style={{
+                    background: '#f8fafc',
+                    borderTop: '1px solid #e5e7eb',
+                    padding: '12px 20px',
+                    textAlign: 'center',
+                    fontSize: '0.78rem',
+                    color: '#9ca3af'
+                }}>
                     © 2026 Ủy ban MTTQ Việt Nam Phường Cẩm Phả
                 </div>
             </div>

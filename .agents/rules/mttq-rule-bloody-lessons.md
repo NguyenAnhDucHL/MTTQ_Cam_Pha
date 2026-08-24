@@ -28,5 +28,10 @@ Dưới đây là tổng hợp những lỗi "ngớ ngẩn" nhưng gây mất c�
 - **Nguyên nhân cốt lõi:** Khi refactor code (chuyển logic hiển thị danh sách phản ánh từ `AdminDashboard` sang một component con độc lập là `PetitionList`), Developer đã quên xóa state (`petitions`), hàm fetch (`loadPetitions`), và các hàm xử lý (`handleUpdateStatus`, `handleDelete`) ở component cha. Kết quả là cả cha và con cùng gọi API, cùng lưu state, nhưng state của cha là "Code rác" (Dead Code) không được truyền đi đâu cả.
 - **Bài học:** Sau khi tách/refactor component, BẮT BUỘC phải dọn dẹp lại component gốc. Xóa ngay lập tức mọi state, useEffect, và functions không còn được truyền xuống dưới dạng props hoặc không còn dùng để render giao diện.
 
+## 6. Lỗi Giao diện Trống Dữ Liệu (Sai tên trường trả về từ Backend)
+- **Triệu chứng:** Danh sách hiển thị ra bảng nhưng cột dữ liệu quan trọng nhất (như Tên đăng nhập) lại trống trơn. Các cột khác thì hiển thị sai dữ liệu mặc định.
+- **Nguyên nhân cốt lõi:** Frontend gọi dữ liệu là `account.name` và `account.email`, `account.role`, `account.status`... nhưng Backend (trong file Controller) lại chỉ `SELECT id, username FROM admins`. Hậu quả là Frontend nhận được object `{id: 1, username: 'admin'}` nhưng lại cố gắng render `account.name` (undefined).
+- **Bài học:** BẮT BUỘC phải đối chiếu cấu trúc dữ liệu trả về (Data Contract) giữa Backend (`SELECT` cái gì trong DB) và Frontend (chấm `.thuộc_tính` cái gì trong Component). Không bao giờ tự suy diễn cấu trúc object (VD: tự cho rằng user thì có thuộc tính `email`, `name`, `role`) nếu chưa check schema DB và controller.
+
 ---
 **Nhắc nhở:** Phát triển Web/App không chỉ là code tính năng, mà là "khớp nối" rất nhiều layer với nhau: (CSS <-> Component), (Frontend <-> Backend), (Backend <-> Proxy/Server). Đừng vội vàng!

@@ -34,7 +34,7 @@ export function AdminAccounts() {
       return;
     }
     if (!window.confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) return;
-    
+
     try {
       await fetchApi(`/mttq-api/admin/accounts/${id}`, { method: 'DELETE' });
       toast.success('Đã xóa tài khoản thành công');
@@ -51,12 +51,12 @@ export function AdminAccounts() {
   };
 
   const openEditModal = (account) => {
-    if (account.name === 'admin') {
+    if (account.username === 'admin') {
       toast.error('Không thể sửa đổi tài khoản quản trị gốc từ giao diện này!');
       return;
     }
     setModalMode('edit');
-    setCurrentAccount({ id: account.id, username: account.name, password: '' });
+    setCurrentAccount({ id: account.id, username: account.username, password: '' });
     setIsModalOpen(true);
   };
 
@@ -101,9 +101,9 @@ export function AdminAccounts() {
     <div className="card" style={{ position: 'relative' }}>
       <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
         <span>Danh sách Tài khoản</span>
-        <button 
+        <button
           onClick={openAddModal}
-          className="btn-submit" 
+          className="btn-submit"
           style={{ width: 'auto', padding: '8px 16px', fontSize: '0.9rem' }}
         >
           + Thêm tài khoản
@@ -137,35 +137,34 @@ export function AdminAccounts() {
               accounts.map(account => (
                 <tr key={account.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                   <td style={{ padding: '12px 16px' }}>
-                    <div style={{ fontWeight: 500, color: '#0f172a' }}>{account.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>{account.email}</div>
+                    <div style={{ fontWeight: 500, color: '#0f172a' }}>{account.username}</div>
                   </td>
                   <td style={{ padding: '12px 16px' }}>
-                    <span style={{ 
-                      color: account.role === 'admin' ? 'var(--primary-red)' : '#3b82f6',
+                    <span style={{
+                      color: account.username === 'admin' ? 'var(--primary-red)' : '#3b82f6',
                       fontWeight: 600,
                       fontSize: '0.85rem'
                     }}>
-                      {account.role === 'admin' ? 'Quản trị viên' : 'Cán bộ'}
+                      {account.username === 'admin' ? 'Quản trị viên' : 'Cán bộ'}
                     </span>
                   </td>
                   <td style={{ padding: '12px 16px' }}>
-                    <span style={{ 
-                      background: account.status === 'active' ? '#dcfce7' : '#f1f5f9',
-                      color: account.status === 'active' ? '#166534' : '#475569',
+                    <span style={{
+                      background: '#dcfce7',
+                      color: '#166534',
                       padding: '4px 10px',
                       borderRadius: '20px',
                       fontSize: '0.8rem',
                       fontWeight: 600
                     }}>
-                      {account.status === 'active' ? 'Hoạt động' : 'Đã khóa'}
+                      Hoạt động
                     </span>
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                     <span style={{ display: 'inline-flex', gap: '6px' }}>
                       <button
                         onClick={() => openEditModal(account)}
-                        title="Sửa"
+                        title="Sửa mật khẩu"
                         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
                         onMouseEnter={e => e.currentTarget.style.background = '#fef3c7'}
                         onMouseLeave={e => e.currentTarget.style.background = 'none'}
@@ -173,7 +172,7 @@ export function AdminAccounts() {
                         ✏️
                       </button>
                       <button
-                        onClick={() => handleDelete(account.id, account.name)}
+                        onClick={() => handleDelete(account.id, account.username)}
                         title="Xóa"
                         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
                         onMouseEnter={e => e.currentTarget.style.background = '#fee2e2'}
@@ -207,14 +206,14 @@ export function AdminAccounts() {
               <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>
                 {modalMode === 'add' ? 'Thêm tài khoản mới' : 'Chỉnh sửa tài khoản'}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#64748b' }}
               >
                 ✕
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
@@ -223,7 +222,7 @@ export function AdminAccounts() {
                 <input
                   type="text"
                   value={currentAccount.username}
-                  onChange={(e) => setCurrentAccount({...currentAccount, username: e.target.value})}
+                  onChange={(e) => setCurrentAccount({ ...currentAccount, username: e.target.value })}
                   className="form-control"
                   style={{ width: '100%' }}
                   placeholder="Nhập tên đăng nhập"
@@ -237,7 +236,7 @@ export function AdminAccounts() {
                 <input
                   type="password"
                   value={currentAccount.password}
-                  onChange={(e) => setCurrentAccount({...currentAccount, password: e.target.value})}
+                  onChange={(e) => setCurrentAccount({ ...currentAccount, password: e.target.value })}
                   className="form-control"
                   style={{ width: '100%' }}
                   placeholder="Nhập mật khẩu"

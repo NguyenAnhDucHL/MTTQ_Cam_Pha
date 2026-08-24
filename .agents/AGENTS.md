@@ -73,8 +73,8 @@ Hệ thống này đã trải qua những pha sập toàn diện vì các lỗi 
    - `chore:` việc vặt, dọn code
    - `refactor:` cấu trúc lại code
 3. Quá trình Deploy sẽ build image Docker frontend và backend rồi đẩy lên server qua SSH.
-4. KHÔNG bao giờ chạy lệnh `docker-compose down` trên môi trường VPS nếu không hiểu rõ topology, vì có thể tắt nhầm Nginx Reverse Proxy dùng chung với các web app khác (như Lịch Công Tác, Tool Calendar).
-
+7. KHÔNG bao giờ chạy lệnh `docker-compose down` trên môi trường VPS nếu không hiểu rõ topology, vì có thể tắt nhầm Nginx Reverse Proxy dùng chung với các web app khác (như Lịch Công Tác, Tool Calendar).
+5. **Dọn dẹp VPS:** LUÔN đảm bảo kịch bản deploy có bước tự động chạy lệnh `docker image prune -f` để dọn dẹp các image rác (dangling images), tránh việc VPS bị đầy ổ cứng sau nhiều lần cập nhật.
 ---
 **Trạng thái:** KÍCH HOẠT  
 **Dự án:** Cổng MTTQ Cẩm Phả

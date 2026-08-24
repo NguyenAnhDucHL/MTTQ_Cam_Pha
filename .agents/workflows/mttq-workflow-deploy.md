@@ -19,7 +19,7 @@ Hệ thống đã được thiết lập CI/CD bằng **Github Actions**. Toàn 
 1. Viết code hoàn chỉnh, đảm bảo test kĩ ở Local.
 2. Gom (squash) các thay đổi và sử dụng lệnh `git commit -am "<type>(<scope>): <mô tả>"` (tuân thủ Conventional Commits).
 3. Chạy lệnh `git push origin main`.
-4. Ngay khi code được push lên nhánh `main`, Github Actions sẽ tự động kích hoạt tiến trình Build Docker Image và SSH vào VPS để kéo Image mới nhất về chạy.
+4. Ngay khi code được push lên nhánh `main`, Github Actions sẽ tự động kích hoạt tiến trình Build Docker Image, kéo Image mới nhất về chạy và tự động gọi `docker image prune -f` để dọn dẹp ổ cứng.
 5. Để theo dõi tiến trình Deploy, AI có thể gõ lệnh `gh run list -L 1` và `gh run watch <RUN_ID> --exit-status` trên Terminal nội bộ.
 
 > [!CAUTION]

@@ -10,11 +10,9 @@ jobs:
           host: ${{ secrets.VNPT_HOST }}
           username: ${{ secrets.VNPT_USER }}
           password: ${{ secrets.VNPT_PASS }}
-          port: 22
           script: |
-            echo "=== Checking Nginx Processes ==="
-            ps aux | grep nginx || true
-            echo "=== Checking open ports ==="
-            netstat -tulpn | grep 8082 || true
-            echo "=== Checking Docker networks ==="
-            docker network ls || true
+            cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0
+            echo "=== Checking Docker Nginx error logs ==="
+            docker-compose logs --tail=50 frontend || true
+            echo "=== Checking backend logs again ==="
+            docker-compose logs --tail=50 backend || true

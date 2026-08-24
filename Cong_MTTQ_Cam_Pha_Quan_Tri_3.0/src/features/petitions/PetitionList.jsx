@@ -34,7 +34,8 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
 
   const handleSearch = e => { setSearch(e.target.value); setPage(1); };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, e) => {
+    if (e) e.stopPropagation();
     if (!window.confirm('Xóa phản ánh này?')) return;
     try {
       await fetchApi(`/api/admin/petitions/${id}`, { method: 'DELETE' });
@@ -107,10 +108,10 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
                   </td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={() => setSelected(p)} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
+                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelected(p); }} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
                         <Eye className="w-4 h-4" /> Chi tiết
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleDelete(p.id)} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
+                      <Button variant="destructive" size="sm" onClick={(e) => handleDelete(p.id, e)} style={{ height: '32px', gap: '4px', fontWeight: 600 }}>
                         <Trash2 className="w-4 h-4" /> Xóa
                       </Button>
                     </div>

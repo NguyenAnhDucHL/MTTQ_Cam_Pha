@@ -59,6 +59,10 @@ Hệ thống này đã trải qua những pha sập toàn diện vì các lỗi 
 - **Vấn đề:** Lỗi rất dễ mắc phải là Backend định nghĩa route `/api/admin/login` nhưng Frontend lại gọi `fetch('/api/auth/login')`, gây ra lỗi 404 ngầm.
 - **Hành động:** Phải có một file cấu hình chung (Constants) chứa mọi endpoint API cho Frontend, hoặc luôn tìm kiếm và kiểm tra mã nguồn Frontend/Backend xem route có khớp nhau 100% không trước khi kết luận lỗi mạng. Luôn test API độc lập bằng lệnh `curl`.
 
+### Quy tắc 5: Kiểm tra import CSS (Tránh Dead Code)
+- **Vấn đề:** Có những lúc file `index.css` tồn tại nhưng lại không hề được load ở bất cứ đâu (chỉ load `global.css`), dẫn đến việc ngồi code cả tiếng đồng hồ nhưng giao diện không nhận CSS (như sự cố vỡ Desktop View ngày 24/08/2026).
+- **Hành động:** TRƯỚC KHI sửa CSS cho bất kỳ component nào, LUÔN dùng grep hoặc tìm kiếm trong file `main.jsx`/`App.jsx` để xác nhận file CSS nào ĐANG ĐƯỢC LOAD THỰC TẾ. Không tin tưởng vào tên file (như `index.css`) nếu chưa kiểm chứng.
+
 ---
 
 ## IV. Quy tắc Git & Deploy (Conventional Commits)
@@ -74,5 +78,4 @@ Hệ thống này đã trải qua những pha sập toàn diện vì các lỗi 
 ---
 **Trạng thái:** KÍCH HOẠT  
 **Dự án:** Cổng MTTQ Cẩm Phả
-**See also:** [mttq-rule-commit.md](rules/mttq-rule-commit.md) | [mttq-rule-db-migration.md](rules/mttq-rule-db-migration.md) | [mttq-rule-api-error-handling.md](rules/mttq-rule-api-error-handling.md) | [mttq-workflow-deploy.md](workflows/mttq-workflow-deploy.md)
-
+**See also:** [mttq-rule-commit.md](rules/mttq-rule-commit.md) | [mttq-rule-db-migration.md](rules/mttq-rule-db-migration.md) | [mttq-rule-api-error-handling.md](rules/mttq-rule-api-error-handling.md) | [mttq-rule-css-dead-code.md](rules/mttq-rule-css-dead-code.md) | [mttq-workflow-deploy.md](workflows/mttq-workflow-deploy.md)

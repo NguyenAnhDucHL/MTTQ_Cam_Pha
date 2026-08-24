@@ -16,11 +16,11 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Chỉ cho phép tải lên định dạng ảnh (JPG, PNG, WEBP).'), false);
+    cb(new Error('Chỉ cho phép tải lên định dạng ảnh (JPG, PNG, WEBP) hoặc tài liệu PDF.'), false);
   }
 };
 

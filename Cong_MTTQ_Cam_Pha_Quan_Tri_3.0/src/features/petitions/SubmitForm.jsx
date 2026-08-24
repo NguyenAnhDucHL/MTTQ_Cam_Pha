@@ -35,7 +35,7 @@ export function SubmitForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { fullName, phone, cccd, ward, title, content } = formData;
-    
+
     if (!fullName || !phone || !ward || !title || !content) {
       toast.error('Vui lòng điền đầy đủ các trường bắt buộc (*)');
       return;
@@ -100,83 +100,105 @@ export function SubmitForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border p-6 space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Họ và tên <span className="text-red-500">*</span></label>
-          <Input name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Nguyễn Văn A" required />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Số điện thoại <span className="text-red-500">*</span></label>
-          <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="0987654321" required />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Số CCCD</label>
-          <Input name="cccd" value={formData.cccd} onChange={handleChange} placeholder="0142..." />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Địa bàn / Khu phố <span className="text-red-500">*</span></label>
-          <Input name="ward" value={formData.ward} onChange={handleChange} placeholder="Phường, Khu phố..." required />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</label>
-          <Input name="address" value={formData.address} onChange={handleChange} placeholder="Số nhà, Tên đường..." />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Tiêu đề phản ánh <span className="text-red-500">*</span></label>
-        <Input name="title" value={formData.title} onChange={handleChange} placeholder="Tóm tắt vấn đề..." required />
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Lĩnh vực</label>
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="Giao thông">Giao thông</option>
-          <option value="Môi trường">Môi trường</option>
-          <option value="Trật tự đô thị">Trật tự đô thị</option>
-          <option value="Đất đai">Đất đai</option>
-          <option value="Khác">Khác</option>
-        </select>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Nội dung chi tiết <span className="text-red-500">*</span></label>
-        <Textarea name="content" value={formData.content} onChange={handleChange} placeholder="Mô tả rõ vấn đề cần phản ánh..." className="min-h-[120px]" required />
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Đính kèm hình ảnh (nếu có)</label>
-        <div
-          className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:bg-slate-50 transition-colors"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <p className="text-sm text-slate-500">Kéo thả file vào đây hoặc click để chọn ảnh</p>
-          <input
-            type="file"
-            multiple
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-            accept="image/*"
-          />
-        </div>
-        {files.length > 0 && (
-          <div className="mt-2 text-sm text-blue-600">
-            Đã chọn {files.length} tệp.
+    <form onSubmit={handleSubmit} id="feedbackForm">
+      <div className="form-grid">
+        {/* Left Column: Personal Info */}
+        <div className="card">
+          <div className="card-header">
+            👤 1. Khai báo thông tin người gửi
           </div>
-        )}
+          <div className="form-group" id="grp-fullname">
+            <label className="form-label">Họ và tên <span className="required">*</span></label>
+            <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="form-control" placeholder="Nhập đầy đủ họ và tên..." />
+          </div>
+
+          <div className="form-group" id="grp-phone">
+            <label className="form-label">Số điện thoại liên hệ <span className="required">*</span></label>
+            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="form-control" placeholder="Nhập số điện thoại (ví dụ: 0912345678)..." />
+          </div>
+
+          <div className="form-group" id="grp-cccd">
+            <label className="form-label">Số CCCD</label>
+            <input type="text" name="cccd" value={formData.cccd} onChange={handleChange} className="form-control" placeholder="0142..." />
+          </div>
+
+          <div className="form-group" id="grp-area">
+            <label className="form-label">Địa bàn / Khu phố <span className="required">*</span></label>
+            <select name="ward" value={formData.ward} onChange={handleChange} className="form-select">
+                <option value="">-- Chọn Khu phố sinh sống / xảy ra vụ việc --</option>
+                <option value="Khu phố 1">Khu phố 1</option>
+                <option value="Khu phố 2">Khu phố 2</option>
+                <option value="Khu phố 3">Khu phố 3</option>
+                <option value="Khu phố 4">Khu phố 4</option>
+                <option value="Khu phố 5">Khu phố 5</option>
+                <option value="Khu phố 6">Khu phố 6</option>
+                <option value="Khu phố 7">Khu phố 7</option>
+                <option value="Khu phố 8">Khu phố 8</option>
+                <option value="Khu phố 9">Khu phố 9</option>
+                <option value="Khu phố 10">Khu phố 10</option>
+                <option value="Khu phố 11">Khu phố 11</option>
+                <option value="Khu phố 12">Khu phố 12</option>
+                <option value="Khu phố 13">Khu phố 13</option>
+                <option value="Khu phố 14">Khu phố 14</option>
+                <option value="Khu phố 15">Khu phố 15</option>
+                <option value="Khu phố 16">Khu phố 16</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</label>
+            <input type="text" name="address" value={formData.address} onChange={handleChange} className="form-control" placeholder="Ví dụ: Số 45, Tổ 2, Đường Trần Phú..." />
+          </div>
+        </div>
+
+        {/* Right Column: Feedback Details */}
+        <div className="card">
+          <div className="card-header">
+            📌 2. Nội dung phản ánh, kiến nghị
+          </div>
+          <div className="form-group" id="grp-category">
+            <label className="form-label">Lĩnh vực phản ánh <span className="required">*</span></label>
+            <select name="category" value={formData.category} onChange={handleChange} className="form-select">
+                <option value="Giao thông">Trật tự đô thị - Giao thông</option>
+                <option value="An ninh trật tự - PCCC">An ninh trật tự - Phòng cháy chữa cháy</option>
+                <option value="Môi trường - Vệ sinh công cộng">Môi trường - Vệ sinh công cộng</option>
+                <option value="Hạ tầng - Cấp thoát nước">Hạ tầng đô thị - Điện, nước, chiếu sáng</option>
+                <option value="An sinh xã hội - Policy">An sinh xã hội - Chế độ chính sách</option>
+                <option value="Khác">Lĩnh vực khác</option>
+            </select>
+          </div>
+
+          <div className="form-group" id="grp-title">
+            <label className="form-label">Tiêu đề phản ánh <span className="required">*</span></label>
+            <input type="text" name="title" value={formData.title} onChange={handleChange} className="form-control" placeholder="Tóm tắt ngắn gọn vụ việc..." />
+          </div>
+
+          <div className="form-group" id="grp-content">
+            <label className="form-label">Nội dung chi tiết <span className="required">*</span></label>
+            <textarea name="content" value={formData.content} onChange={handleChange} rows="4" className="form-control" style={{minHeight: '120px', padding: '10px'}} placeholder="Mô tả cụ thể thời gian, địa điểm, sự việc phản ánh hoặc đề xuất kiến nghị..."></textarea>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Đính kèm ảnh / Tệp tài liệu (nếu có)</label>
+            <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
+                <div className="upload-icon">📁</div>
+                <div style={{fontSize: '0.9rem', fontWeight: 500}}>Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
+                <div style={{fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px'}}>Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 10MB)</div>
+                <input type="file" ref={fileInputRef} multiple style={{display: 'none'}} onChange={handleFileChange} accept="image/*" />
+            </div>
+            {files.length > 0 && (
+                <div className="file-list" style={{marginTop: '10px', fontSize: '14px', color: '#166534'}}>
+                    Đã chọn {files.length} tệp.
+                </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-end pt-4 border-t">
-        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
-          {isSubmitting ? 'Đang gửi...' : 'Gửi phản ánh'}
-        </Button>
+      <div style={{marginTop: '20px', textAlign: 'center'}}>
+        <button type="submit" className="btn-submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Đang gửi...' : '🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ'}
+        </button>
       </div>
     </form>
   );

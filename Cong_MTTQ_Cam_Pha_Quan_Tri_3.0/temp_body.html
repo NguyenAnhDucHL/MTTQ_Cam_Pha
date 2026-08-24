@@ -1,0 +1,698 @@
+
+
+    <!-- Header Section -->
+    <header class="header-top">
+        <div class="header-container">
+            <div class="brand-info">
+                <div class="logo-emblem">
+                    <img src="/logo-mttq.png" alt="Logo Mặt trận Tổ quốc Việt Nam" class="mttq-logo">
+                </div>
+                <div class="brand-text">
+                    <h1>Ủy ban MTTQ Việt Nam Phường Cẩm Phả</h1>
+                    <p>CỔNG TIẾP NHẬN, XỬ LÝ PHẢN ÁNH, KIẾN NGHỊ CỦA ĐOÀN VIÊN, HỘI VIÊN VÀ NHÂN DÂN</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="#login" class="btn-login" onclick="openLoginModal()">
+                    🔒 Đăng nhập cán bộ
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-item active" onclick="switchTab('tab-gui')">
+                📝 Gửi phản ánh, kiến nghị
+            </div>
+            <div class="nav-item" onclick="switchTab('tab-tra-cuu')">
+                🔍 Tra cứu & Danh sách phản ánh
+            </div>
+            <div class="nav-item" onclick="switchTab('tab-van-ban')">
+                📄 Văn bản, Thông báo
+            </div>
+            <a href="https://www.quangninh.gov.vn/donvi/campha/Trang/ChiTietBVGioiThieu.aspx?bvid=19" target="_blank" rel="noopener noreferrer" class="nav-item nav-item-link" title="Mở trang Tổ chức, bộ máy UBMTTQ phường">
+                🏛️ Tổ chức, bộ máy UBMTTQ phường
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px; opacity: 0.7;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="main-wrapper">
+
+        <!-- TAB 1: FORM GỬI PHẢN ÁNH -->
+        <section id="tab-gui" class="tab-content active">
+            <h2 class="section-title">Hệ thống tiếp nhận phản ánh, kiến nghị người dân</h2>
+
+            <!-- Success Notification Card (hidden by default) -->
+            <div id="successBanner" class="success-banner">
+                <div class="success-icon">✓</div>
+                <h3 style="color: #166534; font-size: 1.2rem; margin-bottom: 4px;">Gửi phản ánh thành công!</h3>
+                <p style="color: #15803d; font-size: 0.95rem;">Ủy ban MTTQ Phường Cẩm Phả đã tiếp nhận thông tin và sẽ xử lý trong vòng <strong>3 – 5 ngày làm việc</strong>.</p>
+                <div class="ticket-code-box">
+                    🎫 Mã hồ sơ: <span id="resCode">PA-CP-0000</span>
+                </div>
+                <p style="font-size: 0.85rem; color: #475569; margin-top: 4px;">
+                    Vui lòng lưu lại mã hồ sơ trên để tra cứu tiến độ giải quyết tại mục "Tra cứu".
+                </p>
+                <button onclick="resetForm()" style="margin-top: 14px; padding: 6px 18px; background: #16a34a; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                    + Gửi phản ánh mới
+                </button>
+            </div>
+
+            <form id="feedbackForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-grid">
+                    <!-- Left Column: Personal Info -->
+                    <div class="card">
+                        <div class="card-header">
+                            👤 1. Khai báo thông tin người gửi
+                        </div>
+                        <div class="form-group" id="grp-fullname">
+                            <label class="form-label">Họ và tên <span class="required">*</span></label>
+                            <input type="text" id="fullname" class="form-control" placeholder="Nhập đầy đủ họ và tên...">
+                            <div class="error-message">Vui lòng nhập họ và tên của bạn.</div>
+                        </div>
+
+                        <div class="form-group" id="grp-phone">
+                            <label class="form-label">Số điện thoại liên hệ <span class="required">*</span></label>
+                            <input type="tel" id="phone" class="form-control" placeholder="Nhập số điện thoại (ví dụ: 0912345678)...">
+                            <div class="error-message">Vui lòng nhập số điện thoại hợp lệ (10 chữ số).</div>
+                        </div>
+
+                        <div class="form-group" id="grp-area">
+                            <label class="form-label">Địa bàn / Khu phố <span class="required">*</span></label>
+                            <select id="area" class="form-select">
+                                <option value="">-- Chọn Khu phố sinh sống / xảy ra vụ việc --</option>
+                                <option value="Khu phố 1">Khu phố 1</option>
+                                <option value="Khu phố 2">Khu phố 2</option>
+                                <option value="Khu phố 3">Khu phố 3</option>
+                                <option value="Khu phố 4">Khu phố 4</option>
+                                <option value="Khu phố 5">Khu phố 5</option>
+                                <option value="Khu phố 6">Khu phố 6</option>
+                                <option value="Khu phố 7">Khu phố 7</option>
+                                <option value="Khu phố 8">Khu phố 8</option>
+                                <option value="Khu phố 9">Khu phố 9</option>
+                                <option value="Khu phố 10">Khu phố 10</option>
+                                <option value="Khu phố 11">Khu phố 11</option>
+                                <option value="Khu phố 12">Khu phố 12</option>
+                                <option value="Khu phố 13">Khu phố 13</option>
+                                <option value="Khu phố 14">Khu phố 14</option>
+                                <option value="Khu phố 15">Khu phố 15</option>
+                                <option value="Khu phố 16">Khu phố 16</option>
+                                <option value="Khu phố 17">Khu phố 17</option>
+                                <option value="Khu phố 18">Khu phố 18</option>
+                                <option value="Khu phố 19">Khu phố 19</option>
+                                <option value="Khu phố 20">Khu phố 20</option>
+                            </select>
+                            <div class="error-message">Vui lòng chọn khu phố địa bàn.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</label>
+                            <input type="text" id="address" class="form-control" placeholder="Ví dụ: Số 45, Tổ 2, Đường Trần Phú...">
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Feedback Details -->
+                    <div class="card">
+                        <div class="card-header">
+                            📌 2. Nội dung phản ánh, kiến nghị
+                        </div>
+                        <div class="form-group" id="grp-category">
+                            <label class="form-label">Lĩnh vực phản ánh <span class="required">*</span></label>
+                            <select id="category" class="form-select">
+                                <option value="">-- Chọn lĩnh vực --</option>
+                                <option value="An ninh trật tự - PCCC">An ninh trật tự - Phòng cháy chữa cháy</option>
+                                <option value="Môi trường - Vệ sinh công cộng">Môi trường - Vệ sinh công cộng</option>
+                                <option value="Đô thị - Giao thông">Trật tự đô thị - Giao thông</option>
+                                <option value="Hạ tầng - Cấp thoát nước">Hạ tầng đô thị - Điện, nước, chiếu sáng</option>
+                                <option value="An sinh xã hội - Policy">An sinh xã hội - Chế độ chính sách</option>
+                                <option value="Lĩnh vực khác">Lĩnh vực khác</option>
+                            </select>
+                            <div class="error-message">Vui lòng chọn lĩnh vực phản ánh.</div>
+                        </div>
+
+                        <div class="form-group" id="grp-title">
+                            <label class="form-label">Tiêu đề phản ánh <span class="required">*</span></label>
+                            <input type="text" id="title" class="form-control" placeholder="Tóm tắt ngắn gọn vụ việc...">
+                            <div class="error-message">Vui lòng nhập tiêu đề phản ánh.</div>
+                        </div>
+
+                        <div class="form-group" id="grp-content">
+                            <label class="form-label">Nội dung chi tiết <span class="required">*</span></label>
+                            <textarea id="content" rows="4" placeholder="Mô tả cụ thể thời gian, địa điểm, sự việc phản ánh hoặc đề xuất kiến nghị..."></textarea>
+                            <div class="error-message">Vui lòng nhập nội dung phản ánh chi tiết.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Đính kèm ảnh / Tệp tài liệu (nếu có)</label>
+                            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                                <div class="upload-icon">📁</div>
+                                <div style="font-size: 0.9rem; font-weight: 500;">Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
+                                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 10MB)</div>
+                                <input type="file" id="fileInput" multiple style="display: none;" onchange="handleFileSelect(event)">
+                            </div>
+                            <div id="fileList" class="file-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <button type="submit" class="btn-submit">
+                        🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- TAB 2: TRA CỨU & DANH SÁCH PHẢN ÁNH -->
+        <section id="tab-tra-cuu" class="tab-content">
+            <h2 class="section-title">Tra cứu & Theo dõi kết quả xử lý</h2>
+        </section>
+
+        <!-- TAB 3: VĂN BẢN, THÔNG BÁO -->
+        <section id="tab-van-ban" class="tab-content">
+            <h2 class="section-title">Văn bản, Thông báo & Chỉ đạo điều hành</h2>
+        </section>
+
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Chi tiết Hồ sơ Phản ánh, Kiến nghị</h3>
+                <button class="btn-close" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modalDetailContent">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>🔐 Đăng nhập Cán bộ Quản trị</h3>
+                <button class="btn-close" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Tên tài khoản / Email</label>
+                        <input type="text" class="form-control" required placeholder="Nhập tài khoản cán bộ...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" required placeholder="Nhập mật khẩu...">
+                    </div>
+                    <button type="submit" class="btn-submit" style="margin-top: 15px;">
+                        Đăng nhập hệ thống
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+<!-- ===== ADMIN CMS ===== -->
+<div id="adminPanel" class="admin-overlay">
+ <div class="admin-card">
+  <div class="admin-head"><div><h2>🔐 TRANG QUẢN TRỊ CỔNG MTTQ PHƯỜNG CẨM PHẢ</h2><small>Quản lý nội dung, phản ánh, kiến nghị và cấu hình cổng</small></div><button class="admin-close" onclick="closeAdminPanel()">✕ Đóng</button></div>
+  <div class="admin-body">
+   <aside class="admin-menu">
+    <button class="active" onclick="adminTab('dashboard',this)">📊 Tổng quan</button>
+    <button onclick="adminTab('content',this)">📝 Nội dung cổng</button>
+    <button onclick="adminTab('petitions',this)">📩 Phản ánh, kiến nghị</button>
+    <button onclick="adminTab('docs',this)">📄 Văn bản, thông báo</button>
+    <button onclick="adminTab('account',this)">👤 Tài khoản</button>
+   </aside>
+   <main class="admin-main">
+    <section id="admin-dashboard" class="admin-section active">
+      <h3>Tổng quan hệ thống</h3>
+      <div class="admin-grid" id="adminStats"></div>
+      <div class="admin-note" style="margin-top:16px"><b>Lưu ý:</b> Phiên bản này lưu dữ liệu quản trị trên trình duyệt bằng LocalStorage. Phù hợp chạy thử/nội bộ; để triển khai chính thức cần kết nối máy chủ hoặc Google Apps Script/Firebase để nhiều cán bộ cùng sử dụng và bảo đảm an toàn tài khoản.</div>
+    </section>
+    <section id="admin-content" class="admin-section">
+      <h3>Chỉnh sửa nội dung cổng</h3>
+      <div class="admin-grid">
+       <div class="admin-field"><label>Tên đơn vị</label><input id="cmsUnit"></div>
+       <div class="admin-field"><label>Tiêu đề cổng</label><input id="cmsTitle"></div>
+       <div class="admin-field"><label>Địa chỉ</label><input id="cmsAddress"></div>
+       <div class="admin-field"><label>Điện thoại</label><input id="cmsPhone"></div>
+       <div class="admin-field"><label>Email</label><input id="cmsEmail"></div>
+       <div class="admin-field"><label>Giờ làm việc</label><input id="cmsHours"></div>
+      </div>
+      <div class="admin-field" style="margin-top:14px"><label>Nội dung giới thiệu / mô tả cổng</label><textarea id="cmsIntro"></textarea></div>
+      <div class="admin-actions"><button class="admin-btn success" onclick="saveCMS()">💾 Lưu nội dung</button><button class="admin-btn warn" onclick="resetCMS()">↩ Khôi phục mặc định</button></div>
+    </section>
+    <section id="admin-petitions" class="admin-section">
+      <h3>📩 Quản lý phản ánh, kiến nghị</h3>
+      <div class="admin-note">Ảnh/tệp do người dân gửi được lưu cùng hồ sơ. Cán bộ có thể mở hồ sơ, xem ảnh, cập nhật trạng thái và nhập kết quả xử lý.</div>
+      <div class="admin-actions"><button class="admin-btn primary" onclick="renderAdminPetitions()">🔄 Làm mới</button></div>
+      <div id="adminPetitionList"></div>
+    </section>
+    <section id="admin-docs" class="admin-section">
+      <h3>Văn bản, thông báo</h3>
+      <div class="admin-note">Khu vực này đã được tạo sẵn để mở rộng thành trình quản lý văn bản. Có thể bổ sung thêm chức năng thêm/sửa/xóa văn bản và tải tệp PDF/Word khi kết nối cơ sở dữ liệu.</div>
+      <div class="admin-field"><label>Thông báo nổi bật</label><textarea id="cmsNotice" placeholder="Nhập thông báo cần hiển thị..." ></textarea></div>
+      <div class="admin-actions"><button class="admin-btn success" onclick="saveNotice()">💾 Lưu thông báo</button></div>
+    </section>
+    <section id="admin-account" class="admin-section">
+      <h3>Tài khoản quản trị</h3>
+      <div class="admin-grid">
+       <div class="admin-field"><label>Tên đăng nhập</label><input id="adminUsername"></div>
+       <div class="admin-field"><label>Mật khẩu mới</label><input id="adminPassword" type="password" placeholder="Nhập mật khẩu mới"></div>
+      </div>
+      <div class="admin-actions"><button class="admin-btn success" onclick="saveAdminAccount()">🔑 Cập nhật tài khoản</button><button class="admin-btn danger" onclick="adminLogout()">🚪 Đăng xuất</button></div>
+      <div class="admin-login-hint">Tài khoản mặc định lần đầu: <b>admin</b> / <b>CP@2026!</b>. Hãy đổi mật khẩu ngay khi sử dụng.</div>
+    </section>
+   </main>
+  </div>
+ </div>
+</div>
+
+<!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div>
+                <div class="footer-title">ỦY BAN MẶT TRẬN TỔ QUỐC VIỆT NAM PHƯỜNG CẨM PHẢ</div>
+                <p style="line-height: 1.7; font-size: 0.88rem;">
+                    📍 <strong>Địa chỉ:</strong> 376, Đường Trần Phú, Phường Cẩm Phả, TP Quảng Ninh<br>
+                    📞 <strong>Điện thoại đường dây nóng:</strong> 0936833564/0363789100<br>
+                    ✉️ <strong>Email:</strong> ubmttqphuongcampha@gmail.com<br>
+                    ⏰ <strong>Giờ làm việc:</strong> Sáng: 07h30 - 11h30 | Chiều: 13h30 - 17h00 (Từ thứ 2 đến thứ 6)<br>
+                    🏛️ <strong>Tổ chức, bộ máy:</strong> <a href="https://www.quangninh.gov.vn/donvi/campha/Trang/ChiTietBVGioiThieu.aspx?bvid=19" target="_blank" rel="noopener noreferrer" style="color: #93c5fd; text-decoration: underline;">Xem cơ cấu tổ chức & chức năng nhiệm vụ</a>
+                </p>
+            </div>
+            <div>
+                <div class="footer-title">HỖ TRỢ KỸ THUẬT & LIÊN HỆ</div>
+                <p style="line-height: 1.7; font-size: 0.88rem;">
+                    Bộ phận CNTT & Truyền thông<br>
+                    Ủy ban MTTQ Việt Nam Phường Cẩm Phả<br>
+                    Hỗ trợ công dân gửi phản ánh 24/7 qua cổng Zalo OA & Web.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Bản quyền thuộc về Ủy ban Mặt trận Tổ quốc Việt Nam Phường Cẩm Phả - Tỉnh Quảng Ninh.
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Sample Initial Data
+        let sampleData = [
+            {
+                code: 'PA-CP-2026-081',
+                sender: 'Nguyễn Văn Hùng',
+                phone: '0912***456',
+                area: 'Khu phố Tân Lập',
+                category: 'Môi trường - Vệ sinh công cộng',
+                title: 'Tụ điểm rác thải tự phát gây hôi thối tại đầu hẻm đường Bái Tử Long',
+                content: 'Tại khu vực đầu hẻm 12 đường Bái Tử Long, Khu phố Tân Lập gần đây xuất hiện điểm đổ rác thải sinh hoạt và xà bần không đúng nơi quy định, bốc mùi hôi thối ảnh hưởng xấu tới môi trường sống và mỹ quan đô thị.',
+                date: '12/08/2026',
+                status: 'Đã giải quyết',
+                step: 4,
+                response: 'Ủy ban MTTQ Phường đã phối hợp với Đội Kiểm tra trật tự đô thị và Công ty Môi trường đô thị thu gom toàn bộ rác thải, cắm biển cấm đổ rác và bàn giao Khu phố Tân Lập tự quản ngày 14/08/2026.'
+            },
+            {
+                code: 'PA-CP-2026-082',
+                sender: 'Trần Thị Mai',
+                phone: '0983***112',
+                area: 'Khu phố Bến Do',
+                category: 'Hạ tầng - Cấp thoát nước',
+                title: 'Nắp cống mương thoát nước bị hư hỏng nguy hiểm cho người tham gia giao thông',
+                content: 'Nắp cống bằng bê tông trước số nhà 45 Khu phố Bến Do bị sụt gãy, tạo thành hố sâu trên mặt đường rất nguy hiểm cho người đi xe máy và trẻ em vào buổi tối.',
+                date: '14/08/2026',
+                status: 'Đang xử lý',
+                step: 3,
+                response: 'UBND Phường và Ban Công tác Mặt trận Khu phố Bến Do đã khảo sát thực tế. Đã cho giăng dây cảnh báo và giao đơn vị thi công đúc nắp cống mới, dự kiến hoàn thành trước ngày 18/08/2026.'
+            },
+            {
+                code: 'PA-CP-2026-083',
+                sender: 'Lê Hoàng Nam',
+                phone: '0356***889',
+                area: 'Khu phố 3',
+                category: 'An ninh trật tự - PCCC',
+                title: 'Đề nghị kiểm tra cắt tỉa cành cây lớn có nguy cơ gãy đổ mảng dây điện',
+                content: 'Cây phượng vĩ lớn tại ngã ba Khu phố 3 có nhiều cành khô sà vào đường dây điện hạ thế. Mùa mưa bão sắp tới đề nghị chính quyền cắt tỉa phòng ngừa sự cố.',
+                date: '16/08/2026',
+                status: 'Chờ tiếp nhận',
+                step: 1,
+                response: 'Hồ sơ đã được tiếp nhận và đang chuyển đến Ban Công tác Mặt trận Khu phố 3 để xác minh thực địa.'
+            }
+        ];
+
+        let selectedFiles = [];
+
+        // Tab Switching function
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-container > .nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            const tabButtons = document.querySelectorAll('.nav-container > div.nav-item');
+            if (tabId === 'tab-gui' && tabButtons[0]) tabButtons[0].classList.add('active');
+            if (tabId === 'tab-tra-cuu' && tabButtons[1]) {
+                tabButtons[1].classList.add('active');
+            }
+            if (tabId === 'tab-van-ban' && tabButtons[2]) tabButtons[2].classList.add('active');
+        }
+
+        // Handle File Select
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            selectedFiles = selectedFiles.concat(files);
+            updateFileList();
+        }
+
+        function updateFileList() {
+            const container = document.getElementById('fileList');
+            container.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const tag = document.createElement('div');
+                tag.className = 'file-item';
+                tag.innerHTML = `📎 ${file.name} <span onclick="removeFile(${index})">&times;</span>`;
+                container.appendChild(tag);
+            });
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+        }
+
+        // Form Validation & Submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Clear past errors
+            document.querySelectorAll('.form-group').forEach(el => el.classList.remove('has-error'));
+
+            const fullname = document.getElementById('fullname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const area = document.getElementById('area').value;
+            const category = document.getElementById('category').value;
+            const title = document.getElementById('title').value.trim();
+            const content = document.getElementById('content').value.trim();
+
+            if (!fullname) {
+                document.getElementById('grp-fullname').classList.add('has-error');
+                isValid = false;
+            }
+
+            if (!phone || !/^[0-9]{9,11}$/.test(phone.replace(/\s+/g, ''))) {
+                document.getElementById('grp-phone').classList.add('has-error');
+                isValid = false;
+            }
+
+            if (!area) {
+                document.getElementById('grp-area').classList.add('has-error');
+                isValid = false;
+            }
+
+            if (!category) {
+                document.getElementById('grp-category').classList.add('has-error');
+                isValid = false;
+            }
+
+            if (!title) {
+                document.getElementById('grp-title').classList.add('has-error');
+                isValid = false;
+            }
+
+            if (!content) {
+                document.getElementById('grp-content').classList.add('has-error');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Generate Ticket Code
+            const randomNum = Math.floor(100 + Math.random() * 900);
+            const newCode = `PA-CP-2026-${randomNum}`;
+
+            const today = new Date();
+            const dateStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+
+            // Add new item to array
+            const saveSubmission = async () => {
+                const attachments = await filesToDataUrls(selectedFiles);
+                const newItem = {
+                    code: newCode, sender: fullname, phone: phone.substring(0, 4) + '***' + phone.substring(phone.length - 3),
+                    area, category, title, content, date: dateStr, status: 'Chờ tiếp nhận', step: 1,
+                    response: 'Ủy ban MTTQ Phường Cẩm Phả đã ghi nhận phản ánh. Cán bộ sẽ liên hệ và phối hợp kiểm tra thực địa trong vòng 24h - 48h làm việc.',
+                    attachments, updatedAt: new Date().toISOString()
+                };
+                sampleData.unshift(newItem); savePetitions(sampleData);
+
+                document.getElementById('resCode').innerText = newCode;
+                document.getElementById('successBanner').classList.add('show');
+                document.getElementById('feedbackForm').style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            saveSubmission().catch(err => alert('Không thể lưu tệp đính kèm: ' + err.message));
+            return;
+
+            // Show Success Notification
+            document.getElementById('resCode').innerText = newCode;
+            document.getElementById('successBanner').classList.add('show');
+            document.getElementById('feedbackForm').style.display = 'none';
+            
+            // Scroll to top of tab
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('feedbackForm').reset();
+            selectedFiles = [];
+            updateFileList();
+            document.getElementById('successBanner').classList.remove('show');
+            document.getElementById('feedbackForm').style.display = 'block';
+        }
+
+        // Render Petition List
+        function renderPetitions(data) {
+            const listContainer = document.getElementById('petitionList');
+            listContainer.innerHTML = '';
+
+            if (data.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #64748b; background: #fff; border-radius: 8px;">
+                        🔍 Không tìm thấy kết quả phù hợp với yêu cầu tra cứu của bạn.
+                    </div>
+                `;
+                return;
+            }
+
+            data.forEach(item => {
+                let badgeClass = 'status-pending';
+                if (item.status === 'Đang xử lý') badgeClass = 'status-processing';
+                if (item.status === 'Đã giải quyết') badgeClass = 'status-completed';
+
+                const card = document.createElement('div');
+                card.className = 'petition-item';
+                card.onclick = () => openDetailModal(item.code);
+                card.innerHTML = `
+                    <div class="petition-header">
+                        <div class="petition-title">${escapeHtml(item.title)}</div>
+                        <span class="status-badge ${badgeClass}">${item.status}</span>
+                    </div>
+                    <div class="petition-meta">
+                        <span>🏷️ ${item.category}</span>
+                        <span>📍 ${item.area}</span>
+                        <span>📅 Ngày gửi: ${item.date}</span>
+                    </div>
+                    <div class="petition-desc">${escapeHtml(item.content)}</div>
+                    <div class="petition-footer">
+                        <div>Mã phản ánh: <span class="code-tag">${item.code}</span></div>
+                        <div style="color: var(--primary-red); font-weight: 500;">Xem tiến độ & chi tiết &rarr;</div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+
+            // Update stats
+            document.getElementById('statTotal').innerText = sampleData.length;
+            document.getElementById('statDone').innerText = sampleData.filter(i => i.status === 'Đã giải quyết').length;
+            document.getElementById('statProc').innerText = sampleData.filter(i => i.status !== 'Đã giải quyết').length;
+        }
+
+        // Filter Petitions
+        function filterPetitions() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusVal = document.getElementById('statusFilter').value;
+            const catVal = document.getElementById('categoryFilter').value;
+
+            const filtered = sampleData.filter(item => {
+                const matchSearch = item.code.toLowerCase().includes(searchVal) ||
+                                    item.title.toLowerCase().includes(searchVal) ||
+                                    item.content.toLowerCase().includes(searchVal) ||
+                                    item.area.toLowerCase().includes(searchVal);
+                
+                const matchStatus = (statusVal === 'ALL') || (item.status === statusVal);
+                const matchCat = (catVal === 'ALL') || (item.category === catVal);
+
+                return matchSearch && matchStatus && matchCat;
+            });
+
+        }
+
+        // Filter Docs
+        function filterDocs() {
+            const search = document.getElementById('docSearch').value.toLowerCase().trim();
+            const type = document.getElementById('docTypeFilter').value;
+            const items = document.querySelectorAll('.doc-item');
+
+            items.forEach(item => {
+                const title = item.getAttribute('data-title');
+                const docType = item.getAttribute('data-type');
+
+                const matchSearch = title.includes(search);
+                const matchType = (type === 'ALL') || (docType === type);
+
+                if (matchSearch && matchType) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Open Detail Modal
+        function openDetailModal(code) {
+            const item = sampleData.find(i => i.code === code);
+            if (!item) return;
+
+            let step1Cls = item.step >= 1 ? 'completed' : '';
+            let step2Cls = item.step >= 2 ? 'completed' : '';
+            let step3Cls = item.step >= 3 ? 'completed' : '';
+            let step4Cls = item.step >= 4 ? 'completed' : '';
+
+            if (item.step === 1) step1Cls = 'active';
+            if (item.step === 2) step2Cls = 'active';
+            if (item.step === 3) step3Cls = 'active';
+            if (item.step === 4) step4Cls = 'completed';
+
+            const modalContent = document.getElementById('modalDetailContent');
+            modalContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span class="code-tag" style="font-size: 1rem;">Mã hồ sơ: ${item.code}</span>
+                    <span class="status-badge ${item.status === 'Đã giải quyết' ? 'status-completed' : 'status-processing'}">${item.status}</span>
+                </div>
+
+                <h4 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 12px; line-height: 1.4;">${escapeHtml(item.title)}</h4>
+
+                <!-- Steps Timeline -->
+                <div class="timeline">
+                    <div class="timeline-step ${step1Cls}">
+                        <div class="step-icon">1</div>
+                        <div class="step-label">Tiếp nhận</div>
+                    </div>
+                    <div class="timeline-step ${step2Cls}">
+                        <div class="step-icon">2</div>
+                        <div class="step-label">Xác minh</div>
+                    </div>
+                    <div class="timeline-step ${step3Cls}">
+                        <div class="step-icon">3</div>
+                        <div class="step-label">Xử lý</div>
+                    </div>
+                    <div class="timeline-step ${step4Cls}">
+                        <div class="step-icon">4</div>
+                        <div class="step-label">Hoàn thành</div>
+                    </div>
+                </div>
+
+                <div style="background-color: #f8fafc; padding: 14px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 14px;">
+                    <p><strong>Người gửi:</strong> ${escapeHtml(item.sender)} (${item.phone})</p>
+                    <p><strong>Địa bàn:</strong> ${item.area}</p>
+                    <p><strong>Lĩnh vực:</strong> ${item.category}</p>
+                    <p><strong>Ngày gửi:</strong> ${item.date}</p>
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <strong style="font-size: 0.95rem; color: #1e293b;">Nội dung phản ánh chi tiết:</strong>
+                    <p style="font-size: 0.92rem; color: #334155; margin-top: 4px; white-space: pre-line;">${escapeHtml(item.content)}</p>
+                </div>
+
+                <div class="response-box">
+                    <div class="response-title">🏛️ Kết quả xử lý từ Ủy ban MTTQ Phường Cẩm Phả:</div>
+                    <p style="font-size: 0.9rem; color: #1e3a8a; line-height: 1.5;">${escapeHtml(item.response)}</p>
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        const CMS_DEFAULTS = {
+            unit:'Ủy ban MTTQ Việt Nam Phường Cẩm Phả',
+            title:'CỔNG TIẾP NHẬN, XỬ LÝ PHẢN ÁNH, KIẾN NGHỊ CỦA ĐOÀN VIÊN, HỘI VIÊN VÀ NHÂN DÂN',
+            address:'376, Đường Trần Phú, Phường Cẩm Phả, TP Quảng Ninh',
+            phone:'0936833564/0363789100',
+            email:'ubmttqphuongcampha@gmail.com',
+            hours:'Sáng: 07h30 - 11h30 | Chiều: 13h30 - 17h00 (Từ thứ 2 đến thứ 6)',
+            intro:'Cổng tiếp nhận, xử lý phản ánh, kiến nghị của Đoàn viên, Hội viên và Nhân dân.'
+        };
+        function getCMS(){ return JSON.parse(localStorage.getItem('cp_mttq_cms')||'null') || {...CMS_DEFAULTS}; }
+        function getAdmin(){ return JSON.parse(localStorage.getItem('cp_mttq_admin')||'null') || {username:'admin',password:'CP@2026!'}; }
+        function loadCMS(){ const c=getCMS(); const map={cmsUnit:c.unit,cmsTitle:c.title,cmsAddress:c.address,cmsPhone:c.phone,cmsEmail:c.email,cmsHours:c.hours,cmsIntro:c.intro}; Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(el)el.value=map[id]}); const n=document.getElementById('cmsNotice');if(n)n.value=localStorage.getItem('cp_mttq_notice')||''; }
+        function saveCMS(){ const c={unit:cmsUnit.value.trim(),title:cmsTitle.value.trim(),address:cmsAddress.value.trim(),phone:cmsPhone.value.trim(),email:cmsEmail.value.trim(),hours:cmsHours.value.trim(),intro:cmsIntro.value.trim()}; localStorage.setItem('cp_mttq_cms',JSON.stringify(c)); applyCMS(); alert('Đã lưu nội dung cổng.'); }
+        function resetCMS(){ localStorage.removeItem('cp_mttq_cms'); loadCMS(); applyCMS(); alert('Đã khôi phục nội dung mặc định.'); }
+        function applyCMS(){ const c=getCMS(); const h=document.querySelector('.brand-text h1'), p=document.querySelector('.brand-text p'); if(h)h.textContent=c.unit;if(p)p.textContent=c.title; const f=document.querySelector('footer');if(f){const ps=f.querySelectorAll('p');if(ps[0])ps[0].innerHTML='📍 <strong>Địa chỉ:</strong> '+escapeHtml(c.address)+'<br>📞 <strong>Điện thoại đường dây nóng:</strong> '+escapeHtml(c.phone)+'<br>✉️ <strong>Email:</strong> '+escapeHtml(c.email)+'<br>⏰ <strong>Giờ làm việc:</strong> '+escapeHtml(c.hours)+'<br>🏛️ <strong>Tổ chức, bộ máy:</strong> <a href="https://www.quangninh.gov.vn/donvi/campha/Trang/ChiTietBVGioiThieu.aspx?bvid=19" target="_blank" rel="noopener noreferrer" style="color:#93c5fd;text-decoration:underline">Xem cơ cấu tổ chức & chức năng nhiệm vụ</a>';}}
+        function handleLogin(e){ e.preventDefault(); const inputs=e.target.querySelectorAll('input'); const u=inputs[0].value.trim(), pw=inputs[1].value; const a=getAdmin(); if(u===a.username && pw===a.password){ sessionStorage.setItem('cp_admin_logged','1'); closeModal('loginModal'); openAdminPanel(); } else alert('Tên tài khoản hoặc mật khẩu không đúng.'); }
+        function openAdminPanel(){ if(sessionStorage.getItem('cp_admin_logged')!=='1'){openLoginModal();return;} document.getElementById('adminPanel').classList.add('active'); loadCMS(); renderAdminStats(); renderAdminPetitions(); }
+        function closeAdminPanel(){ document.getElementById('adminPanel').classList.remove('active'); }
+        function adminLogout(){ sessionStorage.removeItem('cp_admin_logged'); closeAdminPanel(); alert('Đã đăng xuất tài khoản quản trị.'); }
+        function adminTab(name,btn){ document.querySelectorAll('.admin-section').forEach(x=>x.classList.remove('active')); document.getElementById('admin-'+name).classList.add('active'); document.querySelectorAll('.admin-menu button').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); if(name==='petitions')renderAdminPetitions(); }
+        function getPetitions(){ return JSON.parse(localStorage.getItem('cp_mttq_petitions')||'null') || (typeof sampleData!=='undefined'?sampleData:[]); }
+        function savePetitions(a){ sampleData=a; localStorage.setItem('cp_mttq_petitions',JSON.stringify(a)); }
+        function renderAdminStats(){ const a=getPetitions(); const pending=a.filter(x=>x.status==='Chờ tiếp nhận').length; const processing=a.filter(x=>x.status!=='Chờ tiếp nhận'&&x.status!=='Đã giải quyết').length; const done=a.filter(x=>x.status==='Đã giải quyết').length; document.getElementById('adminStats').innerHTML=`<div class="admin-stat">📩<strong>${a.length}</strong>Tổng phản ánh</div><div class="admin-stat">⏳<strong>${pending}</strong>Chờ tiếp nhận</div><div class="admin-stat">🔄<strong>${processing}</strong>Đang xử lý</div><div class="admin-stat">✅<strong>${done}</strong>Đã giải quyết</div>`; }
+        function renderAdminPetitions(){
+            const a=getPetitions(), box=document.getElementById('adminPetitionList');
+            if(!a.length){box.innerHTML='<p>Chưa có phản ánh trong dữ liệu quản trị.</p>';return;}
+            box.innerHTML='<table class="admin-table"><thead><tr><th>Mã</th><th>Nội dung</th><th>Ngày</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>'+a.map((x,i)=>`<tr><td><b>${escapeHtml(x.code||'')}</b></td><td><b>${escapeHtml(x.title||'')}</b><br><span style="color:#64748b">${escapeHtml((x.content||'').slice(0,120))}${(x.content||'').length>120?'…':''}</span>${x.attachments?.length?`<br><span style="color:#0f3d68;font-weight:600">📷 ${x.attachments.length} tệp ảnh/tài liệu</span>`:''}</td><td>${escapeHtml(x.date||'')}</td><td><select onchange="updatePetitionStatus(${i},this.value)"><option ${x.status==='Chờ tiếp nhận'?'selected':''}>Chờ tiếp nhận</option><option ${x.status==='Đang xử lý'?'selected':''}>Đang xử lý</option><option ${x.status==='Đã giải quyết'?'selected':''}>Đã giải quyết</option><option ${x.status==='Từ chối'?'selected':''}>Từ chối</option></select></td><td><button class="admin-btn primary" style="padding:6px 9px" onclick="openAdminPetition(${i})">Xem/Xử lý</button></td></tr>`).join('')+'</tbody></table>';
+        }
+        function updatePetitionStatus(i,status){const a=getPetitions();a[i].status=status;a[i].step=status==='Chờ tiếp nhận'?1:(status==='Đang xử lý'?3:(status==='Đã giải quyết'?4:1));a[i].updatedAt=new Date().toISOString();savePetitions(a);renderAdminPetitions();renderAdminStats();if(typeof renderPetitions==='function')renderPetitions(a);}
+        function openAdminPetition(i){
+            const a=getPetitions(), x=a[i]; if(!x)return;
+            const att=(x.attachments||[]).map(f=>f.type&&f.type.startsWith('image/')?`<div class="attachment-card"><img src="${f.data}" alt="${escapeHtml(f.name)}"><a href="${f.data}" target="_blank">${escapeHtml(f.name)}</a></div>`:`<div class="attachment-card"><a href="${f.data}" target="_blank">📎 ${escapeHtml(f.name)}</a></div>`).join('');
+            const html=`<div class="modal-card" style="max-width:900px;max-height:90vh;overflow:auto"><div class="modal-header"><h3>📩 Xử lý hồ sơ ${escapeHtml(x.code)}</h3><button class="btn-close" onclick="document.getElementById('adminDetailModal').remove()">&times;</button></div><div class="modal-body"><p><b>Người gửi:</b> ${escapeHtml(x.sender)} &nbsp; <b>Điện thoại:</b> ${escapeHtml(x.phone)}</p><p><b>Địa bàn:</b> ${escapeHtml(x.area)} &nbsp; <b>Lĩnh vực:</b> ${escapeHtml(x.category)} &nbsp; <b>Ngày gửi:</b> ${escapeHtml(x.date)}</p><h4>${escapeHtml(x.title)}</h4><div style="background:#f8fafc;padding:12px;border-radius:8px;white-space:pre-line">${escapeHtml(x.content)}</div><h4 style="margin-top:18px">📷 Ảnh/tài liệu người dân gửi</h4><div class="attachment-grid">${att||'<span style="color:#64748b">Không có tệp đính kèm.</span>'}</div><div class="admin-grid" style="margin-top:18px"><div class="admin-field"><label>Trạng thái xử lý</label><select id="editStatus"><option ${x.status==='Chờ tiếp nhận'?'selected':''}>Chờ tiếp nhận</option><option ${x.status==='Đang xử lý'?'selected':''}>Đang xử lý</option><option ${x.status==='Đã giải quyết'?'selected':''}>Đã giải quyết</option><option ${x.status==='Từ chối'?'selected':''}>Từ chối</option></select></div><div class="admin-field"><label>Kết quả / phản hồi công dân</label><textarea id="editResponse" style="min-height:140px">${escapeHtml(x.response||'')}</textarea></div></div><div class="admin-actions"><button class="admin-btn success" onclick="saveAdminPetition(${i})">💾 Lưu kết quả xử lý</button></div></div></div>`;
+            const ov=document.createElement('div');ov.id='adminDetailModal';ov.className='admin-overlay';ov.style.display='block';ov.innerHTML=html;document.body.appendChild(ov);
+        }
+        function saveAdminPetition(i){const a=getPetitions();const status=document.getElementById('editStatus').value;a[i].status=status;a[i].response=document.getElementById('editResponse').value.trim();a[i].step=status==='Chờ tiếp nhận'?1:(status==='Đang xử lý'?3:(status==='Đã giải quyết'?4:1));a[i].updatedAt=new Date().toISOString();savePetitions(a);document.getElementById('adminDetailModal').remove();renderAdminPetitions();renderAdminStats();if(typeof renderPetitions==='function')renderPetitions(a);alert('Đã lưu kết quả xử lý hồ sơ.');}
+        function clearLocalPetitions(){if(confirm('Xóa toàn bộ dữ liệu phản ánh đang lưu trên trình duyệt?')){localStorage.removeItem('cp_mttq_petitions');sampleData=[];renderAdminPetitions();renderAdminStats();}}
+        function saveNotice(){localStorage.setItem('cp_mttq_notice',document.getElementById('cmsNotice').value);alert('Đã lưu thông báo.');}
+        function saveAdminAccount(){const u=document.getElementById('adminUsername').value.trim(),p=document.getElementById('adminPassword').value;if(!u||!p){alert('Vui lòng nhập đầy đủ tài khoản và mật khẩu mới.');return;}localStorage.setItem('cp_mttq_admin',JSON.stringify({username:u,password:p}));document.getElementById('adminPassword').value='';alert('Đã cập nhật tài khoản quản trị.');}
+        function filesToDataUrls(files){return Promise.all(files.map(file=>new Promise((resolve,reject)=>{if(file.size>10*1024*1024){reject(new Error(file.name+' vượt quá 10MB'));return;}const r=new FileReader();r.onload=()=>resolve({name:file.name,type:file.type,size:file.size,data:r.result});r.onerror=reject;r.readAsDataURL(file)})))}
+                function initAdmin(){const a=getAdmin();document.getElementById('adminUsername').value=a.username;const saved=localStorage.getItem('cp_mttq_petitions');if(saved){try{sampleData=JSON.parse(saved)}catch(e){}}loadCMS();applyCMS();if(sessionStorage.getItem('cp_admin_logged')==='1'){} }
+        document.addEventListener('DOMContentLoaded',initAdmin);
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML;
+        }
+
+        // Initialize view on load
+        window.onload = function() {
+            const saved = localStorage.getItem('cp_mttq_petitions');
+            if(saved){ try { sampleData = JSON.parse(saved); } catch(e){} }
+            if(typeof renderPetitions==='function') renderPetitions(sampleData);
+            applyCMS();
+        };
+    </script>

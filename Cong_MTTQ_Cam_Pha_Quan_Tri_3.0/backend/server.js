@@ -12,6 +12,9 @@ const app = express();
 const port = 3001;
 const JWT_SECRET = 'mttq-campha-super-secret-key-2026'; // In production, use environment variables
 
+// Trust proxy if running behind Nginx
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -23,16 +26,16 @@ const petitionLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // Limit each IP to 5 requests per `window` (here, per hour)
   message: { error: 'Bạn đã gửi quá nhiều phản ánh. Vui lòng thử lại sau 1 giờ.' },
-  standardHeaders: true, 
-  legacyHeaders: false, 
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // Limit each IP to 10 login requests per window
   message: { error: 'Đăng nhập thất bại quá nhiều lần. Vui lòng thử lại sau 15 phút.' },
-  standardHeaders: true, 
-  legacyHeaders: false, 
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Middleware chống trùng lặp nội dung đơn (trong 10 phút)
@@ -177,25 +180,25 @@ app.post('/api/petitions', petitionLimiter, (req, res) => {
     checkDuplicatePetition(req, res, () => {
       let { fullName, phone, cccd, ward, address, title, category, content } = req.body;
 
-  // Basic input sanitization (trim spaces)
-  fullName = fullName ? fullName.trim() : '';
-  title = title ? title.trim() : '';
+      // Basic input sanitization (trim spaces)
+      fullName = fullName ? fullName.trim() : '';
+      title = title ? title.trim() : '';
 
-  const files = req.files;
-  const imagePaths = files ? files.map(file => file.filename).join(',') : '';
+      const files = req.files;
+      const imagePaths = files ? files.map(file => file.filename).join(',') : '';
 
-  const sql = `INSERT INTO petitions (fullName, phone, cccd, ward, address, title, category, content, imagePaths)
+      const sql = `INSERT INTO petitions (fullName, phone, cccd, ward, address, title, category, content, imagePaths)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  const params = [fullName, phone, cccd, ward, address, title, category, content, imagePaths];
+      const params = [fullName, phone, cccd, ward, address, title, category, content, imagePaths];
 
-  db.run(sql, params, function (err) {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to save petition.' });
-    } else {
-      res.status(201).json({ message: 'Petition saved successfully.', id: this.lastID });
-    }
-  });
+      db.run(sql, params, function (err) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Failed to save petition.' });
+        } else {
+          res.status(201).json({ message: 'Petition saved successfully.', id: this.lastID });
+        }
+      });
     }); // Đóng callback của checkDuplicatePetition
   }); // Đóng callback của uploadMiddleware
 });

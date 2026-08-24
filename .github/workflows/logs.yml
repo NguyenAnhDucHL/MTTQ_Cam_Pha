@@ -12,5 +12,7 @@ jobs:
           password: ${{ secrets.VNPT_PASS }}
           port: 22
           script: |
-            cd /root/MTTQ_Cam_Pha/Cong_MTTQ_Cam_Pha_Quan_Tri_3.0
-            docker-compose logs
+            echo "=== Checking Host Nginx config ==="
+            cat /etc/nginx/conf.d/*.conf || true
+            cat /etc/nginx/sites-enabled/* || true
+            cat /etc/nginx/nginx.conf || true

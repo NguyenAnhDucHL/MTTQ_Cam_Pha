@@ -4,6 +4,7 @@ import { fetchApi } from '../../lib/api';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { Modal } from '../../components/ui/Modal';
 import { PetitionDetailModal } from './PetitionDetailModal';
 import { Search, RefreshCw, Eye, Trash2 } from 'lucide-react';
 
@@ -168,7 +169,7 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
       />
 
       {/* Delete Confirmation Modal */}
-      <import_Modal isOpen={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)} title="Xác nhận xóa">
+      <Modal isOpen={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)} title="Xác nhận xóa">
         <div style={{ textAlign: 'center', padding: '10px 0 20px' }}>
           <div style={{ fontSize: '3rem', margin: '0 auto 16px', color: '#ef4444', display: 'flex', justifyContent: 'center' }}>
             ⚠️
@@ -186,7 +187,7 @@ export function PetitionList({ petitions, onUpdateStatus, onDelete, onRefresh })
             </Button>
           </div>
         </div>
-      </import_Modal>
+      </Modal>
     </div>
   );
 }

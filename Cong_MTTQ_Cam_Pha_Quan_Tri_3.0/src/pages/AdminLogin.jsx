@@ -37,11 +37,33 @@ function AdminLogin() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-slate-100">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
+        <div style={{
+            minHeight: '100vh',
+            background: 'linear-gradient(160deg, #da251c 0%, #991b1b 50%, #1e293b 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            fontFamily: "'Roboto', sans-serif"
+        }}>
+            <div style={{
+                background: '#fff',
+                borderRadius: '16px',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+                width: '100%',
+                maxWidth: '440px',
+                overflow: 'hidden'
+            }}>
 
                 {/* Header */}
-                <div className="flex flex-col items-center py-8 px-6 bg-red-600">
+                <div style={{
+                    background: 'linear-gradient(135deg, #da251c 0%, #991b1b 100%)',
+                    padding: '32px 20px 28px',
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}>
                     <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-4 shadow-md border-4 border-yellow-400">
                         <img
                             src="/logo-mttq.png"
@@ -102,7 +124,8 @@ function AdminLogin() {
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-11 mt-2 text-base font-bold bg-red-600 hover:bg-red-700 text-white shadow-md"
+                            className="w-full h-11 mt-2 text-base font-bold text-white shadow-md"
+                            style={{ background: loading ? '#f87171' : 'linear-gradient(135deg, #da251c 0%, #991b1b 100%)', border: 'none' }}
                         >
                             {loading ? '⏳ Đang xác thực...' : '🔐 Đăng nhập'}
                         </Button>

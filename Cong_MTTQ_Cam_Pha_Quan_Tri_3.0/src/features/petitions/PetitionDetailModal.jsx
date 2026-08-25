@@ -9,6 +9,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
   const [isUpdating, setIsUpdating] = useState(false);
   const [notes, setNotes] = useState('');
   const [isSavingNotes, setIsSavingNotes] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   // Update notes when petition changes
   React.useEffect(() => {
@@ -119,38 +120,45 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px' }}>
               {images.map((img, idx) => {
                 const isPdf = img.toLowerCase().endsWith('.pdf');
-                return (
+                const containerStyle = {
+                  display: 'block',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  border: '1px solid #e2e8f0',
+                  aspectRatio: '1',
+                  background: '#f8fafc',
+                  position: 'relative',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                  cursor: isPdf ? 'default' : 'pointer'
+                };
+
+                return isPdf ? (
                   <a
                     key={idx}
                     href={`/mttq-uploads/${img}`}
                     target="_blank"
                     rel="noreferrer"
-                    style={{
-                      display: 'block',
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      border: '1px solid #e2e8f0',
-                      aspectRatio: '1',
-                      background: '#f8fafc',
-                      position: 'relative',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-                    }}
+                    style={{ ...containerStyle, textDecoration: 'none' }}
                   >
-                    {isPdf ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
-                        <span style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</span>
-                        <span style={{ fontSize: '0.75rem', padding: '0 8px', textAlign: 'center', wordBreak: 'break-all' }}>{img.substring(img.indexOf('-') + 1).slice(0, 15)}...</span>
-                      </div>
-                    ) : (
-                      <img
-                        src={`/mttq-uploads/${img}`}
-                        alt={`Đính kèm ${idx + 1}`}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.2s' }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                      />
-                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
+                      <span style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</span>
+                      <span style={{ fontSize: '0.75rem', padding: '0 8px', textAlign: 'center', wordBreak: 'break-all' }}>{img.substring(img.indexOf('-') + 1).slice(0, 15)}...</span>
+                    </div>
                   </a>
+                ) : (
+                  <div
+                    key={idx}
+                    onClick={() => setPreviewImage(`/mttq-uploads/${img}`)}
+                    style={containerStyle}
+                  >
+                    <img
+                      src={`/mttq-uploads/${img}`}
+                      alt={`Đính kèm ${idx + 1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.2s' }}
+                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                    />
+                  </div>
                 )
               })}
             </div>
@@ -190,6 +198,47 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Image Preview */}
+      {previewImage && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.9)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            onClick={() => setPreviewImage(null)}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              color: 'white',
+              fontSize: '40px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              zIndex: 10000,
+              padding: '10px',
+              lineHeight: '1'
+            }}
+          >
+            &times;
+          </button>
+          <img
+            src={previewImage}
+            alt="Preview"
+            style={{ maxWidth: '95%', maxHeight: '95%', objectFit: 'contain' }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </Modal>
   );
 }

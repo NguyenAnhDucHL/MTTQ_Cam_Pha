@@ -4,9 +4,10 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '..', 'uploads');
+    // 1. Upload files to a temporary .quarantine directory first
+    const uploadPath = path.join(__dirname, '..', '.quarantine');
     if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath);
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
     cb(null, uploadPath);
   },

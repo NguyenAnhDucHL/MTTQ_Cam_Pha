@@ -4,6 +4,7 @@ const petitionController = require('../controllers/petitionController');
 const { petitionLimiter } = require('../middlewares/rateLimit');
 const { checkDuplicatePetition } = require('../middlewares/validate');
 const upload = require('../config/upload');
+const { virusScanMiddleware } = require('../middlewares/virusScan');
 const multer = require('multer');
 
 // Public route to submit a petition
@@ -16,7 +17,9 @@ router.post('/', petitionLimiter, (req, res, next) => {
       console.error('Multer error:', err);
       return res.status(500).json({ error: err.message || 'Đã xảy ra lỗi không xác định khi tải ảnh.' });
     }
-    next();
+    
+    // Proceed to virus scan
+    virusScanMiddleware(req, res, next);
   });
 }, checkDuplicatePetition, petitionController.createPetition);
 

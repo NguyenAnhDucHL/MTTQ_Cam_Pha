@@ -23,3 +23,20 @@ services:
       - ./backend/uploads:/app/uploads
     restart: always
     mem_limit: 800m
+    links:
+      - clamav
+
+  clamav:
+    image: clamav/clamav:latest
+    container_name: mttq-clamav
+    environment:
+      - CLAMAV_NO_FRESHCLAMD=false
+    volumes:
+      - clamav-db:/var/lib/clamav
+    ports:
+      - "3310:3310"
+    restart: always
+    mem_limit: 1500m
+
+volumes:
+  clamav-db:

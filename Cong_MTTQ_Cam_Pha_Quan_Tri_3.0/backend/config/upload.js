@@ -4,8 +4,8 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // 1. Upload files to a temporary .quarantine directory first
-    const uploadPath = path.join(__dirname, '..', '.quarantine');
+    // 1. Upload files to a temporary .quarantine directory first (inside uploads volume to avoid EXDEV cross-device link error)
+    const uploadPath = path.join(__dirname, '..', 'uploads', '.quarantine');
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }

@@ -316,12 +316,12 @@ export function SubmitForm() {
           type="submit" 
           variant="destructive"
           size="lg"
-          className="w-full md:w-auto rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-base uppercase tracking-wider px-12 py-6 font-bold"
+          className="w-full md:w-auto rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-base uppercase tracking-wider font-bold px-10 h-12"
           disabled={isSubmitting || cooldownTime > 0}
         >
           {cooldownTime > 0
             ? `Vui lòng đợi ${Math.floor(cooldownTime / 60)}:${(cooldownTime % 60).toString().padStart(2, '0')} để gửi tiếp`
-            : isSubmitting ? 'Đang xử lý...' : '🚀 GỬI PHẢN ÁNH, KIẾN NGHỊ'}
+            : isSubmitting ? 'Đang xử lý...' : 'GỬI PHẢN ÁNH, KIẾN NGHỊ'}
         </Button>
       </div>
     </form>

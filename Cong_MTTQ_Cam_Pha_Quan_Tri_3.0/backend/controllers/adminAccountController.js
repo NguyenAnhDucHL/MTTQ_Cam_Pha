@@ -32,13 +32,13 @@ const createAccount = async (req, res) => {
 const updateAccount = async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
-  
+
   if (!password) return res.status(400).json({ error: 'Vui lòng nhập mật khẩu mới' });
 
   try {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    db.run('UPDATE admins SET password = ? WHERE id = ?', [hashedPassword, id], function(err) {
+    db.run('UPDATE admins SET password = ? WHERE id = ?', [hashedPassword, id], function (err) {
       if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
       res.status(200).json({ message: 'Cập nhật thành công' });
     });
@@ -51,7 +51,7 @@ const deleteAccount = (req, res) => {
   const { id } = req.params;
   if (id == 1) return res.status(400).json({ error: 'Không thể xóa tài khoản admin gốc' });
 
-  db.run('DELETE FROM admins WHERE id = ?', [id], function(err) {
+  db.run('DELETE FROM admins WHERE id = ?', [id], function (err) {
     if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
     res.status(200).json({ message: 'Xóa thành công' });
   });

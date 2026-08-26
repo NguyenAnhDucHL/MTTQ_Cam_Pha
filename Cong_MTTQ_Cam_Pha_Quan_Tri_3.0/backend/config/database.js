@@ -6,6 +6,7 @@ const DB_FILE = path.join(__dirname, '..', 'database.sqlite');
 const db = new sqlite3.Database(DB_FILE);
 
 const initDB = () => {
+  db.run('PRAGMA journal_mode = WAL;');
   db.serialize(() => {
     // 1. Create Admins table
     db.run(`

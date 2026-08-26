@@ -194,16 +194,19 @@ body {
 
 @media (max-width: 768px) {
     .header-container {
-        flex-wrap: nowrap;
-        justify-content: space-between;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
         padding: 0 4px;
+        gap: 8px !important;
     }
 
     .brand-info {
         flex-direction: row !important;
         align-items: center;
         justify-content: flex-start;
-        gap: 8px;
+        gap: 8px !important;
+        flex: 1;
+        min-width: 0;
     }
 
     .brand-text {
@@ -212,26 +215,33 @@ body {
     }
 
     .logo-emblem {
-        width: 44px;
-        height: 44px;
+        width: 44px !important;
+        height: 44px !important;
+        flex-shrink: 0;
     }
 
     .logo-emblem svg,
     .logo-emblem .mttq-logo {
-        width: 44px;
-        height: 44px;
+        width: 44px !important;
+        height: 44px !important;
     }
 
     .mobile-menu-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 8px;
+        margin-right: 0px !important;
+        flex-shrink: 0;
+    }
+
+    .header-actions {
+        flex-shrink: 0;
     }
 
     .btn-login {
         padding: 6px 12px;
         font-size: 0.85rem;
+        white-space: nowrap;
     }
 
     .mobile-overlay {

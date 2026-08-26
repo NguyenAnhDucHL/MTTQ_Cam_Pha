@@ -38,9 +38,9 @@ const initDB = () => {
     `);
 
     // Handle migrations for older tables
-    db.run(`ALTER TABLE petitions ADD COLUMN cccd TEXT`, () => {});
-    db.run(`ALTER TABLE petitions ADD COLUMN trackingCode TEXT`, () => {});
-    db.run(`ALTER TABLE petitions ADD COLUMN adminNotes TEXT`, () => {});
+    db.run(`ALTER TABLE petitions ADD COLUMN cccd TEXT`, () => { });
+    db.run(`ALTER TABLE petitions ADD COLUMN trackingCode TEXT`, () => { });
+    db.run(`ALTER TABLE petitions ADD COLUMN adminNotes TEXT`, () => { });
 
     // 3. Create Tracking Logs table
     db.run(`

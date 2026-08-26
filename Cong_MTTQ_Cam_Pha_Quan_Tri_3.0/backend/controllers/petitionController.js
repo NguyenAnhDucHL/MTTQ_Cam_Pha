@@ -1,6 +1,7 @@
 const db = require('../config/database');
+const { petitionQueue } = require('../config/queue');
 
-const createPetition = (req, res) => {
+const createPetition = async (req, res) => {
   let { fullName, phone, cccd, ward, address, title, category, content } = req.body;
 
   // Basic input sanitization (trim spaces)
@@ -15,18 +16,18 @@ const createPetition = (req, res) => {
   const dateStr = new Date().toISOString().slice(2, 10).replace(/-/g, '');
   const trackingCode = `CP-${dateStr}-${randomStr}`;
 
-  const sql = `INSERT INTO petitions (fullName, phone, cccd, ward, address, title, category, content, imagePaths, trackingCode)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  const params = [fullName, phone, cccd, ward, address, title, category, content, imagePaths, trackingCode];
+  try {
+    // Push the job to the queue
+    await petitionQueue.add('new-petition', {
+      fullName, phone, cccd, ward, address, title, category, content, imagePaths, trackingCode
+    });
 
-  db.run(sql, params, function (err) {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to save petition.' });
-    } else {
-      res.status(201).json({ message: 'Petition saved successfully.', id: this.lastID, trackingCode });
-    }
-  });
+    // Respond immediately, don't wait for SQLite insert
+    res.status(201).json({ message: 'Petition queued successfully.', trackingCode });
+  } catch (err) {
+    console.error('Failed to queue petition:', err);
+    res.status(500).json({ error: 'Hệ thống đang quá tải hoặc lỗi kết nối hàng đợi. Vui lòng thử lại sau.' });
+  }
 };
 
 const getPublicPetitions = (req, res) => {

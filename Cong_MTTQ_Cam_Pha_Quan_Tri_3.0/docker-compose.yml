@@ -23,8 +23,20 @@ services:
       - ./backend/uploads:/app/uploads
     restart: always
     mem_limit: 800m
+    environment:
+      - REDIS_HOST=redis
     links:
       - clamav
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: mttq-redis
+    restart: always
+    mem_limit: 100m
+    ports:
+      - "6379:6379"
 
   clamav:
     image: clamav/clamav:latest

@@ -8,6 +8,9 @@ const hpp = require('hpp');
 const config = require('./config/config');
 const apiRoutes = require('./routes/index');
 
+// Initialize Queue and Worker
+require('./config/queue');
+
 const app = express();
 
 // Trust proxy if running behind Nginx

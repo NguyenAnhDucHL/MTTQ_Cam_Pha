@@ -316,17 +316,12 @@ export function SubmitForm() {
           type="submit" 
           variant="destructive"
           size="lg"
-          className="w-full max-w-[400px] md:w-[360px] rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-base uppercase tracking-wider font-bold h-14 mx-auto flex items-center gap-2"
+          className="w-full max-w-[400px] md:w-[360px] rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-base uppercase tracking-wider font-bold h-14 mx-auto"
           disabled={isSubmitting || cooldownTime > 0}
         >
           {cooldownTime > 0
             ? `Vui lòng đợi ${Math.floor(cooldownTime / 60)}:${(cooldownTime % 60).toString().padStart(2, '0')} để gửi tiếp`
-            : isSubmitting ? 'Đang xử lý...' : (
-                <>
-                  <img src="/logo-mttq.png" alt="MTTQ Logo" className="w-6 h-6 object-contain" />
-                  GỬI PHẢN ÁNH, KIẾN NGHỊ
-                </>
-              )}
+            : isSubmitting ? 'Đang xử lý...' : 'GỬI PHẢN ÁNH, KIẾN NGHỊ'}
         </Button>
       </div>
     </form>

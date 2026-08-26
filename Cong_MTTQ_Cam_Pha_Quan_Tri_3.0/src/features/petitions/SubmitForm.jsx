@@ -316,7 +316,7 @@ export function SubmitForm() {
           type="submit" 
           variant="destructive"
           size="lg"
-          className="w-full md:w-auto rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-base uppercase tracking-wider font-bold px-10 h-12"
+          className="w-full max-w-[400px] md:w-[360px] rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-base uppercase tracking-wider font-bold h-14 mx-auto"
           disabled={isSubmitting || cooldownTime > 0}
         >
           {cooldownTime > 0

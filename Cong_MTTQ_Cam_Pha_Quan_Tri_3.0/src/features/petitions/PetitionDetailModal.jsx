@@ -58,57 +58,57 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Chi tiết Hồ sơ Phản ánh">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '8px' }}>
+      <div className="flex flex-col gap-6 p-2">
 
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
+        <div className="flex justify-between items-start border-b border-slate-200 pb-4">
           <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', margin: '0 0 8px 0' }}>{petition.title}</h3>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">{petition.title}</h3>
+            <div className="flex gap-2 items-center">
               <Badge variant={petition.status === 'pending' ? 'warning' : 'success'}>
                 {petition.status === 'pending' ? '⏳ Đang chờ xử lý' : '✅ Đã giải quyết'}
               </Badge>
-              <Badge variant="outline" style={{ background: '#f8fafc', color: '#475569', borderColor: '#cbd5e1' }}>
+              <Badge variant="outline" className="bg-slate-50 text-slate-600 border-slate-300">
                 {petition.category}
               </Badge>
             </div>
           </div>
-          <div style={{ textAlign: 'right', fontSize: '0.875rem', color: '#64748b' }}>
+          <div className="text-right text-sm text-slate-500">
             Ngày gửi:<br />
-            <span style={{ fontWeight: 600, color: '#334155' }}>
+            <span className="font-semibold text-slate-700">
               {new Date(petition.createdAt).toLocaleString('vi-VN')}
             </span>
           </div>
         </div>
 
         {/* Info Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', background: '#f8fafc', padding: '16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+        <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
           <div>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, margin: '0 0 4px 0' }}>Người gửi</p>
-            <p style={{ fontWeight: 500, color: '#1e293b', margin: 0 }}>{petition.fullName}</p>
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-1">Người gửi</p>
+            <p className="font-medium text-slate-800 m-0">{petition.fullName}</p>
           </div>
           <div>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, margin: '0 0 4px 0' }}>Điện thoại</p>
-            <p style={{ fontWeight: 500, color: '#1e293b', margin: 0 }}>{petition.phone}</p>
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-1">Điện thoại</p>
+            <p className="font-medium text-slate-800 m-0">{petition.phone}</p>
           </div>
           <div>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, margin: '0 0 4px 0' }}>CCCD</p>
-            <p style={{ fontWeight: 500, color: '#1e293b', margin: 0 }}>{petition.cccd || 'Không cung cấp'}</p>
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-1">CCCD</p>
+            <p className="font-medium text-slate-800 m-0">{petition.cccd || 'Không cung cấp'}</p>
           </div>
           <div>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, margin: '0 0 4px 0' }}>Địa bàn / Khu phố</p>
-            <p style={{ fontWeight: 500, color: '#1e293b', margin: 0 }}>{petition.ward || 'Không cung cấp'}</p>
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-1">Địa bàn / Khu phố</p>
+            <p className="font-medium text-slate-800 m-0">{petition.ward || 'Không cung cấp'}</p>
           </div>
-          <div style={{ gridColumn: 'span 2' }}>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, margin: '0 0 4px 0' }}>Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</p>
-            <p style={{ fontWeight: 500, color: '#1e293b', margin: 0 }}>{petition.address || 'Không cung cấp'}</p>
+          <div className="col-span-2">
+            <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-1">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</p>
+            <p className="font-medium text-slate-800 m-0">{petition.address || 'Không cung cấp'}</p>
           </div>
         </div>
 
         {/* Content */}
         <div>
-          <h4 style={{ fontWeight: 600, color: '#1e293b', margin: '0 0 8px 0' }}>Nội dung chi tiết:</h4>
-          <div style={{ padding: '16px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', color: '#334155', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: '1.6', fontSize: '0.95rem' }}>
+          <h4 className="font-semibold text-slate-800 mb-2">Nội dung chi tiết:</h4>
+          <div className="p-4 bg-white border border-slate-200 rounded-xl text-slate-700 whitespace-pre-wrap break-words leading-relaxed text-[0.95rem]">
             {petition.content}
           </div>
         </div>
@@ -116,21 +116,11 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
         {/* Attachments */}
         {images && images.length > 0 && (
           <div>
-            <h4 style={{ fontWeight: 600, color: '#1e293b', margin: '0 0 10px 0' }}>Tài liệu đính kèm ({images.length}):</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px' }}>
+            <h4 className="font-semibold text-slate-800 mb-2.5">Tài liệu đính kèm ({images.length}):</h4>
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3">
               {images.map((img, idx) => {
                 const isPdf = img.toLowerCase().endsWith('.pdf');
-                const containerStyle = {
-                  display: 'block',
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  border: '1px solid #e2e8f0',
-                  aspectRatio: '1',
-                  background: '#f8fafc',
-                  position: 'relative',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                  cursor: isPdf ? 'default' : 'pointer'
-                };
+                const containerClass = `block rounded-lg overflow-hidden border border-slate-200 aspect-square bg-slate-50 relative shadow-sm ${isPdf ? 'cursor-default' : 'cursor-pointer'}`;
 
                 return isPdf ? (
                   <a
@@ -138,25 +128,23 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
                     href={`/mttq-uploads/${img}`}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ ...containerStyle, textDecoration: 'none' }}
+                    className={`${containerClass} no-underline`}
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
-                      <span style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</span>
-                      <span style={{ fontSize: '0.75rem', padding: '0 8px', textAlign: 'center', wordBreak: 'break-all' }}>{img.substring(img.indexOf('-') + 1).slice(0, 15)}...</span>
+                    <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                      <span className="text-3xl mb-2">📄</span>
+                      <span className="text-xs px-2 text-center break-all">{img.substring(img.indexOf('-') + 1).slice(0, 15)}...</span>
                     </div>
                   </a>
                 ) : (
                   <div
                     key={idx}
                     onClick={() => setPreviewImage(`/mttq-uploads/${img}`)}
-                    style={containerStyle}
+                    className={containerClass}
                   >
                     <img
                       src={`/mttq-uploads/${img}`}
                       alt={`Đính kèm ${idx + 1}`}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.2s' }}
-                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                      className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
                     />
                   </div>
                 )
@@ -166,32 +154,32 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
         )}
 
         {/* Admin Notes */}
-        <div style={{ marginTop: '8px' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '8px' }}>Ghi chú xử lý (Nội bộ Admin)</label>
+        <div className="mt-2">
+          <label className="text-[0.85rem] font-semibold text-slate-700 block mb-2">Ghi chú xử lý (Nội bộ Admin)</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            style={{ width: '100%', minHeight: '80px', padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', resize: 'vertical' }}
+            className="w-full min-h-[80px] p-3 rounded-md border border-slate-300 text-sm resize-y focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
             placeholder="Nhập ghi chú xử lý nội bộ... (Người dân không nhìn thấy ghi chú này)"
           />
-          <div style={{ textAlign: 'right', marginTop: '8px' }}>
-            <Button variant="outline" onClick={handleSaveNotes} disabled={isSavingNotes || notes === petition.adminNotes} style={{ fontSize: '13px', padding: '6px 12px' }}>
+          <div className="text-right mt-2">
+            <Button variant="outline" onClick={handleSaveNotes} disabled={isSavingNotes || notes === petition.adminNotes} className="text-[13px] px-3 py-1.5">
               {isSavingNotes ? 'Đang lưu...' : '💾 Lưu ghi chú'}
             </Button>
           </div>
         </div>
 
         {/* Actions */}
-        <div style={{ paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="pt-5 border-t border-slate-200 flex justify-between items-center">
           <div>
-            <Button variant="destructive" onClick={(e) => { e.stopPropagation(); onDelete(petition.id); }} style={{ fontWeight: 600, background: deletingId === petition.id ? '#991b1b' : '#ef4444', color: '#fff', padding: '10px 16px', borderRadius: '6px', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <Button variant="destructive" onClick={(e) => { e.stopPropagation(); onDelete(petition.id); }} className={`font-semibold text-white px-4 py-2.5 rounded-md border-none inline-flex items-center gap-2 ${deletingId === petition.id ? 'bg-red-800' : 'bg-red-500 hover:bg-red-600'}`}>
               {deletingId === petition.id ? 'Xác nhận xóa' : '🗑️ Xóa'}
             </Button>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <Button variant="outline" onClick={onClose} style={{ fontWeight: 600, padding: '10px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', color: '#334155', display: 'inline-flex', alignItems: 'center' }}>Đóng</Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={onClose} className="font-semibold px-4 py-2.5 rounded-md border border-slate-300 bg-white text-slate-700 inline-flex items-center hover:bg-slate-50">Đóng</Button>
             {petition.status === 'pending' && (
-              <Button variant="success" onClick={handleResolve} disabled={isUpdating} style={{ fontWeight: 600, background: '#10b981', color: '#fff', padding: '10px 16px', borderRadius: '6px', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Button variant="success" onClick={handleResolve} disabled={isUpdating} className="font-semibold bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-md border-none inline-flex items-center gap-2">
                 {isUpdating ? '⏳ Đang xử lý...' : '✅ Đánh dấu đã giải quyết'}
               </Button>
             )}
@@ -202,39 +190,19 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
       {/* Fullscreen Image Preview */}
       {previewImage && (
         <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.9)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
+          className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center"
           onClick={() => setPreviewImage(null)}
         >
           <button
             onClick={() => setPreviewImage(null)}
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              color: 'white',
-              fontSize: '40px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              zIndex: 10000,
-              padding: '10px',
-              lineHeight: '1'
-            }}
+            className="absolute top-5 right-5 text-white text-4xl bg-transparent border-none cursor-pointer z-[10000] p-2.5 leading-none hover:text-slate-300"
           >
             &times;
           </button>
           <img
             src={previewImage}
             alt="Preview"
-            style={{ maxWidth: '95%', maxHeight: '95%', objectFit: 'contain' }}
+            className="max-w-[95%] max-h-[95%] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
         </div>

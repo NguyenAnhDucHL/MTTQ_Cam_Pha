@@ -98,7 +98,7 @@ export function PetitionList() {
           <select
             value={statusFilter}
             onChange={handleStatusFilter}
-            style={{ padding: '8px 12px', height: '40px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', color: '#475569', outline: 'none' }}
+            className="px-3 py-2 h-10 rounded-md border border-slate-300 bg-white text-slate-600 focus:outline-none"
           >
             <option value="all">Tất cả trạng thái</option>
             <option value="pending">Chờ xử lý</option>
@@ -112,8 +112,7 @@ export function PetitionList() {
               placeholder="Tìm tiêu đề, người gửi, SĐT..."
               value={search}
               onChange={handleSearch}
-              className="pl-9 w-[300px]"
-              style={{ padding: '8px 12px 8px 36px', height: '40px', width: '300px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+              className="pl-9 px-3 py-2 h-10 w-[300px] rounded-md border border-slate-300 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
             />
           </div>
           <Button variant="outline" size="sm" onClick={onRefresh} className="h-8 gap-1">
@@ -124,17 +123,17 @@ export function PetitionList() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
-          <thead style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+        <table className="w-full text-sm border-collapse">
+          <thead className="bg-slate-50 border-b-2 border-slate-200">
             <tr>
               {['Trạng thái', 'Tiêu đề', 'Lĩnh vực', 'Người gửi', 'Ngày gửi', 'Thao tác'].map(h => (
-                <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontSize: '0.8rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.025em', whiteSpace: 'nowrap' }}>
+                <th key={h} className="px-4 py-3.5 text-left text-[0.8rem] font-bold text-slate-600 uppercase tracking-wide whitespace-nowrap">
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody style={{ backgroundColor: '#fff' }}>
+          <tbody className="bg-white">
             {rows.length === 0 ? (
               <tr>
                 <td colSpan={6} className="py-16 text-center text-slate-400">
@@ -144,24 +143,24 @@ export function PetitionList() {
             ) : rows.map(p => {
               const cfg = STATUS_CFG[p.status] || STATUS_CFG.pending;
               return (
-                <tr key={p.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.2s' }} onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'} onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
-                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                <tr key={p.id} className="border-b border-slate-100 transition-colors duration-200 hover:bg-slate-50">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <Badge variant={cfg.variant}>{cfg.label}</Badge>
                   </td>
-                  <td style={{ padding: '12px 16px', fontWeight: 500, color: '#1e293b', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={p.title}>
+                  <td className="px-4 py-3 font-medium text-slate-800 max-w-[250px] whitespace-nowrap overflow-hidden text-ellipsis" title={p.title}>
                     {p.title}
                   </td>
-                  <td style={{ padding: '12px 16px', color: '#64748b', whiteSpace: 'nowrap' }}>{p.category}</td>
-                  <td style={{ padding: '12px 16px', color: '#475569', whiteSpace: 'nowrap', fontWeight: 500 }}>{p.fullName}</td>
-                  <td style={{ padding: '12px 16px', color: '#64748b', whiteSpace: 'nowrap' }}>
+                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{p.category}</td>
+                  <td className="px-4 py-3 text-slate-600 whitespace-nowrap font-medium">{p.fullName}</td>
+                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
                     {new Date(p.createdAt).toLocaleDateString('vi-VN')}
                   </td>
-                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelected(p); }} style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', gap: '6px', fontWeight: 600 }}>
+                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelected(p); }} className="h-8 px-3 flex items-center justify-center rounded-md gap-1.5 font-semibold">
                         <Eye className="w-4 h-4" /> Chi tiết
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={(e) => handleDeleteRequest(p.id, e)} style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', gap: '6px', fontWeight: 600, background: '#ef4444', color: '#fff', border: 'none' }}>
+                      <Button variant="destructive" size="sm" onClick={(e) => handleDeleteRequest(p.id, e)} className="h-8 px-3 flex items-center justify-center rounded-md gap-1.5 font-semibold bg-red-500 text-white border-none hover:bg-red-600">
                         <Trash2 className="w-4 h-4" /> Xóa
                       </Button>
                     </div>
@@ -211,19 +210,19 @@ export function PetitionList() {
 
       {/* Delete Confirmation Modal */}
       <Modal isOpen={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)} title="Xác nhận xóa">
-        <div style={{ textAlign: 'center', padding: '10px 0 20px' }}>
-          <div style={{ fontSize: '3rem', margin: '0 auto 16px', color: '#ef4444', display: 'flex', justifyContent: 'center' }}>
+        <div className="text-center py-2.5 pb-5">
+          <div className="text-5xl mx-auto mb-4 text-red-500 flex justify-center">
             ⚠️
           </div>
-          <p style={{ fontSize: '1.05rem', color: '#334155', margin: '0 0 24px', lineHeight: '1.5' }}>
+          <p className="text-[1.05rem] text-slate-700 m-0 mb-6 leading-relaxed">
             Bạn có chắc chắn muốn xóa phản ánh này không?<br />
-            Hành động này <strong style={{ color: '#ef4444' }}>không thể hoàn tác</strong>.
+            Hành động này <strong className="text-red-500">không thể hoàn tác</strong>.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
-            <Button variant="outline" onClick={() => setDeleteConfirmId(null)} style={{ padding: '10px 24px', borderRadius: '6px', fontWeight: 600, border: '1px solid #cbd5e1', background: '#fff', color: '#334155' }}>
+          <div className="flex justify-center gap-4">
+            <Button variant="outline" onClick={() => setDeleteConfirmId(null)} className="px-6 py-2.5 rounded-md font-semibold border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">
               Hủy
             </Button>
-            <Button variant="destructive" onClick={confirmDelete} style={{ padding: '10px 24px', borderRadius: '6px', fontWeight: 600, background: '#ef4444', color: '#fff', border: 'none' }}>
+            <Button variant="destructive" onClick={confirmDelete} className="px-6 py-2.5 rounded-md font-semibold bg-red-500 text-white border-none hover:bg-red-600">
               Xác nhận xóa
             </Button>
           </div>

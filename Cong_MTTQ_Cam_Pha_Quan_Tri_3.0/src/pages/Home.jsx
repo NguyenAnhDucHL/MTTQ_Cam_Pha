@@ -114,34 +114,34 @@ function Home() {
                 {activeTab === 'search' && (
                     <section className="block animate-fade-in">
                         <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Tra cứu kết quả giải quyết</h2>
-                        <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '30px' }}>
-                            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                        <div className="bg-white p-6 rounded-lg border border-slate-200 mb-8">
+                            <div className="flex gap-3 flex-wrap">
                                 <input
                                     type="text"
                                     placeholder="Nhập mã tra cứu (VD: CP-240824-A1B2)"
                                     value={trackingCode}
                                     onChange={(e) => setTrackingCode(e.target.value)}
-                                    style={{ flex: 1, padding: '12px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '15px' }}
+                                    className="flex-1 px-4 py-3 rounded-md border border-slate-300 text-[15px] focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
                                 />
                                 <button
                                     onClick={handleTrack}
-                                    style={{ background: '#166534', color: 'white', padding: '12px 24px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                                    className="bg-green-800 text-white px-6 py-3 border-none rounded-md cursor-pointer font-semibold hover:bg-green-900"
                                 >
                                     🔍 Tra Cứu
                                 </button>
                             </div>
-                            {trackError && <div style={{ color: '#ef4444', marginTop: '12px', fontSize: '14px' }}>{trackError}</div>}
+                            {trackError && <div className="text-red-500 mt-3 text-sm">{trackError}</div>}
 
                             {trackResult && (
-                                <div style={{ marginTop: '20px', padding: '20px', background: '#f8fafc', borderLeft: '4px solid #166534', borderRadius: '4px' }}>
-                                    <h4 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>{trackResult.title}</h4>
-                                    <div style={{ display: 'flex', gap: '24px', fontSize: '14px', color: '#475569', marginBottom: '12px' }}>
+                                <div className="mt-5 p-5 bg-slate-50 border-l-4 border-l-green-800 rounded">
+                                    <h4 className="m-0 mb-3 text-base font-bold text-slate-800">{trackResult.title}</h4>
+                                    <div className="flex gap-6 text-sm text-slate-600 mb-3">
                                         <div><strong>Mã đơn:</strong> {trackResult.trackingCode}</div>
                                         <div><strong>Ngày gửi:</strong> {new Date(trackResult.createdAt).toLocaleString('vi-VN')}</div>
                                         <div><strong>Lĩnh vực:</strong> {trackResult.category}</div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <strong style={{ fontSize: '14px', color: '#475569' }}>Trạng thái hiện tại:</strong>
+                                    <div className="flex items-center gap-2">
+                                        <strong className="text-sm text-slate-600 font-bold">Trạng thái hiện tại:</strong>
                                         <Badge variant={
                                             trackResult.status === 'resolved' ? 'success' :
                                                 trackResult.status === 'rejected' ? 'danger' :
@@ -158,25 +158,25 @@ function Home() {
 
                         <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Danh sách phản ánh công khai</h2>
                         {petitions.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+                            <div className="text-center py-12 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300">
                                 Chưa có phản ánh nào được ghi nhận.
                             </div>
                         ) : (
-                            <div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+                            <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
                                 {petitions.map(p => (
-                                    <div key={p.id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <div key={p.id} className="border border-slate-200 rounded-lg p-5 bg-white flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                        <div className="flex justify-between items-start">
                                             <Badge variant={p.status === 'pending' ? 'warning' : p.status === 'processing' ? 'primary' : p.status === 'rejected' ? 'danger' : 'success'}>
                                                 {p.status === 'pending' ? '⏳ Chờ xử lý' : p.status === 'processing' ? '🔄 Đang xử lý' : p.status === 'rejected' ? '❌ Bị từ chối' : '✅ Đã giải quyết'}
                                             </Badge>
-                                            <span style={{ fontSize: '12px', color: '#94a3b8' }}>{new Date(p.createdAt).toLocaleDateString('vi-VN')}</span>
+                                            <span className="text-xs text-slate-400">{new Date(p.createdAt).toLocaleDateString('vi-VN')}</span>
                                         </div>
-                                        <h4 style={{ fontWeight: 600, color: '#1e293b', fontSize: '15px' }}>{p.title}</h4>
-                                        <div style={{ fontSize: '14px', color: '#64748b' }}>
+                                        <h4 className="font-semibold text-slate-800 text-[15px]">{p.title}</h4>
+                                        <div className="text-sm text-slate-500 space-y-1">
                                             <p><strong>Lĩnh vực:</strong> {p.category}</p>
                                             <p><strong>Người gửi:</strong> {p.fullName}</p>
                                         </div>
-                                        <p style={{ fontSize: '14px', color: '#475569', marginTop: '8px' }}>{p.content.substring(0, 100)}{p.content.length > 100 ? '...' : ''}</p>
+                                        <p className="text-sm text-slate-600 mt-2">{p.content.substring(0, 100)}{p.content.length > 100 ? '...' : ''}</p>
                                     </div>
                                 ))}
                             </div>
@@ -184,21 +184,21 @@ function Home() {
 
                         {/* Pagination UI */}
                         {totalPages > 1 && (
-                            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '30px' }}>
+                            <div className="flex justify-center gap-2 mt-8">
                                 <button
                                     disabled={page === 1}
                                     onClick={() => setPage(page - 1)}
-                                    style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: page === 1 ? '#f8fafc' : '#fff', cursor: page === 1 ? 'not-allowed' : 'pointer' }}
+                                    className={`px-4 py-2 rounded-md border border-slate-300 ${page === 1 ? 'bg-slate-50 cursor-not-allowed text-slate-400' : 'bg-white cursor-pointer hover:bg-slate-50'}`}
                                 >
                                     Trang trước
                                 </button>
-                                <div style={{ padding: '8px 16px', background: '#f1f5f9', borderRadius: '6px', fontWeight: 600 }}>
+                                <div className="px-4 py-2 bg-slate-100 rounded-md font-semibold text-slate-700">
                                     Trang {page} / {totalPages}
                                 </div>
                                 <button
                                     disabled={page === totalPages}
                                     onClick={() => setPage(page + 1)}
-                                    style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: page === totalPages ? '#f8fafc' : '#fff', cursor: page === totalPages ? 'not-allowed' : 'pointer' }}
+                                    className={`px-4 py-2 rounded-md border border-slate-300 ${page === totalPages ? 'bg-slate-50 cursor-not-allowed text-slate-400' : 'bg-white cursor-pointer hover:bg-slate-50'}`}
                                 >
                                     Trang sau
                                 </button>
@@ -210,7 +210,7 @@ function Home() {
                 {activeTab === 'docs' && (
                     <section className="block animate-fade-in">
                         <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Văn bản, Thông báo & Chỉ đạo điều hành</h2>
-                        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+                        <div className="text-center py-12 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300">
                             Đang cập nhật tính năng tra cứu văn bản...
                         </div>
                     </section>

@@ -36,7 +36,10 @@ export const fetchApi = async (endpoint, options = {}) => {
     credentials: 'include', // Automatically send HttpOnly cookies
   });
 
-  if ((response.status === 401 || response.status === 403) && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/logout')) {
+  if ((response.status === 401 || response.status === 403) &&
+    !endpoint.includes('/auth/login') &&
+    !endpoint.includes('/auth/logout') &&
+    !endpoint.includes('/auth/me')) {
     await removeAuthToken();
     window.location.href = '/admin/login';
     throw new Error('Unauthorized');

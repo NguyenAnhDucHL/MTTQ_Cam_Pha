@@ -50,4 +50,12 @@ const logout = (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 };
 
-module.exports = { login, logout };
+const getMe = (req, res) => {
+  if (req.user) {
+    res.json({ id: req.user.id, username: req.user.username });
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+};
+
+module.exports = { login, logout, getMe };

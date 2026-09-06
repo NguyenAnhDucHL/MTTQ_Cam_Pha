@@ -26,12 +26,8 @@ function AdminDashboard() {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/admin/login');
-            return;
-        }
-
+        // Trình duyệt tự giữ HttpOnly Cookie nên chúng ta không check localStorage nữa.
+        // Nếu Cookie hết hạn, hàm fetchApi sẽ nhận mã 401 và tự động chuyển về trang Đăng nhập.
         if (activeTab === 'tong-quan') {
             loadStats();
         }

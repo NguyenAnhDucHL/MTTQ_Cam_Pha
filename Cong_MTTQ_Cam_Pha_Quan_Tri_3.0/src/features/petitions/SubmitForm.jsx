@@ -3,6 +3,24 @@ import { toast } from 'sonner';
 import { Button } from '../../components/ui/Button';
 import { fetchApi } from '../../lib/api';
 
+const FilePreview = ({ file }) => {
+  const [url, setUrl] = useState('');
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(file);
+    setUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  if (!file.type.startsWith('image/')) {
+    return (
+      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontSize: '24px' }} title={file.name}>
+        📄
+      </div>
+    );
+  }
+  return <img src={url} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />;
+};
+
 export function SubmitForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0);
@@ -293,13 +311,7 @@ export function SubmitForm() {
                       >
                         &times;
                       </button>
-                      {file.type.startsWith('image/') ? (
-                        <img src={URL.createObjectURL(file)} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontSize: '24px', title: file.name }}>
-                          📄
-                        </div>
-                      )}
+                      <FilePreview file={file} />
                     </div>
                   ))}
                 </div>

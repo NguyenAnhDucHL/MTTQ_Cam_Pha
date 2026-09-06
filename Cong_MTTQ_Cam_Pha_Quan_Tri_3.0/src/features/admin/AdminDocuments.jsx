@@ -8,6 +8,20 @@ import {
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 
+const FilePreview = ({ file }) => {
+  const [url, setUrl] = React.useState('');
+  React.useEffect(() => {
+    const objectUrl = URL.createObjectURL(file);
+    setUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  if (file.type === 'application/pdf') {
+    return <FileIcon className="w-8 h-8 text-red-500" />;
+  }
+  return <img src={url} alt="Preview" className="w-full h-full object-cover" />;
+};
+
 export const AdminDocuments = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -446,11 +460,7 @@ export const AdminDocuments = () => {
                       })}
                       {selectedFiles.map((file, idx) => (
                         <div key={`new-${idx}`} className="relative group border border-slate-200 rounded-lg overflow-hidden bg-slate-50 aspect-square flex items-center justify-center">
-                          {file.type === 'application/pdf' ? (
-                            <FileIcon className="w-8 h-8 text-red-500" />
-                          ) : (
-                            <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover" />
-                          )}
+                          <FilePreview file={file} />
                           <button
                             type="button"
                             onClick={() => setSelectedFiles(selectedFiles.filter((_, i) => i !== idx))}

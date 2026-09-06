@@ -28,7 +28,7 @@ const updateStatus = asyncHandler(async (req, res) => {
 const updateNotes = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { notes } = req.body;
-  
+
   await adminPetitionService.updateNotes(id, notes);
   res.status(200).json({ message: 'Notes updated successfully.' });
 });

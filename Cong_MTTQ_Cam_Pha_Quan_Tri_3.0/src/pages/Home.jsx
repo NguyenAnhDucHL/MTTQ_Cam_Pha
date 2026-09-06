@@ -47,22 +47,22 @@ function Home() {
 
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <header className="header-top">
-                <div className="header-container">
-                    <div className="brand-info">
-                        <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
+            <header className="bg-gradient-to-br from-[#da251c] to-[#991b1b] text-white py-[18px] px-5 shadow-[0_2px_10px_rgba(0,0,0,0.15)]">
+                <div className="max-w-[1200px] mx-auto flex items-center justify-between flex-nowrap md:flex-wrap px-1 md:px-0 gap-2 md:gap-[15px]">
+                    <div className="flex items-center flex-row justify-start flex-1 min-w-0 md:flex-none md:gap-3 gap-2">
+                        <button className="md:hidden flex items-center justify-center bg-transparent border-none text-white cursor-pointer p-0 shrink-0" onClick={() => setIsMobileMenuOpen(true)}>
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                         </button>
-                        <div className="logo-emblem">
-                            <img src="/logo-mttq.png" alt="Logo Mặt trận Tổ quốc Việt Nam" className="mttq-logo" />
+                        <div className="w-[44px] h-[44px] md:w-[52px] md:h-[52px] bg-white rounded-full flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.2)] border-2 border-[#fbbf24] shrink-0">
+                            <img src="/logo-mttq.png" alt="Logo Mặt trận Tổ quốc Việt Nam" className="w-[44px] h-[44px] md:w-[52px] md:h-[52px] object-contain block rounded-full" />
                         </div>
-                        <div className="brand-text">
-                            <h1>Ủy ban MTTQ Việt Nam Phường Cẩm Phả</h1>
-                            <p>CỔNG TIẾP NHẬN, XỬ LÝ PHẢN ÁNH, KIẾN NGHỊ CỦA ĐOÀN VIÊN, HỘI VIÊN VÀ NHÂN DÂN</p>
+                        <div className="hidden md:block">
+                            <h1 className="text-[1.35rem] font-bold uppercase tracking-[0.5px] text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">Ủy ban MTTQ Việt Nam Phường Cẩm Phả</h1>
+                            <p className="text-[0.95rem] text-[#fef08a] font-normal mt-1">CỔNG TIẾP NHẬN, XỬ LÝ PHẢN ÁNH, KIẾN NGHỊ CỦA ĐOÀN VIÊN, HỘI VIÊN VÀ NHÂN DÂN</p>
                         </div>
                     </div>
-                    <div className="header-actions">
-                        <a href="/admin/login" className="btn-login">
+                    <div className="flex items-center gap-3 shrink-0">
+                        <a href="/admin/login" className="bg-white/15 text-white border border-white/30 px-3 py-1.5 md:px-[18px] md:py-[8px] rounded-[20px] no-underline text-[0.85rem] md:text-[0.9rem] font-medium transition-all duration-200 ease-in-out inline-flex items-center gap-1.5 whitespace-nowrap hover:bg-white hover:text-[#da251c]">
                             🔒 Đăng nhập cán bộ
                         </a>
                     </div>

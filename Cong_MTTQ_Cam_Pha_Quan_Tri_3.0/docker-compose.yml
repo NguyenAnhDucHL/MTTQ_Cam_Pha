@@ -19,7 +19,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend/database.sqlite:/app/database.sqlite
+      - ./backend/data:/app/data
       - ./backend/uploads:/app/uploads
     restart: always
     mem_limit: 800m

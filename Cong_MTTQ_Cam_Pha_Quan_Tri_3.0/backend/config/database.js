@@ -1,14 +1,19 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 
-const DB_FILE = path.join(__dirname, '..', 'database.sqlite');
+const DATA_DIR = path.join(__dirname, '..', 'data');
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+const DB_FILE = path.join(DATA_DIR, 'database.sqlite');
 const db = new sqlite3.Database(DB_FILE);
 
 const initDB = () => {
-  // Use DELETE mode instead of WAL because Docker volume mounts a single file,
-  // which causes the -wal file to be lost when the container is recreated.
-  db.run('PRAGMA journal_mode = DELETE;');
+  // Use WAL mode for better concurrency and performance
+  db.run('PRAGMA journal_mode = WAL;');
   db.serialize(() => {
     // 1. Create Admins table
     db.run(`

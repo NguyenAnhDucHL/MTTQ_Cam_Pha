@@ -5,6 +5,9 @@ import { fetchApi } from '../../lib/api';
 export function AdminAccounts() {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalAccounts, setTotalAccounts] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,8 +18,9 @@ export function AdminAccounts() {
   const loadAccounts = async () => {
     try {
       setLoading(true);
-      const data = await fetchApi('/mttq-api/admin/accounts');
-      setAccounts(data);
+      const res = await fetchApi(`/mttq-api/admin/accounts?page=${currentPage}&limit=${ITEMS_PER_PAGE}`);
+      setAccounts(res.data || []);
+      setTotalAccounts(res.total || 0);
     } catch (error) {
       toast.error('Không thể tải danh sách tài khoản');
     } finally {
@@ -26,7 +30,7 @@ export function AdminAccounts() {
 
   useEffect(() => {
     loadAccounts();
-  }, []);
+  }, [currentPage]);
 
   const handleDelete = async (id, name) => {
     if (name === 'admin') {
@@ -38,7 +42,10 @@ export function AdminAccounts() {
     try {
       await fetchApi(`/mttq-api/admin/accounts/${id}`, { method: 'DELETE' });
       toast.success('Đã xóa tài khoản thành công');
-      loadAccounts();
+      const newTotal = totalAccounts - 1;
+      const newTotalPages = Math.ceil(newTotal / ITEMS_PER_PAGE) || 1;
+      if (currentPage > newTotalPages && newTotalPages >= 1) setCurrentPage(newTotalPages);
+      else loadAccounts();
     } catch (error) {
       toast.error(error.message || 'Có lỗi xảy ra khi xóa');
     }
@@ -172,6 +179,42 @@ export function AdminAccounts() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {Math.ceil(totalAccounts / ITEMS_PER_PAGE) > 1 && (
+        <div className="flex justify-between items-center pt-3.5 mt-2 border-t border-slate-100 text-[0.88rem] text-slate-500">
+          <span>
+            Hiển thị <strong className="text-slate-900">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</strong> đến{' '}
+            <strong className="text-slate-900">{Math.min(currentPage * ITEMS_PER_PAGE, totalAccounts)}</strong>{' '}
+            trong tổng <strong className="text-slate-900">{totalAccounts}</strong> tài khoản
+          </span>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className={`px-3 py-1.5 border border-slate-300 rounded-md font-medium ${currentPage === 1 ? 'bg-slate-100 text-slate-400 cursor-default' : 'bg-white text-slate-700 hover:bg-slate-50 cursor-pointer'}`}
+            >
+              Trước
+            </button>
+            {Array.from({ length: Math.ceil(totalAccounts / ITEMS_PER_PAGE) }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-2.5 py-1.5 border rounded-md font-semibold cursor-pointer min-w-[34px] ${currentPage === page ? 'border-red-600 bg-red-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'}`}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={() => setCurrentPage(p => Math.min(Math.ceil(totalAccounts / ITEMS_PER_PAGE), p + 1))}
+              disabled={currentPage === Math.ceil(totalAccounts / ITEMS_PER_PAGE)}
+              className={`px-3 py-1.5 border border-slate-300 rounded-md font-medium ${currentPage === Math.ceil(totalAccounts / ITEMS_PER_PAGE) ? 'bg-slate-100 text-slate-400 cursor-default' : 'bg-white text-slate-700 hover:bg-slate-50 cursor-pointer'}`}
+            >
+              Sau
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
       {isModalOpen && (

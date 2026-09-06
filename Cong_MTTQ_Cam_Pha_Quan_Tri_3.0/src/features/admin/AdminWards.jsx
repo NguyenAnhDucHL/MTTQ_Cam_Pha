@@ -6,6 +6,7 @@ const ITEMS_PER_PAGE = 10;
 
 export function AdminWards() {
   const [wards, setWards] = useState([]);
+  const [totalWards, setTotalWards] = useState(0);
   const [loading, setLoading] = useState(true);
   const [newWardName, setNewWardName] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -15,8 +16,9 @@ export function AdminWards() {
   const loadWards = async () => {
     try {
       setLoading(true);
-      const data = await fetchApi('/mttq-api/wards');
-      setWards(data);
+      const res = await fetchApi(`/mttq-api/wards?page=${currentPage}&limit=${ITEMS_PER_PAGE}`);
+      setWards(res.data || []);
+      setTotalWards(res.total || 0);
     } catch (error) {
       toast.error('Không thể tải danh sách khu phố');
     } finally {
@@ -26,7 +28,7 @@ export function AdminWards() {
 
   useEffect(() => {
     loadWards();
-  }, []);
+  }, [currentPage]);
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -54,10 +56,10 @@ export function AdminWards() {
       await fetchApi(`/mttq-api/admin/wards/${id}`, { method: 'DELETE' });
       toast.success('Đã xóa khu phố');
       // Adjust page if last item on page deleted
-      const newTotal = wards.length - 1;
+      const newTotal = totalWards - 1;
       const newTotalPages = Math.ceil(newTotal / ITEMS_PER_PAGE) || 1;
-      if (currentPage > newTotalPages) setCurrentPage(newTotalPages);
-      loadWards();
+      if (currentPage > newTotalPages && newTotalPages >= 1) setCurrentPage(newTotalPages);
+      else loadWards();
     } catch (error) {
       toast.error(error.message || 'Lỗi khi xóa');
     }
@@ -85,9 +87,9 @@ export function AdminWards() {
   };
 
   // Pagination
-  const totalPages = Math.ceil(wards.length / ITEMS_PER_PAGE) || 1;
+  const totalPages = Math.ceil(totalWards / ITEMS_PER_PAGE) || 1;
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentWards = wards.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentWards = wards;
 
   return (
     <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
@@ -190,8 +192,8 @@ export function AdminWards() {
             <div className="flex justify-between items-center pt-3.5 mt-2 border-t border-slate-100 text-[0.88rem] text-slate-500">
               <span>
                 Hiển thị <strong className="text-slate-900">{startIndex + 1}</strong> đến{' '}
-                <strong className="text-slate-900">{Math.min(startIndex + ITEMS_PER_PAGE, wards.length)}</strong>{' '}
-                trong tổng <strong className="text-slate-900">{wards.length}</strong> khu phố
+                <strong className="text-slate-900">{Math.min(startIndex + ITEMS_PER_PAGE, totalWards)}</strong>{' '}
+                trong tổng <strong className="text-slate-900">{totalWards}</strong> khu phố
               </span>
               <div className="flex gap-1">
                 <button

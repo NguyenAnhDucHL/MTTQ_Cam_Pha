@@ -1,8 +1,14 @@
 const bcrypt = require('bcrypt');
 const { getAsync, allAsync, runAsync } = require('../utils/database-promise');
 
-const getAccounts = async () => {
-  return await allAsync('SELECT id, username FROM admins ORDER BY id ASC');
+const getAccounts = async (page = 1, limit = 10) => {
+  const offset = (page - 1) * limit;
+  
+  const countResult = await allAsync('SELECT COUNT(*) as count FROM admins');
+  const total = countResult[0].count;
+  
+  const data = await allAsync('SELECT id, username FROM admins ORDER BY id ASC LIMIT ? OFFSET ?', [limit, offset]);
+  return { data, total };
 };
 
 const createAccount = async (username, password) => {

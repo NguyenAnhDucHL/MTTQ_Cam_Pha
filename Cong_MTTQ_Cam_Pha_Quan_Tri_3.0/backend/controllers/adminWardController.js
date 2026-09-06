@@ -11,9 +11,18 @@ const createWard = (req, res) => {
 };
 
 const getWards = (req, res) => {
-  db.all('SELECT id, name FROM wards ORDER BY name ASC', [], (err, rows) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  db.get('SELECT COUNT(*) as count FROM wards', [], (err, row) => {
     if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
-    res.status(200).json(rows);
+    const total = row.count;
+
+    db.all('SELECT id, name FROM wards ORDER BY name ASC LIMIT ? OFFSET ?', [limit, offset], (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
+      res.status(200).json({ data: rows, total });
+    });
   });
 };
 

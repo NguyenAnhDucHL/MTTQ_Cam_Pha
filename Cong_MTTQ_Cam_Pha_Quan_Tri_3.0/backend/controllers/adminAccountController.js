@@ -2,8 +2,10 @@ const adminAccountService = require('../services/adminAccountService');
 const asyncHandler = require('../middlewares/asyncHandler');
 
 const getAccounts = asyncHandler(async (req, res) => {
-  const accounts = await adminAccountService.getAccounts();
-  res.status(200).json(accounts);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const accountsData = await adminAccountService.getAccounts(page, limit);
+  res.status(200).json(accountsData);
 });
 
 const createAccount = asyncHandler(async (req, res) => {

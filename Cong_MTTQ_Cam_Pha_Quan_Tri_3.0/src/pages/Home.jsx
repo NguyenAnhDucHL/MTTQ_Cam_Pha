@@ -114,20 +114,21 @@ function Home() {
                 {activeTab === 'search' && (
                     <section className="block animate-fade-in">
                         <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Tra cứu kết quả giải quyết</h2>
-                        <div className="bg-white p-6 rounded-lg border border-slate-200 mb-8">
-                            <div className="flex gap-3 flex-wrap">
+                        <div className="bg-white p-8 rounded-lg border border-slate-200 mb-8 w-full shadow-sm">
+                            <div className="flex flex-col md:flex-row gap-4">
                                 <input
                                     type="text"
                                     placeholder="Nhập mã tra cứu (VD: CP-240824-A1B2)"
                                     value={trackingCode}
                                     onChange={(e) => setTrackingCode(e.target.value)}
-                                    className="flex-1 px-4 py-3 rounded-md border border-slate-300 text-[15px] focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                                    className="flex-1 px-5 py-3.5 rounded-lg border border-slate-300 text-[1.05rem] focus:outline-none focus:border-red-500 focus:ring-[3px] focus:ring-red-500/20 transition-all duration-200"
                                 />
                                 <button
                                     onClick={handleTrack}
-                                    className="bg-green-800 text-white px-6 py-3 border-none rounded-md cursor-pointer font-semibold hover:bg-green-900"
+                                    className="bg-green-700 text-white px-8 py-3.5 border-none rounded-lg cursor-pointer font-bold text-[1.05rem] hover:bg-green-800 transition-all shadow-sm md:w-auto w-full flex items-center justify-center gap-2"
                                 >
-                                    🔍 Tra Cứu
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    Tra Cứu
                                 </button>
                             </div>
                             {trackError && <div className="text-red-500 mt-3 text-sm">{trackError}</div>}

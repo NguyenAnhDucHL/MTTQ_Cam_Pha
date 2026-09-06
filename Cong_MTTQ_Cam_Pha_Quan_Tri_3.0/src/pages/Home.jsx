@@ -68,9 +68,15 @@ function Home() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
-                        <a href="/admin/login" className="bg-white/15 text-white border border-white/30 px-4 py-2 md:px-5 md:py-2.5 rounded-full no-underline text-[0.85rem] md:text-[0.95rem] font-medium transition-all duration-300 ease-in-out inline-flex items-center gap-2 whitespace-nowrap hover:bg-white hover:text-[#da251c] hover:shadow-md">
-                            🔒 Đăng nhập cán bộ
-                        </a>
+                        {localStorage.getItem('token') ? (
+                            <a href="/admin" className="bg-white/15 text-white border border-white/30 px-4 py-2 md:px-5 md:py-2.5 rounded-full no-underline text-[0.85rem] md:text-[0.95rem] font-medium transition-all duration-300 ease-in-out inline-flex items-center gap-2 whitespace-nowrap hover:bg-white hover:text-[#da251c] hover:shadow-md">
+                                ⚙️ Vào trang Quản trị
+                            </a>
+                        ) : (
+                            <a href="/admin/login" className="bg-white/15 text-white border border-white/30 px-4 py-2 md:px-5 md:py-2.5 rounded-full no-underline text-[0.85rem] md:text-[0.95rem] font-medium transition-all duration-300 ease-in-out inline-flex items-center gap-2 whitespace-nowrap hover:bg-white hover:text-[#da251c] hover:shadow-md">
+                                🔒 Đăng nhập cán bộ
+                            </a>
+                        )}
                     </div>
                 </div>
             </header>

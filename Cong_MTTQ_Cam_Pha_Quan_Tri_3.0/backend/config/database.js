@@ -6,7 +6,9 @@ const DB_FILE = path.join(__dirname, '..', 'database.sqlite');
 const db = new sqlite3.Database(DB_FILE);
 
 const initDB = () => {
-  db.run('PRAGMA journal_mode = WAL;');
+  // Use DELETE mode instead of WAL because Docker volume mounts a single file,
+  // which causes the -wal file to be lost when the container is recreated.
+  db.run('PRAGMA journal_mode = DELETE;');
   db.serialize(() => {
     // 1. Create Admins table
     db.run(`

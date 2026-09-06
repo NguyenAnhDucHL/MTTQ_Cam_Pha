@@ -14,7 +14,7 @@ function Home() {
     const [totalPages, setTotalPages] = useState(1);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const mobileOverlayStyles = `fixed inset-0 w-screen h-screen bg-black/50 z-[999] transition-all duration-300 md:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`;
+    const mobileOverlayStyles = `fixed inset-0 bg-black/50 z-[999] transition-all duration-300 md:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`;
     const mainNavStyles = `fixed top-0 -left-[300px] w-[280px] h-screen bg-white z-[1000] transition-all duration-300 overflow-y-auto shadow-[2px_0_8px_rgba(0,0,0,0.1)] md:sticky md:left-0 md:w-auto md:h-auto md:z-[100] md:overflow-visible md:shadow-[0_2px_4px_rgba(0,0,0,0.05)] md:border-b-2 md:border-[#da251c] ${isMobileMenuOpen ? '!left-0' : ''}`;
     const navContainerStyles = "flex flex-col py-2.5 px-0 md:flex-row md:max-w-[1200px] md:mx-auto md:overflow-x-auto md:py-0";
     const navItemBase = "flex items-center gap-2 cursor-pointer transition-all duration-200 justify-start text-left border-none border-b border-[#f1f5f9] rounded-none px-5 py-4 text-[1rem] whitespace-normal bg-transparent text-[#334155] hover:bg-[#f8fafc] hover:text-[#da251c] md:justify-start md:border-b-[3px] md:border-transparent md:px-[22px] md:py-[14px] md:text-[0.95rem] md:text-[#0f172a] md:whitespace-nowrap md:hover:bg-[#fef2f2] font-medium";
@@ -53,7 +53,7 @@ function Home() {
     };
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div className="overflow-x-hidden min-h-screen flex flex-col w-full">
             <header className="bg-gradient-to-br from-[#da251c] to-[#991b1b] text-white py-[18px] px-5 shadow-[0_2px_10px_rgba(0,0,0,0.15)]">
                 <div className="max-w-[1200px] mx-auto flex items-center justify-between flex-nowrap md:flex-wrap px-1 md:px-0 gap-2 md:gap-[15px]">
                     <div className="flex items-center flex-row justify-start flex-1 min-w-0 md:flex-none md:gap-3 gap-2">

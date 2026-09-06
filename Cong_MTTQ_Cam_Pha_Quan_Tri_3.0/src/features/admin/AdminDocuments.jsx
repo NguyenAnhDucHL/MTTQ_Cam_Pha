@@ -27,7 +27,8 @@ export const AdminDocuments = () => {
     issueDate: '',
     content: ''
   });
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [existingFiles, setExistingFiles] = useState([]);
 
   const fetchDocuments = async (pageNum = 1) => {
     try {
@@ -63,18 +64,29 @@ export const AdminDocuments = () => {
         issueDate: doc.issueDate || '',
         content: doc.content || ''
       });
+      let parsedFiles = [];
+      if (doc.fileUrl) {
+        try {
+          parsedFiles = JSON.parse(doc.fileUrl);
+        } catch (e) {
+          parsedFiles = [doc.fileUrl];
+        }
+      }
+      setExistingFiles(parsedFiles);
     } else {
       setCurrentDoc(null);
       setFormData({ title: '', documentNumber: '', issueDate: '', content: '' });
+      setExistingFiles([]);
     }
-    setSelectedFile(null);
+    setSelectedFiles([]);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setCurrentDoc(null);
-    setSelectedFile(null);
+    setSelectedFiles([]);
+    setExistingFiles([]);
   };
 
   const handleSubmit = async (e) => {
@@ -90,9 +102,16 @@ export const AdminDocuments = () => {
       data.append('documentNumber', formData.documentNumber.trim());
       data.append('issueDate', formData.issueDate);
       data.append('content', formData.content.trim());
-      if (selectedFile) {
-        data.append('file', selectedFile);
+
+      // Append existing files that were kept
+      if (currentDoc) {
+        data.append('remainingFiles', JSON.stringify(existingFiles));
       }
+
+      // Append new files
+      selectedFiles.forEach(file => {
+        data.append('files', file);
+      });
 
       let res;
       if (currentDoc) {
@@ -202,19 +221,33 @@ export const AdminDocuments = () => {
                     {doc.issueDate ? new Date(doc.issueDate).toLocaleDateString('vi-VN') : '-'}
                   </td>
                   <td className="px-5 py-4 text-center">
-                    {doc.fileUrl ? (
-                      <a
-                        href={`/mttq-api${doc.fileUrl}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-                        title="Xem file"
-                      >
-                        <FileIcon className="w-4 h-4" />
-                      </a>
-                    ) : (
-                      <span className="text-slate-300">-</span>
-                    )}
+                    {(() => {
+                      if (!doc.fileUrl) return <span className="text-slate-300">-</span>;
+                      let urls = [];
+                      try {
+                        urls = JSON.parse(doc.fileUrl);
+                      } catch (e) {
+                        urls = [doc.fileUrl];
+                      }
+                      if (urls.length === 0) return <span className="text-slate-300">-</span>;
+
+                      return (
+                        <div className="flex items-center justify-center gap-1 flex-wrap">
+                          {urls.map((url, i) => (
+                            <a
+                              key={i}
+                              href={`/mttq-api${url}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                              title="Xem file"
+                            >
+                              {url.toLowerCase().endsWith('.pdf') ? <FileIcon className="w-4 h-4" /> : <span className="text-xs font-bold">IMG</span>}
+                            </a>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td className="px-5 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -322,38 +355,75 @@ export const AdminDocuments = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    File đính kèm (PDF)
+                    File đính kèm (Ảnh & PDF)
                   </label>
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-xl hover:border-red-400 hover:bg-red-50/50 transition-colors relative group">
                     <div className="space-y-1 text-center">
                       <Upload className="mx-auto h-10 w-10 text-slate-300 group-hover:text-red-400 transition-colors" />
                       <div className="flex text-sm text-slate-600 justify-center">
                         <label className="relative cursor-pointer rounded-md font-medium text-red-600 hover:text-red-500 focus-within:outline-none">
-                          <span>{selectedFile ? selectedFile.name : 'Tải file lên'}</span>
+                          <span>Tải file lên</span>
                           <input
                             type="file"
-                            accept=".pdf,application/pdf"
+                            multiple
+                            accept=".pdf,image/*"
                             className="sr-only"
                             onChange={(e) => {
-                              if (e.target.files[0]) {
-                                if (e.target.files[0].size > 25 * 1024 * 1024) {
-                                  toast.error('File quá lớn. Tối đa 25MB');
-                                  return;
-                                }
-                                setSelectedFile(e.target.files[0]);
+                              const files = Array.from(e.target.files);
+                              let totalSize = files.reduce((sum, f) => sum + f.size, 0);
+                              if (totalSize > 25 * 1024 * 1024) {
+                                toast.error('Tổng dung lượng các file vượt quá 25MB');
+                                return;
                               }
+                              setSelectedFiles(prev => [...prev, ...files]);
+                              e.target.value = null; // reset input
                             }}
                           />
                         </label>
-                        {!selectedFile && <p className="pl-1">hoặc kéo thả vào đây</p>}
+                        <p className="pl-1">hoặc kéo thả vào đây</p>
                       </div>
-                      <p className="text-xs text-slate-500">PDF lên tới 25MB</p>
+                      <p className="text-xs text-slate-500">Hỗ trợ Ảnh & PDF (Tối đa 25MB)</p>
                     </div>
                   </div>
-                  {currentDoc?.fileUrl && !selectedFile && (
-                    <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
-                      <FileIcon className="w-3.5 h-3.5" /> File hiện tại đã được đính kèm. Tải lên file mới sẽ ghi đè file cũ.
-                    </p>
+
+                  {/* Grid Preview */}
+                  {(existingFiles.length > 0 || selectedFiles.length > 0) && (
+                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                      {existingFiles.map((url, idx) => (
+                        <div key={`exist-${idx}`} className="relative group border border-slate-200 rounded-lg overflow-hidden bg-slate-50 aspect-square flex items-center justify-center">
+                          {url.toLowerCase().endsWith('.pdf') ? (
+                            <FileIcon className="w-8 h-8 text-red-500" />
+                          ) : (
+                            <img src={`/mttq-api${url}`} alt="Preview" className="w-full h-full object-cover" />
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setExistingFiles(existingFiles.filter((_, i) => i !== idx))}
+                            className="absolute top-1 right-1 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-600"
+                            title="Xóa"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedFiles.map((file, idx) => (
+                        <div key={`new-${idx}`} className="relative group border border-slate-200 rounded-lg overflow-hidden bg-slate-50 aspect-square flex items-center justify-center">
+                          {file.type === 'application/pdf' ? (
+                            <FileIcon className="w-8 h-8 text-red-500" />
+                          ) : (
+                            <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover" />
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setSelectedFiles(selectedFiles.filter((_, i) => i !== idx))}
+                            className="absolute top-1 right-1 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-600"
+                            title="Xóa"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>

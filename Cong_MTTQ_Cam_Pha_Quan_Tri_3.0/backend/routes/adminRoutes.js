@@ -30,8 +30,8 @@ router.delete('/accounts/:id', adminAccountController.deleteAccount);
 
 // Documents
 router.get('/documents', documentController.getAdminDocuments);
-router.post('/documents', upload.single('file'), documentController.createDocument);
-router.put('/documents/:id', upload.single('file'), documentController.updateDocument);
+router.post('/documents', upload.array('files', 10), documentController.createDocument);
+router.put('/documents/:id', upload.array('files', 10), documentController.updateDocument);
 router.delete('/documents/:id', documentController.deleteDocument);
 
 module.exports = router;

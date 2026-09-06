@@ -70,10 +70,10 @@ const getAdminDocuments = (req, res) => {
 
 const createDocument = (req, res) => {
   const { title, documentNumber, issueDate, content } = req.body;
-  let fileUrl = null;
+  let fileUrls = [];
 
-  if (req.file) {
-    fileUrl = `/uploads/.quarantine/${req.file.filename}`;
+  if (req.files && req.files.length > 0) {
+    fileUrls = req.files.map(file => `/uploads/.quarantine/${file.filename}`);
   }
 
   if (!title) {
@@ -84,7 +84,8 @@ const createDocument = (req, res) => {
     INSERT INTO documents (title, documentNumber, issueDate, content, fileUrl)
     VALUES (?, ?, ?, ?, ?)
   `;
-  const params = [title, documentNumber, issueDate, content, fileUrl];
+  const fileUrlStr = fileUrls.length > 0 ? JSON.stringify(fileUrls) : null;
+  const params = [title, documentNumber, issueDate, content, fileUrlStr];
 
   db.run(query, params, function (err) {
     if (err) {
@@ -97,34 +98,56 @@ const createDocument = (req, res) => {
 
 const updateDocument = (req, res) => {
   const { id } = req.params;
-  const { title, documentNumber, issueDate, content } = req.body;
-  
+  const { title, documentNumber, issueDate, content, remainingFiles } = req.body;
+
   if (!title) {
     return res.status(400).json({ error: 'Tiêu đề/Trích yếu là bắt buộc' });
   }
 
-  // Handle optional file update
-  let query, params;
-  if (req.file) {
-    // New file uploaded, need to fetch old file to delete it
-    const fileUrl = `/uploads/.quarantine/${req.file.filename}`;
-    db.get('SELECT fileUrl FROM documents WHERE id = ?', [id], (err, row) => {
-      if (row && row.fileUrl) {
-        const oldFilePath = path.join(__dirname, '..', row.fileUrl);
-        if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
-      }
-    });
-    query = `UPDATE documents SET title = ?, documentNumber = ?, issueDate = ?, content = ?, fileUrl = ? WHERE id = ?`;
-    params = [title, documentNumber, issueDate, content, fileUrl, id];
-  } else {
-    query = `UPDATE documents SET title = ?, documentNumber = ?, issueDate = ?, content = ? WHERE id = ?`;
-    params = [title, documentNumber, issueDate, content, id];
-  }
+  db.get('SELECT fileUrl FROM documents WHERE id = ?', [id], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Lỗi hệ thống' });
 
-  db.run(query, params, function (err) {
-    if (err) return res.status(500).json({ error: 'Lỗi khi cập nhật văn bản' });
-    if (this.changes === 0) return res.status(404).json({ error: 'Không tìm thấy văn bản' });
-    res.status(200).json({ message: 'Cập nhật thành công' });
+    let existingFileUrls = [];
+    if (row && row.fileUrl) {
+      try {
+        existingFileUrls = JSON.parse(row.fileUrl);
+      } catch (e) {
+        existingFileUrls = [row.fileUrl]; // Fallback for old single string data
+      }
+    }
+
+    let keptFiles = [];
+    if (remainingFiles) {
+      try {
+        keptFiles = JSON.parse(remainingFiles);
+      } catch(e) {
+        if (typeof remainingFiles === 'string') keptFiles = [remainingFiles];
+      }
+    }
+
+    // Delete physically removed files
+    const filesToDelete = existingFileUrls.filter(url => !keptFiles.includes(url));
+    filesToDelete.forEach(url => {
+      const filePath = path.join(__dirname, '..', url);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    });
+
+    // Add new files
+    let newFileUrls = [];
+    if (req.files && req.files.length > 0) {
+      newFileUrls = req.files.map(file => `/uploads/.quarantine/${file.filename}`);
+    }
+
+    const finalFileUrls = [...keptFiles, ...newFileUrls];
+    const fileUrlStr = finalFileUrls.length > 0 ? JSON.stringify(finalFileUrls) : null;
+
+    const query = `UPDATE documents SET title = ?, documentNumber = ?, issueDate = ?, content = ?, fileUrl = ? WHERE id = ?`;
+    const params = [title, documentNumber, issueDate, content, fileUrlStr, id];
+
+    db.run(query, params, function (err) {
+      if (err) return res.status(500).json({ error: 'Lỗi khi cập nhật văn bản' });
+      res.status(200).json({ message: 'Cập nhật thành công' });
+    });
   });
 };
 
@@ -136,8 +159,16 @@ const deleteDocument = (req, res) => {
     if (!row) return res.status(404).json({ error: 'Không tìm thấy văn bản' });
 
     if (row.fileUrl) {
-      const filePath = path.join(__dirname, '..', row.fileUrl);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      let fileUrls = [];
+      try {
+        fileUrls = JSON.parse(row.fileUrl);
+      } catch(e) {
+        fileUrls = [row.fileUrl]; // Fallback
+      }
+      fileUrls.forEach(url => {
+        const filePath = path.join(__dirname, '..', url);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      });
     }
 
     db.run('DELETE FROM documents WHERE id = ?', [id], function (err) {

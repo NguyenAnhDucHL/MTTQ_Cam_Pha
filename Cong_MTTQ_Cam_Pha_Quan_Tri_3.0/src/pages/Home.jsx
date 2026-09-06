@@ -217,10 +217,7 @@ function Home() {
 
                 {activeTab === 'docs' && (
                     <section className="block animate-fade-in">
-                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Văn bản, Thông báo & Chỉ đạo điều hành</h2>
-                        <div className="text-center py-12 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300">
-                            Đang cập nhật tính năng tra cứu văn bản...
-                        </div>
+                        <DocumentList />
                     </section>
                 )}
             </main>

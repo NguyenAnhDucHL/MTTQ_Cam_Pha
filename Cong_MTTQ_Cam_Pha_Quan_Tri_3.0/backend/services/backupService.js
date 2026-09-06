@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const fs = require('fs');
 const path = require('path');
-const archiver = require('archiver');
+const { ZipArchive } = require('archiver');
 
 const BACKUP_DIR = path.join(__dirname, '..', 'backups');
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -23,7 +23,7 @@ const performBackup = async () => {
       const backupFilePath = path.join(BACKUP_DIR, backupFileName);
 
       const output = fs.createWriteStream(backupFilePath);
-      const archive = archiver('zip', {
+      const archive = new ZipArchive({
         zlib: { level: 9 } // Mức độ nén cao nhất
       });
 
@@ -74,10 +74,10 @@ const cleanupOldBackups = () => {
       const filePath = path.join(BACKUP_DIR, file);
       fs.stat(filePath, (err, stats) => {
         if (err) return;
-        
+
         const ageInMs = now - stats.mtimeMs;
         const ageInDays = ageInMs / (1000 * 60 * 60 * 24);
-        
+
         if (ageInDays > MAX_AGE_DAYS && file.endsWith('.zip')) {
           fs.unlink(filePath, (err) => {
             if (!err) {

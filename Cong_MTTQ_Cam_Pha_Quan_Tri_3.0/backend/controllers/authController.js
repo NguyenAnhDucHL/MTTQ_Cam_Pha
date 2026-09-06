@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const db = require('../config/database');
 
+const crypto = require('crypto');
+
 const login = (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -14,8 +16,14 @@ const login = (req, res) => {
     if (row) {
       const match = await bcrypt.compare(password, row.password);
       if (match) {
-        const token = jwt.sign({ id: row.id, username: row.username }, config.jwtSecret, { expiresIn: '8h' });
-        res.status(200).json({ message: 'Login successful', token });
+        const sessionToken = crypto.randomBytes(16).toString('hex');
+        
+        db.run('UPDATE admins SET sessionToken = ? WHERE id = ?', [sessionToken, row.id], (updateErr) => {
+          if (updateErr) return res.status(500).json({ error: 'Lỗi cập nhật phiên đăng nhập' });
+          
+          const token = jwt.sign({ id: row.id, username: row.username, sessionId: sessionToken }, config.jwtSecret, { expiresIn: '8h' });
+          res.status(200).json({ message: 'Login successful', token });
+        });
       } else {
         res.status(401).json({ error: 'Tên đăng nhập hoặc mật khẩu không chính xác' });
       }

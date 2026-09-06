@@ -98,85 +98,69 @@ export function AdminAccounts() {
   };
 
   return (
-    <div className="card" style={{ position: 'relative' }}>
-      <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+    <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6 relative">
+      <div className="font-bold text-lg text-slate-800 mb-5 pb-3 border-b border-slate-100 flex justify-between items-center flex-wrap gap-2.5">
         <span>Danh sách Tài khoản</span>
         <button
           onClick={openAddModal}
-          className="btn-submit"
-          style={{ width: 'auto', padding: '8px 16px', fontSize: '0.9rem' }}
+          className="bg-green-700 hover:bg-green-800 text-white font-semibold rounded-md border-none cursor-pointer w-auto px-4 py-2 text-[0.9rem]"
         >
           + Thêm tài khoản
         </button>
       </div>
 
-      <div style={{ overflowX: 'auto', marginTop: '10px' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+      <div className="overflow-x-auto mt-2.5">
+        <table className="w-full border-collapse text-[0.95rem]">
           <thead>
-            <tr style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b' }}>Người dùng</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b' }}>Vai trò</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b' }}>Trạng thái</th>
-              <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600, color: '#64748b', width: '100px' }}>Thao tác</th>
+            <tr className="bg-slate-50 border-y border-slate-200">
+              <th className="p-3 text-left font-semibold text-slate-500">Người dùng</th>
+              <th className="p-3 text-left font-semibold text-slate-500">Vai trò</th>
+              <th className="p-3 text-left font-semibold text-slate-500">Trạng thái</th>
+              <th className="p-3 text-right font-semibold text-slate-500 w-[100px]">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="4" style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
+                <td colSpan="4" className="p-8 text-center text-slate-500">
                   Đang tải dữ liệu...
                 </td>
               </tr>
             ) : accounts.length === 0 ? (
               <tr>
-                <td colSpan="4" style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
+                <td colSpan="4" className="p-8 text-center text-slate-500">
                   Không có dữ liệu tài khoản
                 </td>
               </tr>
             ) : (
               accounts.map(account => (
-                <tr key={account.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 16px' }}>
-                    <div style={{ fontWeight: 500, color: '#0f172a' }}>{account.username}</div>
+                <tr key={account.id} className="border-b border-slate-100">
+                  <td className="p-3">
+                    <div className="font-medium text-slate-900">{account.username}</div>
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{
-                      color: account.username === 'admin' ? 'var(--primary-red)' : '#3b82f6',
-                      fontWeight: 600,
-                      fontSize: '0.85rem'
-                    }}>
+                  <td className="p-3">
+                    <span className={`font-semibold text-[0.85rem] ${account.username === 'admin' ? 'text-red-600' : 'text-blue-500'}`}>
                       {account.username === 'admin' ? 'Quản trị viên' : 'Cán bộ'}
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{
-                      background: '#dcfce7',
-                      color: '#166534',
-                      padding: '4px 10px',
-                      borderRadius: '20px',
-                      fontSize: '0.8rem',
-                      fontWeight: 600
-                    }}>
+                  <td className="p-3">
+                    <span className="bg-green-100 text-green-800 px-2.5 py-1 rounded-full text-[0.8rem] font-semibold">
                       Hoạt động
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                    <span style={{ display: 'inline-flex', gap: '6px' }}>
+                  <td className="p-3 text-right">
+                    <span className="inline-flex gap-1.5">
                       <button
                         onClick={() => openEditModal(account)}
                         title="Sửa mật khẩu"
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#fef3c7'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                        className="bg-transparent border-none cursor-pointer text-[1.1rem] px-1.5 py-1 rounded hover:bg-amber-100"
                       >
                         ✏️
                       </button>
                       <button
                         onClick={() => handleDelete(account.id, account.username)}
                         title="Xóa"
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#fee2e2'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                        className="bg-transparent border-none cursor-pointer text-[1.1rem] px-1.5 py-1 rounded hover:bg-red-100"
                       >
                         🗑️
                       </button>
@@ -191,71 +175,59 @@ export function AdminAccounts() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0,0,0,0.5)', zIndex: 99999,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '20px'
-        }}>
-          <div style={{
-            background: '#fff', borderRadius: '8px', width: '100%', maxWidth: '400px',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.1)', overflow: 'hidden',
-            display: 'flex', flexDirection: 'column'
-          }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>
+        <div className="fixed inset-0 bg-black/50 z-[99999] flex items-center justify-center p-5">
+          <div className="bg-white rounded-lg w-full max-w-[400px] shadow-[0_10px_25px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col">
+            <div className="px-5 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+              <h3 className="m-0 text-[1.1rem] text-slate-900">
                 {modalMode === 'add' ? 'Thêm tài khoản mới' : 'Chỉnh sửa tài khoản'}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#64748b' }}
+                className="bg-transparent border-none text-[1.2rem] cursor-pointer text-slate-500 hover:text-slate-700"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4">
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
+                <label className="block mb-2 text-[0.9rem] font-semibold text-slate-700">
                   Tên đăng nhập
                 </label>
                 <input
                   type="text"
                   value={currentAccount.username}
                   onChange={(e) => setCurrentAccount({ ...currentAccount, username: e.target.value })}
-                  className="form-control"
-                  style={{ width: '100%' }}
+                  className="px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 w-full box-border"
                   placeholder="Nhập tên đăng nhập"
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
-                  Mật khẩu {modalMode === 'edit' && <span style={{ fontWeight: 'normal', color: '#94a3b8' }}>(Bỏ trống nếu không đổi)</span>}
+                <label className="block mb-2 text-[0.9rem] font-semibold text-slate-700">
+                  Mật khẩu {modalMode === 'edit' && <span className="font-normal text-slate-400">(Bỏ trống nếu không đổi)</span>}
                 </label>
                 <input
                   type="password"
                   value={currentAccount.password}
                   onChange={(e) => setCurrentAccount({ ...currentAccount, password: e.target.value })}
-                  className="form-control"
-                  style={{ width: '100%' }}
+                  className="px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 w-full box-border"
                   placeholder="Nhập mật khẩu"
                 />
               </div>
 
-              <div style={{ marginTop: '10px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <div className="mt-2.5 flex gap-2.5 justify-end">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  style={{ padding: '8px 16px', background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '5px', cursor: 'pointer', fontWeight: 600 }}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-md cursor-pointer font-semibold"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-submit"
-                  style={{ padding: '8px 16px', width: 'auto', opacity: isSubmitting ? 0.7 : 1 }}
+                  className={`bg-green-700 text-white font-semibold rounded-md border-none px-4 py-2 w-auto ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-green-800 cursor-pointer'}`}
                 >
                   {isSubmitting ? 'Đang lưu...' : 'Lưu lại'}
                 </button>

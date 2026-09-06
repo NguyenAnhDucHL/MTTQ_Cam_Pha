@@ -90,68 +90,66 @@ export function AdminWards() {
   const currentWards = wards.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <div className="card">
-      <div className="card-header">Danh sách Khu phố / Địa bàn</div>
+    <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
+      <div className="font-bold text-lg text-slate-800 mb-5 pb-3 border-b border-slate-100">Danh sách Khu phố / Địa bàn</div>
 
       {/* Add form */}
-      <form onSubmit={handleAdd} style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center' }}>
+      <form onSubmit={handleAdd} className="flex gap-2.5 mb-5 items-center">
         <input
           type="text"
           placeholder="Nhập tên khu phố mới..."
           value={newWardName}
           onChange={(e) => setNewWardName(e.target.value)}
-          className="form-control"
-          style={{ maxWidth: '300px' }}
+          className="px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 w-full max-w-[300px]"
         />
-        <button type="submit" className="btn-submit" style={{ width: 'auto', padding: '10px 20px' }}>
+        <button type="submit" className="bg-green-700 hover:bg-green-800 text-white font-semibold rounded-md border-none cursor-pointer w-auto px-5 py-2.5">
           Thêm khu phố
         </button>
       </form>
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '30px', color: '#64748b' }}>Đang tải...</div>
+        <div className="text-center p-8 text-slate-500">Đang tải...</div>
       ) : (
         <>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-[0.95rem]">
               <thead>
-                <tr style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
-                  <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b', width: '80px' }}>ID</th>
-                  <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 600, color: '#64748b' }}>Tên Khu phố</th>
-                  <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 600, color: '#64748b', width: '120px' }}>Thao tác</th>
+                <tr className="bg-slate-50 border-y border-slate-200">
+                  <th className="p-3 text-left font-semibold text-slate-500 w-[80px]">ID</th>
+                  <th className="p-3 text-left font-semibold text-slate-500">Tên Khu phố</th>
+                  <th className="p-3 text-right font-semibold text-slate-500 w-[120px]">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {currentWards.length === 0 ? (
                   <tr>
-                    <td colSpan="3" style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
+                    <td colSpan="3" className="p-8 text-center text-slate-500">
                       Chưa có dữ liệu khu phố.
                     </td>
                   </tr>
                 ) : (
                   currentWards.map((ward) => (
-                    <tr key={ward.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '12px 16px', color: '#64748b' }}>#{ward.id}</td>
-                      <td style={{ padding: '12px 16px', fontWeight: 500, color: '#0f172a' }}>
+                    <tr key={ward.id} className="border-b border-slate-100">
+                      <td className="p-3 text-slate-500">#{ward.id}</td>
+                      <td className="p-3 font-medium text-slate-900">
                         {editingId === ward.id ? (
-                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <div className="flex gap-2 items-center">
                             <input
                               type="text"
                               value={editName}
                               onChange={(e) => setEditName(e.target.value)}
-                              className="form-control"
-                              style={{ maxWidth: '200px', padding: '6px 10px' }}
+                              className="border border-slate-300 rounded-md focus:outline-none focus:border-red-500 max-w-[200px] px-2.5 py-1.5"
                               autoFocus
                             />
                             <button
                               onClick={() => handleUpdate(ward.id)}
-                              style={{ padding: '6px 14px', background: 'var(--primary-red)', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 600 }}
+                              className="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white border-none rounded-md cursor-pointer font-semibold"
                             >
                               Lưu
                             </button>
                             <button
                               onClick={() => setEditingId(null)}
-                              style={{ padding: '6px 14px', background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '5px', cursor: 'pointer' }}
+                              className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-md cursor-pointer"
                             >
                               Hủy
                             </button>
@@ -160,24 +158,20 @@ export function AdminWards() {
                           ward.name
                         )}
                       </td>
-                      <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                      <td className="p-3 text-right">
                         {editingId !== ward.id && (
-                          <span style={{ display: 'inline-flex', gap: '6px' }}>
+                          <span className="inline-flex gap-1.5">
                             <button
                               onClick={() => handleEdit(ward)}
                               title="Sửa"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
-                              onMouseEnter={e => e.currentTarget.style.background = '#fef3c7'}
-                              onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                              className="bg-transparent border-none cursor-pointer text-[1.1rem] px-1.5 py-1 rounded hover:bg-amber-100"
                             >
                               ✏️
                             </button>
                             <button
                               onClick={() => handleDelete(ward.id)}
                               title="Xóa"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px 6px', borderRadius: '4px' }}
-                              onMouseEnter={e => e.currentTarget.style.background = '#fee2e2'}
-                              onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                              className="bg-transparent border-none cursor-pointer text-[1.1rem] px-1.5 py-1 rounded hover:bg-red-100"
                             >
                               🗑️
                             </button>
@@ -193,20 +187,17 @@ export function AdminWards() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0 0', borderTop: '1px solid #f1f5f9', marginTop: '8px', fontSize: '0.88rem', color: '#64748b' }}>
+            <div className="flex justify-between items-center pt-3.5 mt-2 border-t border-slate-100 text-[0.88rem] text-slate-500">
               <span>
-                Hiển thị <strong style={{ color: '#0f172a' }}>{startIndex + 1}</strong> đến{' '}
-                <strong style={{ color: '#0f172a' }}>{Math.min(startIndex + ITEMS_PER_PAGE, wards.length)}</strong>{' '}
-                trong tổng <strong style={{ color: '#0f172a' }}>{wards.length}</strong> khu phố
+                Hiển thị <strong className="text-slate-900">{startIndex + 1}</strong> đến{' '}
+                <strong className="text-slate-900">{Math.min(startIndex + ITEMS_PER_PAGE, wards.length)}</strong>{' '}
+                trong tổng <strong className="text-slate-900">{wards.length}</strong> khu phố
               </span>
-              <div style={{ display: 'flex', gap: '4px' }}>
+              <div className="flex gap-1">
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  style={{
-                    padding: '5px 12px', border: '1px solid #cbd5e1', borderRadius: '5px', background: currentPage === 1 ? '#f1f5f9' : '#fff',
-                    color: currentPage === 1 ? '#94a3b8' : '#334155', cursor: currentPage === 1 ? 'default' : 'pointer', fontWeight: 500
-                  }}
+                  className={`px-3 py-1.5 border border-slate-300 rounded-md font-medium ${currentPage === 1 ? 'bg-slate-100 text-slate-400 cursor-default' : 'bg-white text-slate-700 hover:bg-slate-50 cursor-pointer'}`}
                 >
                   Trước
                 </button>
@@ -214,13 +205,7 @@ export function AdminWards() {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    style={{
-                      padding: '5px 10px', border: '1px solid', borderRadius: '5px',
-                      borderColor: currentPage === page ? 'var(--primary-red)' : '#cbd5e1',
-                      background: currentPage === page ? 'var(--primary-red)' : '#fff',
-                      color: currentPage === page ? '#fff' : '#334155',
-                      cursor: 'pointer', fontWeight: 600, minWidth: '34px'
-                    }}
+                    className={`px-2.5 py-1.5 border rounded-md font-semibold cursor-pointer min-w-[34px] ${currentPage === page ? 'border-red-600 bg-red-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'}`}
                   >
                     {page}
                   </button>
@@ -228,12 +213,7 @@ export function AdminWards() {
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  style={{
-                    padding: '5px 12px', border: '1px solid #cbd5e1', borderRadius: '5px',
-                    background: currentPage === totalPages ? '#f1f5f9' : '#fff',
-                    color: currentPage === totalPages ? '#94a3b8' : '#334155',
-                    cursor: currentPage === totalPages ? 'default' : 'pointer', fontWeight: 500
-                  }}
+                  className={`px-3 py-1.5 border border-slate-300 rounded-md font-medium ${currentPage === totalPages ? 'bg-slate-100 text-slate-400 cursor-default' : 'bg-white text-slate-700 hover:bg-slate-50 cursor-pointer'}`}
                 >
                   Sau
                 </button>

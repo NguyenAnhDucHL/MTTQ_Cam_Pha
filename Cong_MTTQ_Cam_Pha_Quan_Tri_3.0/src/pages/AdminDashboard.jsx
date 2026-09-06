@@ -126,20 +126,20 @@ function AdminDashboard() {
                         <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Tổng quan hệ thống</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                             <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md border-l-4 border-l-[#2563eb]">
-                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#64748b' }}>Tổng Phản ánh</h3>
-                                <p style={{ fontSize: '2rem', fontWeight: 700, margin: '10px 0 0', color: '#1e293b' }}>
+                                <h3 className="m-0 text-[0.9rem] text-slate-500">Tổng Phản ánh</h3>
+                                <p className="text-3xl font-bold mt-2.5 mb-0 text-slate-800">
                                     {loading ? '...' : stats.total}
                                 </p>
                             </div>
                             <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md border-l-4 border-l-[#ea580c]">
-                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#64748b' }}>Đang xử lý</h3>
-                                <p style={{ fontSize: '2rem', fontWeight: 700, margin: '10px 0 0', color: '#1e293b' }}>
+                                <h3 className="m-0 text-[0.9rem] text-slate-500">Đang xử lý</h3>
+                                <p className="text-3xl font-bold mt-2.5 mb-0 text-slate-800">
                                     {loading ? '...' : stats.processing}
                                 </p>
                             </div>
                             <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md border-l-4 border-l-[#16a34a]">
-                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#64748b' }}>Đã giải quyết</h3>
-                                <p style={{ fontSize: '2rem', fontWeight: 700, margin: '10px 0 0', color: '#1e293b' }}>
+                                <h3 className="m-0 text-[0.9rem] text-slate-500">Đã giải quyết</h3>
+                                <p className="text-3xl font-bold mt-2.5 mb-0 text-slate-800">
                                     {loading ? '...' : stats.resolved}
                                 </p>
                             </div>
@@ -151,7 +151,7 @@ function AdminDashboard() {
                     <div className="block animate-fade-in">
                         <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Quản lý Phản ánh, kiến nghị</h2>
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                            <div className="text-center p-10 text-slate-500">
                                 Đang tải dữ liệu...
                             </div>
                         ) : (
@@ -177,7 +177,7 @@ function AdminDashboard() {
                 {['van-ban', 'noi-dung'].includes(activeTab) && (
                     <div className="block animate-fade-in">
                         <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md text-center py-[60px] px-5 text-slate-500">
-                            <p style={{ fontSize: '1.2rem' }}>Tính năng đang được phát triển...</p>
+                            <p className="text-xl">Tính năng đang được phát triển...</p>
                         </div>
                     </div>
                 )}

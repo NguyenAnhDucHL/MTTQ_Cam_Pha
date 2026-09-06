@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PetitionList } from '../features/petitions/PetitionList';
 import { AdminWards } from '../features/admin/AdminWards';
 import { AdminAccounts } from '../features/admin/AdminAccounts';
+import { AdminDocuments } from '../features/admin/AdminDocuments';
 import { fetchApi } from '../lib/api';
 import { toast } from 'sonner';
 

@@ -4,6 +4,8 @@ const router = express.Router();
 const adminPetitionController = require('../controllers/adminPetitionController');
 const adminWardController = require('../controllers/adminWardController');
 const adminAccountController = require('../controllers/adminAccountController');
+const documentController = require('../controllers/documentController');
+const upload = require('../config/upload');
 
 // All routes in here are protected by the authenticateToken middleware in index.js
 
@@ -25,5 +27,11 @@ router.get('/accounts', adminAccountController.getAccounts);
 router.post('/accounts', adminAccountController.createAccount);
 router.put('/accounts/:id', adminAccountController.updateAccount);
 router.delete('/accounts/:id', adminAccountController.deleteAccount);
+
+// Documents
+router.get('/documents', documentController.getAdminDocuments);
+router.post('/documents', upload.single('file'), documentController.createDocument);
+router.put('/documents/:id', upload.single('file'), documentController.updateDocument);
+router.delete('/documents/:id', documentController.deleteDocument);
 
 module.exports = router;

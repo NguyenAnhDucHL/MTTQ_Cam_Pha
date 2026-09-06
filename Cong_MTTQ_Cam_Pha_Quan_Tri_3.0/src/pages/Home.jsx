@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { SubmitForm } from "../features/petitions/SubmitForm";
+import { DocumentList } from "../features/documents/DocumentList";
 import { Badge } from "../components/ui/Badge";
 import { fetchApi } from "../lib/api";
 

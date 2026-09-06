@@ -74,12 +74,25 @@ const initDB = () => {
       }
     });
 
-    // 5. Performance Optimization: Add Indexes
+    // 5. Create Documents table
+    db.run(`
+      CREATE TABLE IF NOT EXISTS documents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        documentNumber TEXT,
+        issueDate TEXT,
+        content TEXT,
+        fileUrl TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // 6. Performance Optimization: Add Indexes
     db.run(`CREATE INDEX IF NOT EXISTS idx_petitions_createdAt ON petitions (createdAt DESC)`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_petitions_status ON petitions (status)`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_petitions_ward ON petitions (ward)`);
 
-    // 6. Security: Hash default admin password
+    // 7. Security: Hash default admin password
     db.get(`SELECT password FROM admins WHERE username = 'admin'`, async (err, row) => {
       if (!row) {
         const saltRounds = 10;

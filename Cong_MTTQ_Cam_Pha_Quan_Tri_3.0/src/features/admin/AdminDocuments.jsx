@@ -10,6 +10,8 @@ import { Button } from '../../components/ui/Button';
 
 const FilePreview = ({ file }) => {
   const [url, setUrl] = React.useState('');
+  const [hasError, setHasError] = React.useState(false);
+  
   React.useEffect(() => {
     const objectUrl = URL.createObjectURL(file);
     setUrl(objectUrl);
@@ -17,9 +19,32 @@ const FilePreview = ({ file }) => {
   }, [file]);
 
   if (file.type === 'application/pdf') {
-    return <FileIcon className="w-8 h-8 text-red-500" />;
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-full p-2 text-center" title={file.name}>
+        <FileIcon className="w-8 h-8 text-red-500 mb-1" />
+        <span className="text-[10px] text-slate-500 truncate w-full px-1">{file.name}</span>
+      </div>
+    );
   }
-  return <img src={url} alt="Preview" className="w-full h-full object-cover" />;
+
+  if (hasError || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif') || file.name.toLowerCase().endsWith('.tiff')) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-full p-2 text-center bg-slate-100" title={file.name}>
+        <div className="text-2xl mb-1">🖼️</div>
+        <span className="text-[10px] text-slate-500 truncate w-full px-1">{file.name}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img 
+      src={url} 
+      alt={file.name} 
+      title={file.name}
+      className="w-full h-full object-cover" 
+      onError={() => setHasError(true)}
+    />
+  );
 };
 
 export const AdminDocuments = () => {

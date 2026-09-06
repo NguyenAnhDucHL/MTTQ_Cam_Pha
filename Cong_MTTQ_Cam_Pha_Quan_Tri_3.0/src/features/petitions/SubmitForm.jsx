@@ -5,6 +5,8 @@ import { fetchApi } from '../../lib/api';
 
 const FilePreview = ({ file }) => {
   const [url, setUrl] = useState('');
+  const [hasError, setHasError] = useState(false);
+  
   useEffect(() => {
     const objectUrl = URL.createObjectURL(file);
     setUrl(objectUrl);
@@ -13,12 +15,31 @@ const FilePreview = ({ file }) => {
 
   if (!file.type.startsWith('image/')) {
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontSize: '24px' }} title={file.name}>
-        📄
+      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', padding: '4px', textAlign: 'center' }} title={file.name}>
+        <div style={{ fontSize: '24px', marginBottom: '2px' }}>📄</div>
+        <span style={{ fontSize: '10px', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>{file.name}</span>
       </div>
     );
   }
-  return <img src={url} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />;
+
+  if (hasError || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif') || file.name.toLowerCase().endsWith('.tiff')) {
+    return (
+      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', padding: '4px', textAlign: 'center' }} title={file.name}>
+        <div style={{ fontSize: '24px', marginBottom: '2px' }}>🖼️</div>
+        <span style={{ fontSize: '10px', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>{file.name}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img 
+      src={url} 
+      alt={file.name} 
+      title={file.name}
+      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+      onError={() => setHasError(true)}
+    />
+  );
 };
 
 export function SubmitForm() {

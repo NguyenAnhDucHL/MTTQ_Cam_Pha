@@ -124,7 +124,7 @@ function AdminDashboard() {
             </nav>
 
             {/* Main Content */}
-            <main className="max-w-[1200px] mx-auto px-4 my-6 min-h-[65vh]">
+            <main className="max-w-[1200px] w-full mx-auto px-4 my-6 min-h-[65vh]">
                 {activeTab === 'tong-quan' && (
                     <div className="block animate-fade-in">
                         <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Tổng quan hệ thống</h2>

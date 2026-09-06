@@ -89,16 +89,16 @@ export function PetitionList() {
   return (
     <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-b border-slate-200">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-b border-slate-200">
         <span className="font-semibold text-slate-700">
           Danh sách Phản ánh, kiến nghị
           <span className="ml-2 text-xs text-slate-400 font-normal">({total} kết quả)</span>
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
           <select
             value={statusFilter}
             onChange={handleStatusFilter}
-            className="px-3 py-2 h-10 rounded-md border border-slate-300 bg-white text-slate-600 focus:outline-none"
+            className="px-3 py-2 h-10 rounded-md border border-slate-300 bg-white text-slate-600 focus:outline-none w-full sm:w-auto"
           >
             <option value="all">Tất cả trạng thái</option>
             <option value="pending">Chờ xử lý</option>
@@ -106,16 +106,16 @@ export function PetitionList() {
             <option value="resolved">Đã giải quyết</option>
             <option value="rejected">Bị từ chối</option>
           </select>
-          <div className="relative">
+          <div className="relative flex-1 sm:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
               placeholder="Tìm tiêu đề, người gửi, SĐT..."
               value={search}
               onChange={handleSearch}
-              className="pl-9 px-3 py-2 h-10 w-[300px] rounded-md border border-slate-300 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
+              className="pl-9 px-3 py-2 h-10 w-full sm:w-[300px] rounded-md border border-slate-300 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
             />
           </div>
-          <Button variant="outline" size="sm" onClick={onRefresh} className="h-8 gap-1">
+          <Button variant="outline" size="sm" onClick={onRefresh} className="h-10 gap-1 w-full sm:w-auto">
             <RefreshCw className="w-3.5 h-3.5" /> Làm mới
           </Button>
         </div>

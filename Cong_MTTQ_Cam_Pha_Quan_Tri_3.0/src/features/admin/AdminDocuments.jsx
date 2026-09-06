@@ -176,9 +176,9 @@ export const AdminDocuments = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200">
       {/* Header */}
-      <div className="p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 border-b border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
             <FileText className="w-5 h-5" />
           </div>
           <div>
@@ -187,8 +187,8 @@ export const AdminDocuments = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <form onSubmit={handleSearch} className="relative flex-1 md:w-64">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <form onSubmit={handleSearch} className="relative flex-1 sm:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <Input
               value={search}
@@ -197,9 +197,9 @@ export const AdminDocuments = () => {
               className="pl-9 h-10 w-full"
             />
           </form>
-          <Button onClick={() => openModal()} className="h-10 shrink-0 gap-2">
+          <Button onClick={() => openModal()} className="h-10 shrink-0 gap-2 w-full sm:w-auto">
             <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Thêm mới</span>
+            <span className="inline">Thêm mới</span>
           </Button>
         </div>
       </div>

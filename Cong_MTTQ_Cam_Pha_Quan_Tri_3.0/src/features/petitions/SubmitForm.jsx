@@ -1,8 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Textarea } from '../../components/ui/Textarea';
 import { fetchApi } from '../../lib/api';
 
 export function SubmitForm() {
@@ -27,7 +25,7 @@ export function SubmitForm() {
   useEffect(() => {
     // Fetch dynamic wards on component mount
     fetchApi('/mttq-api/wards')
-      .then(data => setWardsList(data))
+      .then(res => setWardsList(res.data || res || []))
       .catch(err => console.error('Failed to load wards:', err));
 
     // Load draft

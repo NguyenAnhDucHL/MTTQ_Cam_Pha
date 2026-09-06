@@ -120,36 +120,36 @@ function AdminDashboard() {
             </nav>
 
             {/* Main Content */}
-            <main className="main-wrapper">
+            <main className="max-w-[1200px] mx-auto px-4 my-6 min-h-[65vh]">
                 {activeTab === 'tong-quan' && (
-                    <div className="tab-content active">
-                        <h2 className="section-title">Tổng quan hệ thống</h2>
-                        <div className="form-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-                            <div className="card" style={{ borderLeft: '4px solid var(--accent-blue)' }}>
-                                <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--accent-blue)' }}>TỔNG SỐ PHẢN ÁNH</div>
-                                <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent-blue)' }}>
-                                    {stats.total || 0}
-                                </div>
+                    <div className="block animate-fade-in">
+                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Tổng quan hệ thống</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md border-l-4 border-l-[#2563eb]">
+                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#64748b' }}>Tổng Phản ánh</h3>
+                                <p style={{ fontSize: '2rem', fontWeight: 700, margin: '10px 0 0', color: '#1e293b' }}>
+                                    {loading ? '...' : stats.total}
+                                </p>
                             </div>
-                            <div className="card" style={{ borderLeft: '4px solid var(--warning-orange)' }}>
-                                <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--warning-orange)' }}>ĐANG CHỜ XỬ LÝ</div>
-                                <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--warning-orange)' }}>
-                                    {stats.pending || 0}
-                                </div>
+                            <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md border-l-4 border-l-[#ea580c]">
+                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#64748b' }}>Đang xử lý</h3>
+                                <p style={{ fontSize: '2rem', fontWeight: 700, margin: '10px 0 0', color: '#1e293b' }}>
+                                    {loading ? '...' : stats.processing}
+                                </p>
                             </div>
-                            <div className="card" style={{ borderLeft: '4px solid var(--success-green)' }}>
-                                <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', color: 'var(--success-green)' }}>ĐÃ GIẢI QUYẾT</div>
-                                <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success-green)' }}>
-                                    {stats.resolved || 0}
-                                </div>
+                            <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md border-l-4 border-l-[#16a34a]">
+                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#64748b' }}>Đã giải quyết</h3>
+                                <p style={{ fontSize: '2rem', fontWeight: 700, margin: '10px 0 0', color: '#1e293b' }}>
+                                    {loading ? '...' : stats.resolved}
+                                </p>
                             </div>
                         </div>
                     </div>
                 )}
 
                 {activeTab === 'phan-anh' && (
-                    <div className="tab-content active">
-                        <h2 className="section-title">Quản lý Phản ánh, kiến nghị</h2>
+                    <div className="block animate-fade-in">
+                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Quản lý Phản ánh, kiến nghị</h2>
                         {loading ? (
                             <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
                                 Đang tải dữ liệu...
@@ -161,21 +161,22 @@ function AdminDashboard() {
                 )}
 
                 {activeTab === 'khu-pho' && (
-                    <div className="tab-content active">
-                        <h2 className="section-title">Quản lý Khu phố</h2>
+                    <div className="block animate-fade-in">
+                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Quản lý Khu phố</h2>
                         <AdminWards />
                     </div>
                 )}
 
                 {activeTab === 'tai-khoan' && (
-                    <div className="tab-content active">
+                    <div className="block animate-fade-in">
                         <AdminAccounts />
                     </div>
                 )}
 
-                {(activeTab === 'van-ban' || activeTab === 'noi-dung') && (
-                    <div className="tab-content active">
-                        <div className="card" style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
+                {/* Các tab khác hiển thị trạng thái đang xây dựng */}
+                {['van-ban', 'noi-dung'].includes(activeTab) && (
+                    <div className="block animate-fade-in">
+                        <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md text-center py-[60px] px-5 text-slate-500">
                             <p style={{ fontSize: '1.2rem' }}>Tính năng đang được phát triển...</p>
                         </div>
                     </div>

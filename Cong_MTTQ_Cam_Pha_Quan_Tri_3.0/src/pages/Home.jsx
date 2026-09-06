@@ -103,17 +103,17 @@ function Home() {
                 </div>
             </nav>
 
-            <main className="main-wrapper">
+            <main className="max-w-[1200px] mx-auto px-4 my-6 min-h-[65vh]">
                 {activeTab === 'submit' && (
-                    <section className="tab-content active">
-                        <h2 className="section-title">Hệ thống tiếp nhận phản ánh, kiến nghị người dân</h2>
+                    <section className="block animate-fade-in">
+                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Hệ thống tiếp nhận phản ánh, kiến nghị người dân</h2>
                         <SubmitForm />
                     </section>
                 )}
 
                 {activeTab === 'search' && (
-                    <section className="tab-content active">
-                        <h2 className="section-title">Tra cứu kết quả giải quyết</h2>
+                    <section className="block animate-fade-in">
+                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Tra cứu kết quả giải quyết</h2>
                         <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '30px' }}>
                             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                                 <input
@@ -156,7 +156,7 @@ function Home() {
                             )}
                         </div>
 
-                        <h2 className="section-title">Danh sách phản ánh công khai</h2>
+                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Danh sách phản ánh công khai</h2>
                         {petitions.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
                                 Chưa có phản ánh nào được ghi nhận.
@@ -208,8 +208,8 @@ function Home() {
                 )}
 
                 {activeTab === 'docs' && (
-                    <section className="tab-content active">
-                        <h2 className="section-title">Văn bản, Thông báo & Chỉ đạo điều hành</h2>
+                    <section className="block animate-fade-in">
+                        <h2 className="text-[1.4rem] font-bold text-[#1e293b] mb-5 flex items-center gap-2.5 border-l-[5px] border-l-[#da251c] pl-3">Văn bản, Thông báo & Chỉ đạo điều hành</h2>
                         <div style={{ textAlign: 'center', padding: '3rem 0', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
                             Đang cập nhật tính năng tra cứu văn bản...
                         </div>

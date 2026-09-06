@@ -174,7 +174,7 @@ export function SubmitForm() {
 
   if (trackingCode) {
     return (
-      <div className="submit-form-container" style={{ textAlign: 'center', padding: '40px 20px' }}>
+      <div className="w-full text-center py-10 px-5 animate-fade-in">
         <div style={{ fontSize: '48px', marginBottom: '20px' }}>✅</div>
         <h2 style={{ color: '#166534', marginBottom: '15px' }}>Gửi phản ánh thành công!</h2>
         <p style={{ fontSize: '1.1rem', color: '#475569', marginBottom: '20px' }}>
@@ -206,31 +206,31 @@ export function SubmitForm() {
   }
 
   return (
-    <form className="submit-form-container" onSubmit={handleSubmit} id="feedbackForm">
-      <div className="form-grid">
+    <form className="w-full animate-fade-in" onSubmit={handleSubmit} id="feedbackForm">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Left Column: Personal Info */}
-        <div className="card">
-          <div className="card-header">
+        <div className="bg-white rounded-lg p-6 border border-slate-200 shadow-md mb-5">
+          <div className="text-[1.1rem] font-bold text-[#da251c] mb-4 pb-2 border-b-2 border-dashed border-red-200 flex items-center gap-2">
             👤 1. Khai báo thông tin người gửi
           </div>
-          <div className="form-group" id="grp-fullname">
-            <label className="form-label">Họ và tên <span className="required">*</span></label>
-            <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="form-control" placeholder="Nhập đầy đủ họ và tên..." />
+          <div className="mb-4" id="grp-fullname">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Họ và tên <span className="text-[#da251c]">*</span></label>
+            <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15" placeholder="Nhập đầy đủ họ và tên..." />
           </div>
 
-          <div className="form-group" id="grp-phone">
-            <label className="form-label">Số điện thoại liên hệ <span className="required">*</span></label>
-            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="form-control" placeholder="Nhập số điện thoại (ví dụ: 0912345678)..." />
+          <div className="mb-4" id="grp-phone">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Số điện thoại liên hệ <span className="text-[#da251c]">*</span></label>
+            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15" placeholder="Nhập số điện thoại (ví dụ: 0912345678)..." />
           </div>
 
-          <div className="form-group" id="grp-cccd">
-            <label className="form-label">Số CCCD</label>
-            <input type="text" name="cccd" value={formData.cccd} onChange={handleChange} className="form-control" placeholder="0142..." />
+          <div className="mb-4" id="grp-cccd">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Số CCCD</label>
+            <input type="text" name="cccd" value={formData.cccd} onChange={handleChange} className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15" placeholder="0142..." />
           </div>
 
-          <div className="form-group" id="grp-area">
-            <label className="form-label">Địa bàn / Khu phố <span className="required">*</span></label>
-            <select name="ward" value={formData.ward} onChange={handleChange} className="form-select">
+          <div className="mb-4" id="grp-area">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Địa bàn / Khu phố <span className="text-[#da251c]">*</span></label>
+            <select name="ward" value={formData.ward} onChange={handleChange} className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15">
               <option value="">-- Chọn Khu phố sinh sống / xảy ra vụ việc --</option>
               {wardsList.map(w => (
                 <option key={w.id} value={w.name}>{w.name}</option>
@@ -238,20 +238,20 @@ export function SubmitForm() {
             </select>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</label>
-            <input type="text" name="address" value={formData.address} onChange={handleChange} className="form-control" placeholder="Ví dụ: Số 45, Tổ 2, Đường Trần Phú..." />
+          <div className="mb-4">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Địa chỉ chi tiết (Số nhà, tên đường, hẻm)</label>
+            <input type="text" name="address" value={formData.address} onChange={handleChange} className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15" placeholder="Ví dụ: Số 45, Tổ 2, Đường Trần Phú..." />
           </div>
         </div>
 
         {/* Right Column: Feedback Details */}
-        <div className="card">
-          <div className="card-header">
+        <div className="bg-white rounded-lg p-6 border border-slate-200 shadow-md mb-5">
+          <div className="text-[1.1rem] font-bold text-[#da251c] mb-4 pb-2 border-b-2 border-dashed border-red-200 flex items-center gap-2">
             📌 2. Nội dung phản ánh, kiến nghị
           </div>
-          <div className="form-group" id="grp-category">
-            <label className="form-label">Lĩnh vực phản ánh <span className="required">*</span></label>
-            <select name="category" value={formData.category} onChange={handleChange} className="form-select">
+          <div className="mb-4" id="grp-category">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Lĩnh vực phản ánh <span className="text-[#da251c]">*</span></label>
+            <select name="category" value={formData.category} onChange={handleChange} className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15">
               <option value="Giao thông">Trật tự đô thị - Giao thông</option>
               <option value="An ninh trật tự - PCCC">An ninh trật tự - Phòng cháy chữa cháy</option>
               <option value="Môi trường - Vệ sinh công cộng">Môi trường - Vệ sinh công cộng</option>
@@ -261,20 +261,20 @@ export function SubmitForm() {
             </select>
           </div>
 
-          <div className="form-group" id="grp-title">
-            <label className="form-label">Tiêu đề phản ánh <span className="required">*</span></label>
-            <input type="text" name="title" value={formData.title} onChange={handleChange} className="form-control" placeholder="Tóm tắt ngắn gọn vụ việc..." />
+          <div className="mb-4" id="grp-title">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Tiêu đề phản ánh <span className="text-[#da251c]">*</span></label>
+            <input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15" placeholder="Tóm tắt ngắn gọn vụ việc..." />
           </div>
 
-          <div className="form-group" id="grp-content">
-            <label className="form-label">Nội dung chi tiết <span className="required">*</span></label>
-            <textarea name="content" value={formData.content} onChange={handleChange} rows="4" className="form-control" style={{ minHeight: '120px', padding: '10px' }} placeholder="Mô tả cụ thể thời gian, địa điểm, sự việc phản ánh hoặc đề xuất kiến nghị..."></textarea>
+          <div className="mb-4" id="grp-content">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Nội dung chi tiết <span className="text-[#da251c]">*</span></label>
+            <textarea name="content" value={formData.content} onChange={handleChange} rows="4" className="w-full p-2.5 border border-slate-300 rounded-md text-[0.95rem] text-slate-800 bg-white transition-all duration-200 outline-none focus:border-[#da251c] focus:ring-[3px] focus:ring-[#da251c]/15 min-h-[120px]" placeholder="Mô tả cụ thể thời gian, địa điểm, sự việc phản ánh hoặc đề xuất kiến nghị..."></textarea>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Đính kèm ảnh / Tệp tài liệu (nếu có)</label>
-            <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
-              <div className="upload-icon">📁</div>
+          <div className="mb-4">
+            <label className="block font-medium text-[0.9rem] text-slate-800 mb-1.5">Đính kèm ảnh / Tệp tài liệu (nếu có)</label>
+            <div className="border-2 border-dashed border-slate-300 rounded-lg p-5 text-center bg-slate-50 cursor-pointer transition-all duration-200 hover:border-[#da251c] hover:bg-red-50" onClick={() => fileInputRef.current?.click()}>
+              <div className="text-[2rem] text-slate-500 mb-1.5">📁</div>
               <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
               <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px' }}>Hỗ trợ ảnh PNG, JPG, PDF (Tối đa 25MB)</div>
               <div style={{ fontSize: '0.85rem', color: '#ef4444', marginTop: '4px', fontWeight: 500 }}>* Lưu ý: Hệ thống chỉ cho phép tải lên tối đa 20 ảnh/tệp đính kèm.</div>
@@ -288,9 +288,9 @@ export function SubmitForm() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '10px' }}>
                   {files.map((file, index) => (
                     <div key={index} style={{ position: 'relative', width: '80px', height: '80px', border: '1px solid #e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
-                      <button 
+                      <button
                         type="button"
-                        onClick={() => removeFile(index)} 
+                        onClick={() => removeFile(index)}
                         style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}
                       >
                         &times;
@@ -312,8 +312,8 @@ export function SubmitForm() {
       </div>
 
       <div className="mt-6 text-center w-full">
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           variant="destructive"
           size="lg"
           className="w-full max-w-[400px] md:w-[360px] rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-base uppercase tracking-wider font-bold h-14 mx-auto"

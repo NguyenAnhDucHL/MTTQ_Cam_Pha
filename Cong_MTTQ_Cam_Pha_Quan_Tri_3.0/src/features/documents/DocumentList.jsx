@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../lib/api';
 import { Search, FileText, Calendar, Hash, File as FileIcon, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
 
 export const DocumentList = () => {
   const [documents, setDocuments] = useState([]);
@@ -49,7 +48,7 @@ export const DocumentList = () => {
             <p className="text-sm text-slate-500">Các văn bản chỉ đạo, thông báo mới nhất</p>
           </div>
         </div>
-        
+
         <form onSubmit={handleSearch} className="relative w-full md:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <Input
@@ -93,11 +92,11 @@ export const DocumentList = () => {
                   </div>
                 </div>
               </div>
-              
+
               {doc.fileUrl && (
-                <a 
-                  href={`/mttq-api${doc.fileUrl}`} 
-                  target="_blank" 
+                <a
+                  href={`/mttq-api${doc.fileUrl}`}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-lg text-sm font-medium transition-colors no-underline"
                 >

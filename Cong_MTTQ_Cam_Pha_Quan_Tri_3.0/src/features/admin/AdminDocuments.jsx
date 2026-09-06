@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../lib/api';
 import { toast } from 'sonner';
-import { 
-  FileText, Plus, Search, Edit2, Trash2, X, Upload, 
-  Calendar, Hash, File as FileIcon, ChevronLeft, ChevronRight 
+import {
+  FileText, Plus, Search, Edit2, Trash2, X, Upload,
+  Calendar, Hash, File as FileIcon, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -14,7 +14,7 @@ export const AdminDocuments = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDoc, setCurrentDoc] = useState(null);
@@ -106,7 +106,7 @@ export const AdminDocuments = () => {
           body: data
         });
       }
-      
+
       toast.success(res.message || 'Lưu văn bản thành công');
       closeModal();
       fetchDocuments(page);
@@ -119,7 +119,7 @@ export const AdminDocuments = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Bạn có chắc chắn muốn xóa văn bản này?')) return;
-    
+
     try {
       await fetchApi(`/mttq-api/admin/documents/${id}`, { method: 'DELETE' });
       toast.success('Đã xóa văn bản');
@@ -142,7 +142,7 @@ export const AdminDocuments = () => {
             <p className="text-sm text-slate-500">Quản lý và đăng tải các văn bản chỉ đạo điều hành</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3 w-full md:w-auto">
           <form onSubmit={handleSearch} className="relative flex-1 md:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -203,9 +203,9 @@ export const AdminDocuments = () => {
                   </td>
                   <td className="px-5 py-4 text-center">
                     {doc.fileUrl ? (
-                      <a 
-                        href={`/mttq-api${doc.fileUrl}`} 
-                        target="_blank" 
+                      <a
+                        href={`/mttq-api${doc.fileUrl}`}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
                         title="Xem file"
@@ -274,14 +274,14 @@ export const AdminDocuments = () => {
               <h3 className="text-lg font-bold text-slate-800">
                 {currentDoc ? 'Cập nhật Văn bản' : 'Thêm Văn bản mới'}
               </h3>
-              <button 
+              <button
                 onClick={closeModal}
                 className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-500"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="p-6">
               <div className="space-y-5">
                 <div>
@@ -291,12 +291,12 @@ export const AdminDocuments = () => {
                   <textarea
                     required
                     value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="Nhập trích yếu hoặc nội dung văn bản..."
                     className="w-full h-24 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors resize-none"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-1.5">
@@ -304,7 +304,7 @@ export const AdminDocuments = () => {
                     </label>
                     <Input
                       value={formData.documentNumber}
-                      onChange={(e) => setFormData({...formData, documentNumber: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, documentNumber: e.target.value })}
                       placeholder="VD: 123/UBND"
                     />
                   </div>
@@ -315,7 +315,7 @@ export const AdminDocuments = () => {
                     <Input
                       type="date"
                       value={formData.issueDate}
-                      onChange={(e) => setFormData({...formData, issueDate: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, issueDate: e.target.value })}
                     />
                   </div>
                 </div>
@@ -330,10 +330,10 @@ export const AdminDocuments = () => {
                       <div className="flex text-sm text-slate-600 justify-center">
                         <label className="relative cursor-pointer rounded-md font-medium text-red-600 hover:text-red-500 focus-within:outline-none">
                           <span>{selectedFile ? selectedFile.name : 'Tải file lên'}</span>
-                          <input 
-                            type="file" 
+                          <input
+                            type="file"
                             accept=".pdf,application/pdf"
-                            className="sr-only" 
+                            className="sr-only"
                             onChange={(e) => {
                               if (e.target.files[0]) {
                                 if (e.target.files[0].size > 25 * 1024 * 1024) {
@@ -342,7 +342,7 @@ export const AdminDocuments = () => {
                                 }
                                 setSelectedFile(e.target.files[0]);
                               }
-                            }} 
+                            }}
                           />
                         </label>
                         {!selectedFile && <p className="pl-1">hoặc kéo thả vào đây</p>}
@@ -357,11 +357,11 @@ export const AdminDocuments = () => {
                   )}
                 </div>
               </div>
-              
+
               <div className="mt-8 flex justify-end gap-3 pt-5 border-t border-slate-100">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={closeModal}
                   disabled={submitting}
                 >

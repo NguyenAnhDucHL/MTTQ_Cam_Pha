@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { User, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { fetchApi } from '../lib/api';
 
 function AdminLogin() {
     const [username, setUsername] = useState('');
@@ -16,21 +17,15 @@ function AdminLogin() {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch('/mttq-api/auth/login', {
+            const data = await fetchApi('/mttq-api/auth/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
-            const data = await res.json();
-            if (res.ok) {
-                localStorage.setItem('token', data.token);
-                toast.success('Đăng nhập thành công');
-                navigate('/admin');
-            } else {
-                toast.error(data.error || 'Tên đăng nhập hoặc mật khẩu không chính xác');
-            }
+            localStorage.setItem('token', data.token);
+            toast.success('Đăng nhập thành công');
+            navigate('/admin');
         } catch (err) {
-            toast.error('Không thể kết nối máy chủ!');
+            toast.error(err.message || 'Tên đăng nhập hoặc mật khẩu không chính xác!');
         } finally {
             setLoading(false);
         }

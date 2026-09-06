@@ -24,7 +24,7 @@ export const fetchApi = async (endpoint, options = {}) => {
     headers,
   });
 
-  if (response.status === 401 || response.status === 403) {
+  if ((response.status === 401 || response.status === 403) && !endpoint.includes('/auth/login')) {
     removeAuthToken();
     window.location.href = '/admin/login';
     throw new Error('Unauthorized');

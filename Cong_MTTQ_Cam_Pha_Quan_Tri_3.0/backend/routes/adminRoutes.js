@@ -5,6 +5,7 @@ const adminPetitionController = require('../controllers/adminPetitionController'
 const adminWardController = require('../controllers/adminWardController');
 const adminAccountController = require('../controllers/adminAccountController');
 const documentController = require('../controllers/documentController');
+const backupController = require('../controllers/backupController');
 const upload = require('../config/upload');
 
 // All routes in here are protected by the authenticateToken middleware in index.js
@@ -33,5 +34,10 @@ router.get('/documents', documentController.getAdminDocuments);
 router.post('/documents', upload.array('files', 10), documentController.createDocument);
 router.put('/documents/:id', upload.array('files', 10), documentController.updateDocument);
 router.delete('/documents/:id', documentController.deleteDocument);
+
+// Backups
+router.get('/backups', backupController.getBackups);
+router.get('/backups/download/:filename', backupController.downloadBackup);
+router.post('/backups', backupController.createManualBackup);
 
 module.exports = router;

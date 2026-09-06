@@ -11,6 +11,9 @@ const apiRoutes = require('./routes/index');
 // Initialize Queue and Worker
 require('./config/queue');
 
+// Initialize Backup Service
+require('./services/backupService');
+
 const app = express();
 
 // Trust proxy if running behind Nginx

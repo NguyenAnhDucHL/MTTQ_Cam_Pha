@@ -4,6 +4,7 @@ import { PetitionList } from '../features/petitions/PetitionList';
 import { AdminWards } from '../features/admin/AdminWards';
 import { AdminAccounts } from '../features/admin/AdminAccounts';
 import { AdminDocuments } from '../features/admin/AdminDocuments';
+import { AdminBackups } from '../features/admin/AdminBackups';
 import { fetchApi } from '../lib/api';
 import { toast } from 'sonner';
 
@@ -147,6 +148,10 @@ function AdminDashboard() {
                                     {loading ? '...' : stats.resolved}
                                 </p>
                             </div>
+                        </div>
+
+                        <div className="mt-8">
+                            <AdminBackups />
                         </div>
                     </div>
                 )}

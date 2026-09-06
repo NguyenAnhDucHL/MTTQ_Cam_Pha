@@ -1,0 +1,20 @@
+name: Run VPS Command
+on:
+  workflow_dispatch:
+    inputs:
+      cmd:
+        description: 'Command to run'
+        required: true
+
+jobs:
+  run-cmd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run command
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VNPT_HOST }}
+          username: ${{ secrets.VNPT_USER }}
+          password: ${{ secrets.VNPT_PASS }}
+          port: 22
+          script: ${{ github.event.inputs.cmd }}

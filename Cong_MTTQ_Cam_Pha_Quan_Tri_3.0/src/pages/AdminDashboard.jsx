@@ -177,8 +177,14 @@ function AdminDashboard() {
                     </div>
                 )}
 
+                {activeTab === 'van-ban' && (
+                    <div className="block animate-fade-in">
+                        <AdminDocuments />
+                    </div>
+                )}
+
                 {/* Các tab khác hiển thị trạng thái đang xây dựng */}
-                {['van-ban', 'noi-dung'].includes(activeTab) && (
+                {['noi-dung'].includes(activeTab) && (
                     <div className="block animate-fade-in">
                         <div className="bg-white rounded-lg p-6 border border-slate-200 mb-5 shadow-md text-center py-[60px] px-5 text-slate-500">
                             <p className="text-xl">Tính năng đang được phát triển...</p>

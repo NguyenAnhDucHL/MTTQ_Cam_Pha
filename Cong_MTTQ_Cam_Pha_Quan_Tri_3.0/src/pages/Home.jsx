@@ -76,7 +76,7 @@ function Home() {
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                         </button>
                         <div className="w-[44px] h-[44px] md:w-[52px] md:h-[52px] bg-white rounded-full flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.2)] border-2 border-[#fbbf24] shrink-0">
-                            <img src="/logo-mttq.png" alt="Logo Mặt trận Tổ quốc Việt Nam" className="w-[44px] h-[44px] md:w-[52px] md:h-[52px] object-contain block rounded-full" />
+                            <img loading="lazy" src="/logo-mttq.png" alt="Logo Mặt trận Tổ quốc Việt Nam" className="w-[44px] h-[44px] md:w-[52px] md:h-[52px] object-contain block rounded-full" />
                         </div>
                         <div className="hidden md:block">
                             <h1 className="text-[1.35rem] font-bold uppercase tracking-[0.5px] text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">Ủy ban MTTQ Việt Nam Phường Cẩm Phả</h1>
@@ -101,7 +101,7 @@ function Home() {
             <nav className={mainNavStyles}>
                 <div className="flex items-center justify-between p-4 border-b border-slate-200 md:hidden">
                     <div className="flex items-center gap-2.5">
-                        <img src="/logo-mttq.png" alt="Logo" className="w-10 h-10 object-contain block" />
+                        <img loading="lazy" src="/logo-mttq.png" alt="Logo" className="w-10 h-10 object-contain block" />
                         <span className="font-bold text-[#da251c]">MTTQ Cẩm Phả</span>
                     </div>
                     <button className="bg-transparent border-none text-slate-500 cursor-pointer flex items-center justify-center p-1" onClick={() => setIsMobileMenuOpen(false)}>

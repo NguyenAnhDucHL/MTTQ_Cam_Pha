@@ -53,6 +53,7 @@ function AdminLogin() {
                 <div className="bg-[linear-gradient(135deg,#da251c_0%,#991b1b_100%)] pt-8 px-5 pb-7 text-center flex flex-col items-center">
                     <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-4 mx-auto shadow-md border-4 border-yellow-400">
                         <img
+                            loading="lazy"
                             src="/logo-mttq.png"
                             alt="Logo MTTQ"
                             className="w-16 h-16 rounded-full object-cover"

@@ -33,6 +33,7 @@ const FilePreview = ({ file }) => {
 
   return (
     <img 
+      loading="lazy"
       src={url} 
       alt={file.name} 
       title={file.name}

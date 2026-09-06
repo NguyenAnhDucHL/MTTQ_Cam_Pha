@@ -39,8 +39,11 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Prevent HTTP Parameter Pollution
 app.use(hpp());
 
-// Static files (uploaded images)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Static files (uploaded images) with 1 year cache
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  maxAge: '1y',
+  immutable: true
+}));
 
 // Mount API routes
 app.use('/api', apiRoutes);

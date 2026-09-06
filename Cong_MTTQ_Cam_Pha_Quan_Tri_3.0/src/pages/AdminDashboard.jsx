@@ -65,6 +65,7 @@ function AdminDashboard() {
                         </button>
                         <div className="w-[44px] h-[44px] md:w-[52px] md:h-[52px] bg-white rounded-full flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.2)] border-2 border-[#fbbf24] shrink-0">
                             <img
+                                loading="lazy"
                                 src="/logo-mttq.png"
                                 alt="Logo MTTQ"
                                 className="w-[44px] h-[44px] md:w-[52px] md:h-[52px] object-contain block rounded-full"

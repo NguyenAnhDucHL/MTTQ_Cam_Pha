@@ -142,6 +142,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
                     className={containerClass}
                   >
                     <img
+                      loading="lazy"
                       src={`/mttq-uploads/${img}`}
                       alt={`Đính kèm ${idx + 1}`}
                       className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
@@ -200,6 +201,7 @@ export function PetitionDetailModal({ petition, isOpen, onClose, onUpdateStatus,
             &times;
           </button>
           <img
+            loading="lazy"
             src={previewImage}
             alt="Preview"
             className="max-w-[95%] max-h-[95%] object-contain"

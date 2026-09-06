@@ -39,6 +39,7 @@ const FilePreview = ({ file }) => {
 
   return (
     <img
+      loading="lazy"
       src={url}
       alt={file.name}
       title={file.name}
@@ -504,7 +505,7 @@ export const AdminDocuments = () => {
                             {url.toLowerCase().endsWith('.pdf') ? (
                               <FileIcon className="w-8 h-8 text-red-500" />
                             ) : (
-                              <img src={finalUrl} alt="Preview" className="w-full h-full object-cover" />
+                              <img src={finalUrl} alt="Preview" loading="lazy" className="w-full h-full object-cover" />
                             )}
                             <button
                               type="button"

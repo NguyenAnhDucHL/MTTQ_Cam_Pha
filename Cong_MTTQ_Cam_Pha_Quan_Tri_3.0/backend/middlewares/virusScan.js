@@ -87,10 +87,30 @@ const virusScanMiddleware = async (req, res, next) => {
         const result = await scanFile(file.path);
 
         if (result.endsWith('OK')) {
-          // File is clean, move to uploads
-          const finalPath = path.join(uploadsDir, file.filename);
-          await fsp.rename(file.path, finalPath);
-          file.path = finalPath;
+          // File is clean
+          let finalPath = path.join(uploadsDir, file.filename);
+
+          // If it's an image, convert and compress to WebP
+          if (file.mimetype.startsWith('image/')) {
+            const extIndex = file.filename.lastIndexOf('.');
+            const baseName = extIndex !== -1 ? file.filename.substring(0, extIndex) : file.filename;
+            const webpFilename = baseName + '.webp';
+            finalPath = path.join(uploadsDir, webpFilename);
+            
+            const sharp = require('sharp');
+            await sharp(file.path)
+              .webp({ quality: 80 })
+              .toFile(finalPath);
+              
+            await fsp.unlink(file.path); // Remove quarantined original
+            file.filename = webpFilename;
+            file.path = finalPath;
+            file.mimetype = 'image/webp';
+          } else {
+            // Non-images (e.g. PDF), just move them
+            await fsp.rename(file.path, finalPath);
+            file.path = finalPath;
+          }
           file.destination = uploadsDir;
         } else if (result.includes('FOUND')) {
           const parts = result.split(':');

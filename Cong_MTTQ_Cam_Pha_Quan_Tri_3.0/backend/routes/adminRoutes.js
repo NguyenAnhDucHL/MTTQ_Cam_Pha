@@ -7,6 +7,7 @@ const adminAccountController = require('../controllers/adminAccountController');
 const documentController = require('../controllers/documentController');
 const backupController = require('../controllers/backupController');
 const upload = require('../config/upload');
+const { virusScanMiddleware } = require('../middlewares/virusScan');
 
 // All routes in here are protected by the authenticateToken middleware in index.js
 
@@ -31,8 +32,8 @@ router.delete('/accounts/:id', adminAccountController.deleteAccount);
 
 // Documents
 router.get('/documents', documentController.getAdminDocuments);
-router.post('/documents', upload.array('files', 10), documentController.createDocument);
-router.put('/documents/:id', upload.array('files', 10), documentController.updateDocument);
+router.post('/documents', upload.array('files', 10), virusScanMiddleware, documentController.createDocument);
+router.put('/documents/:id', upload.array('files', 10), virusScanMiddleware, documentController.updateDocument);
 router.delete('/documents/:id', documentController.deleteDocument);
 
 // Backups

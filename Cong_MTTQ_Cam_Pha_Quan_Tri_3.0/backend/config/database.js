@@ -112,6 +112,29 @@ const initDB = () => {
         db.run(`UPDATE admins SET password = ? WHERE username = 'admin'`, [hashedPassword]);
       }
     });
+
+    // 8. Fix quarantine bug (Temporary Migration)
+    db.all(`SELECT id, fileUrl FROM documents WHERE fileUrl LIKE '%/.quarantine/%'`, [], (err, rows) => {
+      if (err) return;
+      rows.forEach(row => {
+        let urls = [];
+        try { urls = JSON.parse(row.fileUrl); } catch (e) { urls = [row.fileUrl]; }
+
+        const newUrls = urls.map(url => {
+          if (url && url.includes('/.quarantine/')) {
+            const filename = path.basename(url);
+            const quarantinePath = path.join(__dirname, '..', 'uploads', '.quarantine', filename);
+            const finalPath = path.join(__dirname, '..', 'uploads', filename);
+            if (fs.existsSync(quarantinePath)) {
+              try { fs.renameSync(quarantinePath, finalPath); } catch (e) { console.error('Migration error:', e); }
+            }
+            return url.replace('/.quarantine/', '/');
+          }
+          return url;
+        });
+        db.run(`UPDATE documents SET fileUrl = ? WHERE id = ?`, [JSON.stringify(newUrls), row.id]);
+      });
+    });
   });
 };
 

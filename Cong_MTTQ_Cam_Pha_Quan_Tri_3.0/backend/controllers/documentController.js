@@ -73,7 +73,7 @@ const createDocument = (req, res) => {
   let fileUrls = [];
 
   if (req.files && req.files.length > 0) {
-    fileUrls = req.files.map(file => `/uploads/.quarantine/${file.filename}`);
+    fileUrls = req.files.map(file => `/uploads/${file.filename}`);
   }
 
   if (!title) {
@@ -120,7 +120,7 @@ const updateDocument = (req, res) => {
     if (remainingFiles) {
       try {
         keptFiles = JSON.parse(remainingFiles);
-      } catch(e) {
+      } catch (e) {
         if (typeof remainingFiles === 'string') keptFiles = [remainingFiles];
       }
     }
@@ -135,7 +135,7 @@ const updateDocument = (req, res) => {
     // Add new files
     let newFileUrls = [];
     if (req.files && req.files.length > 0) {
-      newFileUrls = req.files.map(file => `/uploads/.quarantine/${file.filename}`);
+      newFileUrls = req.files.map(file => `/uploads/${file.filename}`);
     }
 
     const finalFileUrls = [...keptFiles, ...newFileUrls];
@@ -162,7 +162,7 @@ const deleteDocument = (req, res) => {
       let fileUrls = [];
       try {
         fileUrls = JSON.parse(row.fileUrl);
-      } catch(e) {
+      } catch (e) {
         fileUrls = [row.fileUrl]; // Fallback
       }
       fileUrls.forEach(url => {

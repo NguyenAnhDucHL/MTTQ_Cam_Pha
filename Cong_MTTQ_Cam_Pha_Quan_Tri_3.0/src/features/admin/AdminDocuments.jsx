@@ -342,8 +342,8 @@ export const AdminDocuments = () => {
       </div>
 
       {/* Pagination */}
-      {!loading && totalPages > 1 && (
-        <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50/50 rounded-b-xl">
+      {!loading && (
+        <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50/50">
           <p className="text-sm text-slate-500">
             Trang <span className="font-medium text-slate-900">{page}</span> / {totalPages}
           </p>

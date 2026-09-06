@@ -8,7 +8,7 @@ const getPublicDocuments = (req, res) => {
   const search = req.query.search || '';
   const offset = (page - 1) * limit;
 
-  let query = 'SELECT * FROM documents';
+  let query = 'SELECT id, title, documentNumber, issueDate, content, fileUrl, createdAt FROM documents';
   let countQuery = 'SELECT COUNT(*) as count FROM documents';
   let params = [];
   let countParams = [];
@@ -41,7 +41,7 @@ const getAdminDocuments = (req, res) => {
   const search = req.query.search || '';
   const offset = (page - 1) * limit;
 
-  let query = 'SELECT * FROM documents';
+  let query = 'SELECT id, title, documentNumber, issueDate, content, fileUrl, createdAt FROM documents';
   let countQuery = 'SELECT COUNT(*) as count FROM documents';
   let params = [];
   let countParams = [];

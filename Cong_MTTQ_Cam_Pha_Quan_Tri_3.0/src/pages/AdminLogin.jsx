@@ -14,9 +14,16 @@ function AdminLogin() {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        if (localStorage.getItem('token')) {
-            navigate('/admin');
-        }
+        const checkAuth = async () => {
+            try {
+                // Thử gọi API để xem cookie có còn hiệu lực không
+                await fetchApi('/mttq-api/auth/me');
+                navigate('/admin');
+            } catch (e) {
+                // Nếu lỗi 401 thì cứ ở lại trang login
+            }
+        };
+        checkAuth();
     }, [navigate]);
 
     const handleLogin = async (e) => {

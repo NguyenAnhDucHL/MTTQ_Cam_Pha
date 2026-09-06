@@ -14,7 +14,8 @@ export const setAuthToken = (token) => {
 
 export const removeAuthToken = async () => {
   try {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    localStorage.removeItem('token'); // Dọn dẹp token cũ nếu có
+    await fetch('/mttq-api/auth/logout', { method: 'POST' });
   } catch (e) {
     console.error('Logout error', e);
   }

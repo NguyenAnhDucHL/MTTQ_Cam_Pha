@@ -9,6 +9,8 @@ export function AdminBackups() {
     const [loading, setLoading] = useState(true);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [creating, setCreating] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 5;
 
     const loadBackups = async () => {
         try {
@@ -64,6 +66,17 @@ export function AdminBackups() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
+    const totalBackups = backups.length;
+    const totalPages = Math.ceil(totalBackups / ITEMS_PER_PAGE) || 1;
+
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages >= 1) {
+            setCurrentPage(totalPages);
+        }
+    }, [totalBackups, currentPage, totalPages]);
+
+    const paginatedBackups = backups.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
     return (
         <div className="bg-white rounded-lg p-6 border border-slate-200 shadow-md">
             <div className="flex justify-between items-center mb-4">
@@ -96,7 +109,7 @@ export function AdminBackups() {
                             </tr>
                         </thead>
                         <tbody>
-                            {backups.map((backup) => (
+                            {paginatedBackups.map((backup) => (
                                 <tr key={backup.filename} className="border-b border-slate-100 hover:bg-slate-50">
                                     <td className="p-3 font-medium text-slate-800">{backup.filename}</td>
                                     <td className="p-3 text-slate-600">{formatSize(backup.size)}</td>
@@ -121,6 +134,41 @@ export function AdminBackups() {
                             ))}
                         </tbody>
                     </table>
+
+                    {totalBackups > ITEMS_PER_PAGE && (
+                        <div className="flex items-center justify-between mt-4 p-4 border-t border-slate-100 bg-slate-50/50 rounded-b-lg">
+                            <div className="text-sm text-slate-500">
+                                Hiển thị <strong className="text-slate-900">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</strong> đến{' '}
+                                <strong className="text-slate-900">{Math.min(currentPage * ITEMS_PER_PAGE, totalBackups)}</strong>{' '}
+                                trong tổng số <strong className="text-slate-900">{totalBackups}</strong> bản sao lưu
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1}
+                                    className={`px-3 py-1.5 border border-slate-300 rounded-md font-medium transition-colors ${currentPage === 1 ? 'bg-slate-100 text-slate-400 cursor-default' : 'bg-white text-slate-700 hover:bg-slate-50 cursor-pointer'}`}
+                                >
+                                    Trước
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <button
+                                        key={page}
+                                        onClick={() => setCurrentPage(page)}
+                                        className={`px-2.5 py-1.5 border rounded-md font-semibold cursor-pointer min-w-[34px] transition-colors ${currentPage === page ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'}`}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages}
+                                    className={`px-3 py-1.5 border border-slate-300 rounded-md font-medium transition-colors ${currentPage === totalPages ? 'bg-slate-100 text-slate-400 cursor-default' : 'bg-white text-slate-700 hover:bg-slate-50 cursor-pointer'}`}
+                                >
+                                    Sau
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 

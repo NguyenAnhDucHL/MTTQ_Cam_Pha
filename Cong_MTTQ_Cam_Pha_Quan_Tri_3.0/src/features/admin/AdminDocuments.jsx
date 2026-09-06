@@ -58,6 +58,10 @@ export const AdminDocuments = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDoc, setCurrentDoc] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  
+  // Delete Modal state
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -200,13 +204,20 @@ export const AdminDocuments = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa văn bản này?')) return;
+  const confirmDelete = (doc) => {
+    setDocumentToDelete(doc);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!documentToDelete) return;
 
     try {
-      await fetchApi(`/mttq-api/admin/documents/${id}`, { method: 'DELETE' });
+      await fetchApi(`/mttq-api/admin/documents/${documentToDelete.id}`, { method: 'DELETE' });
       toast.success('Đã xóa văn bản');
       fetchDocuments(page);
+      setDeleteModalOpen(false);
+      setDocumentToDelete(null);
     } catch (err) {
       toast.error(err.message || 'Lỗi khi xóa văn bản');
     }
@@ -242,6 +253,28 @@ export const AdminDocuments = () => {
           </Button>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        title="Xác nhận xóa"
+      >
+        <div className="space-y-4">
+          <p className="text-slate-600">
+            Bạn có chắc chắn muốn xóa văn bản <strong className="text-slate-800">{documentToDelete?.title}</strong> không?
+            Hành động này không thể hoàn tác.
+          </p>
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            <Button type="button" variant="outline" onClick={() => setDeleteModalOpen(false)}>
+              Hủy
+            </Button>
+            <Button type="button" onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white border-transparent">
+              Xóa Văn bản
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Table */}
       <div className="overflow-x-auto">
@@ -326,8 +359,8 @@ export const AdminDocuments = () => {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(doc.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        onClick={() => confirmDelete(doc)}
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-200"
                         title="Xóa"
                       >
                         <Trash2 className="w-4 h-4" />

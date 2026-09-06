@@ -103,19 +103,22 @@ export const DocumentList = () => {
                 if (urls.length === 0) return null;
                 return (
                   <div className="shrink-0 flex items-center gap-2 flex-wrap justify-end mt-2 md:mt-0">
-                    {urls.map((url, i) => (
-                      <a
-                        key={i}
-                        href={`/mttq-api${url}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-md text-xs font-medium transition-colors no-underline border border-red-100"
-                        title="Tải về / Xem"
-                      >
-                        {url.toLowerCase().endsWith('.pdf') ? <FileIcon className="w-3.5 h-3.5" /> : <span className="font-bold">IMG</span>}
-                        File {i + 1}
-                      </a>
-                    ))}
+                    {urls.map((url, i) => {
+                      const finalUrl = url.replace('/uploads/', '/mttq-uploads/');
+                      return (
+                        <a
+                          key={i}
+                          href={finalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-md text-xs font-medium transition-colors no-underline border border-red-100"
+                          title="Tải về / Xem"
+                        >
+                          {finalUrl.toLowerCase().endsWith('.pdf') ? <FileIcon className="w-3.5 h-3.5" /> : <span className="font-bold">IMG</span>}
+                          File {i + 1}
+                        </a>
+                      );
+                    })}
                   </div>
                 );
               })()}

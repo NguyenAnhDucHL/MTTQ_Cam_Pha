@@ -100,7 +100,7 @@ export const AdminDocuments = () => {
       e.dataTransfer.clearData();
     }
   };
-  
+
   const handleFilesSelect = (files) => {
     let totalSize = files.reduce((sum, f) => sum + f.size, 0);
     if (totalSize > 25 * 1024 * 1024) {
@@ -256,20 +256,23 @@ export const AdminDocuments = () => {
                       }
                       if (urls.length === 0) return <span className="text-slate-300">-</span>;
 
+                      const firstUrl = urls[0].replace('/uploads/', '/mttq-uploads/');
                       return (
-                        <div className="flex items-center justify-center gap-1 flex-wrap">
-                          {urls.map((url, i) => (
-                            <a
-                              key={i}
-                              href={`/mttq-api${url}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-                              title="Xem file"
-                            >
-                              {url.toLowerCase().endsWith('.pdf') ? <FileIcon className="w-4 h-4" /> : <span className="text-xs font-bold">IMG</span>}
-                            </a>
-                          ))}
+                        <div className="flex items-center justify-center gap-1">
+                          <a
+                            href={firstUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                            title="Xem file"
+                          >
+                            {firstUrl.toLowerCase().endsWith('.pdf') ? <FileIcon className="w-4 h-4" /> : <span className="text-xs font-bold">IMG</span>}
+                          </a>
+                          {urls.length > 1 && (
+                            <span className="text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                              +{urls.length - 1}
+                            </span>
+                          )}
                         </div>
                       );
                     })()}
@@ -382,7 +385,7 @@ export const AdminDocuments = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     File đính kèm (Ảnh & PDF)
                   </label>
-                  <div 
+                  <div
                     className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-xl hover:border-red-400 hover:bg-red-50/50 transition-colors relative group cursor-pointer"
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
@@ -391,8 +394,8 @@ export const AdminDocuments = () => {
                     <div className="space-y-1 text-center">
                       <Upload className="mx-auto h-10 w-10 text-slate-300 group-hover:text-red-400 transition-colors" />
                       <div className="flex text-sm text-slate-600 justify-center">
-                        <label 
-                          htmlFor="file-upload" 
+                        <label
+                          htmlFor="file-upload"
                           className="relative cursor-pointer rounded-md font-medium text-red-600 hover:text-red-500 focus-within:outline-none"
                           onClick={(e) => e.stopPropagation()}
                         >
@@ -421,23 +424,26 @@ export const AdminDocuments = () => {
                   {/* Grid Preview */}
                   {(existingFiles.length > 0 || selectedFiles.length > 0) && (
                     <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                      {existingFiles.map((url, idx) => (
-                        <div key={`exist-${idx}`} className="relative group border border-slate-200 rounded-lg overflow-hidden bg-slate-50 aspect-square flex items-center justify-center">
-                          {url.toLowerCase().endsWith('.pdf') ? (
-                            <FileIcon className="w-8 h-8 text-red-500" />
-                          ) : (
-                            <img src={`/mttq-api${url}`} alt="Preview" className="w-full h-full object-cover" />
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => setExistingFiles(existingFiles.filter((_, i) => i !== idx))}
-                            className="absolute top-1 right-1 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-600"
-                            title="Xóa"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
+                      {existingFiles.map((url, idx) => {
+                        const finalUrl = url.replace('/uploads/', '/mttq-uploads/');
+                        return (
+                          <div key={`exist-${idx}`} className="relative group border border-slate-200 rounded-lg overflow-hidden bg-slate-50 aspect-square flex items-center justify-center">
+                            {url.toLowerCase().endsWith('.pdf') ? (
+                              <FileIcon className="w-8 h-8 text-red-500" />
+                            ) : (
+                              <img src={finalUrl} alt="Preview" className="w-full h-full object-cover" />
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => setExistingFiles(existingFiles.filter((_, i) => i !== idx))}
+                              className="absolute top-1 right-1 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-600"
+                              title="Xóa"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        );
+                      })}
                       {selectedFiles.map((file, idx) => (
                         <div key={`new-${idx}`} className="relative group border border-slate-200 rounded-lg overflow-hidden bg-slate-50 aspect-square flex items-center justify-center">
                           {file.type === 'application/pdf' ? (

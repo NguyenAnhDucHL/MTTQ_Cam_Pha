@@ -7,11 +7,12 @@ import {
 } from 'lucide-react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
+import { Modal } from '../../components/ui/Modal';
 
 const FilePreview = ({ file }) => {
   const [url, setUrl] = React.useState('');
   const [hasError, setHasError] = React.useState(false);
-  
+
   React.useEffect(() => {
     const objectUrl = URL.createObjectURL(file);
     setUrl(objectUrl);
@@ -37,11 +38,11 @@ const FilePreview = ({ file }) => {
   }
 
   return (
-    <img 
-      src={url} 
-      alt={file.name} 
+    <img
+      src={url}
+      alt={file.name}
       title={file.name}
-      className="w-full h-full object-cover" 
+      className="w-full h-full object-cover"
       onError={() => setHasError(true)}
     />
   );
@@ -58,7 +59,7 @@ export const AdminDocuments = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDoc, setCurrentDoc] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  
+
   // Delete Modal state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState(null);

@@ -56,8 +56,31 @@ const createManualBackup = async (req, res) => {
   }
 };
 
+// Xóa file backup
+const deleteBackup = (req, res) => {
+  const { filename } = req.params;
+  
+  if (!filename || filename.includes('/') || filename.includes('..')) {
+    return res.status(400).json({ error: 'Tên file không hợp lệ' });
+  }
+
+  const filePath = path.join(BACKUP_DIR, filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'Không tìm thấy bản sao lưu này' });
+  }
+
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Không thể xóa file sao lưu' });
+    }
+    res.json({ message: 'Đã xóa bản sao lưu thành công' });
+  });
+};
+
 module.exports = {
   getBackups,
   downloadBackup,
-  createManualBackup
+  createManualBackup,
+  deleteBackup
 };

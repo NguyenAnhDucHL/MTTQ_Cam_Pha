@@ -39,5 +39,6 @@ router.delete('/documents/:id', documentController.deleteDocument);
 router.get('/backups', backupController.getBackups);
 router.get('/backups/download/:filename', backupController.downloadBackup);
 router.post('/backups', backupController.createManualBackup);
+router.delete('/backups/:filename', backupController.deleteBackup);
 
 module.exports = router;

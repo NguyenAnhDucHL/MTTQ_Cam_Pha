@@ -42,6 +42,18 @@ export function AdminBackups() {
         window.open(`/mttq-api/admin/backups/download/${filename}`, '_blank');
     };
 
+    const handleDelete = async (filename) => {
+        if (!window.confirm(`Bạn có chắc chắn muốn xóa bản sao lưu ${filename} này không?`)) return;
+
+        try {
+            await fetchApi(`/mttq-api/admin/backups/${filename}`, { method: 'DELETE' });
+            toast.success('Đã xóa bản sao lưu thành công');
+            loadBackups();
+        } catch (error) {
+            toast.error(error.message || 'Lỗi khi xóa bản sao lưu');
+        }
+    };
+
     const formatSize = (bytes) => {
         if (bytes === 0) return '0 B';
         const k = 1024;
@@ -87,13 +99,21 @@ export function AdminBackups() {
                                     <td className="p-3 font-medium text-slate-800">{backup.filename}</td>
                                     <td className="p-3 text-slate-600">{formatSize(backup.size)}</td>
                                     <td className="p-3 text-slate-600">{new Date(backup.createdAt).toLocaleString('vi-VN')}</td>
-                                    <td className="p-3 text-right">
-                                        <button
-                                            onClick={() => handleDownload(backup.filename)}
-                                            className="text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded text-sm font-medium transition-colors"
-                                        >
-                                            ⬇ Tải xuống
-                                        </button>
+                                    <td className="py-3 px-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                onClick={() => handleDownload(backup.filename)}
+                                                className="bg-[#16a34a] hover:bg-[#15803d] text-white px-3 py-1.5 rounded text-[0.85rem] font-medium transition-colors border-none cursor-pointer flex items-center gap-1.5"
+                                            >
+                                                ⬇ Tải xuống
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(backup.filename)}
+                                                className="bg-[#da251c] hover:bg-[#b71c1c] text-white px-3 py-1.5 rounded text-[0.85rem] font-medium transition-colors border-none cursor-pointer flex items-center gap-1.5"
+                                            >
+                                                ❌ Xóa
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

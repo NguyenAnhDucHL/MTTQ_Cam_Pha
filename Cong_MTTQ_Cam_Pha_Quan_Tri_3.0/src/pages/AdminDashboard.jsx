@@ -79,7 +79,10 @@ function AdminDashboard() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
-                        <button onClick={handleLogout} className="bg-white/15 text-white border border-white/30 px-3 py-1.5 md:px-[18px] md:py-[8px] rounded-[20px] no-underline text-[0.85rem] md:text-[0.9rem] font-medium transition-all duration-200 ease-in-out inline-flex items-center gap-1.5 whitespace-nowrap hover:bg-white hover:text-[#da251c] cursor-pointer">
+                        <a href="/" className="hidden md:inline-flex bg-white/15 text-white border border-white/30 px-4 py-2 rounded-full no-underline text-[0.9rem] font-medium transition-all duration-300 hover:bg-white hover:text-[#da251c] hover:shadow-md items-center gap-1.5">
+                            🏠 Về trang chủ
+                        </a>
+                        <button onClick={handleLogout} className="bg-white/15 text-white border border-white/30 px-3 py-1.5 md:px-4 md:py-2 rounded-full no-underline text-[0.85rem] md:text-[0.9rem] font-medium transition-all duration-300 ease-in-out inline-flex items-center gap-1.5 whitespace-nowrap hover:bg-white hover:text-[#da251c] hover:shadow-md cursor-pointer">
                             Đăng xuất
                         </button>
                     </div>

@@ -1,18 +1,29 @@
 // Basic API helper for the app
 
-export const getAuthToken = () => localStorage.getItem('token');
-export const setAuthToken = (token) => localStorage.setItem('token', token);
-export const removeAuthToken = () => localStorage.removeItem('token');
+export const getAuthToken = () => {
+  // Token is now stored in HttpOnly cookie, so we can't access it via JS.
+  // We return a dummy true value if we think the user is logged in, 
+  // but true validation happens on the server.
+  // To keep frontend logic simple for now, we just rely on API 401 errors.
+  return true;
+};
+
+export const setAuthToken = (token) => {
+  // Deprecated: Token is now set via HttpOnly cookie from the backend
+};
+
+export const removeAuthToken = async () => {
+  try {
+    await fetch('/api/auth/logout', { method: 'POST' });
+  } catch (e) {
+    console.error('Logout error', e);
+  }
+};
 
 export const fetchApi = async (endpoint, options = {}) => {
-  const token = getAuthToken();
   const headers = {
     ...options.headers,
   };
-
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
 
   // If it's not FormData, set Content-Type to JSON
   if (!(options.body instanceof FormData)) {
@@ -22,10 +33,11 @@ export const fetchApi = async (endpoint, options = {}) => {
   const response = await fetch(endpoint, {
     ...options,
     headers,
+    credentials: 'include', // Automatically send HttpOnly cookies
   });
 
-  if ((response.status === 401 || response.status === 403) && !endpoint.includes('/auth/login')) {
-    removeAuthToken();
+  if ((response.status === 401 || response.status === 403) && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/logout')) {
+    await removeAuthToken();
     window.location.href = '/admin/login';
     throw new Error('Unauthorized');
   }

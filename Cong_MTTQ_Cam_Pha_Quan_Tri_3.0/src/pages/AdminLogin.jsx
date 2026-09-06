@@ -27,7 +27,8 @@ function AdminLogin() {
                 method: 'POST',
                 body: JSON.stringify({ username, password })
             });
-            localStorage.setItem('token', data.token);
+            // setAuthToken is deprecated, cookie is set automatically
+            window.location.href = '/admin';
             toast.success('Đăng nhập thành công');
             navigate('/admin');
         } catch (err) {

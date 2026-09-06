@@ -38,8 +38,8 @@ function AdminDashboard() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
+    const handleLogout = async () => {
+        await removeAuthToken();
         toast.info("Đã đăng xuất");
         navigate('/admin/login');
     };

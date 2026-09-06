@@ -3,6 +3,7 @@ import { SubmitForm } from "../features/petitions/SubmitForm";
 import { DocumentList } from "../features/documents/DocumentList";
 import { Badge } from "../components/ui/Badge";
 import { fetchApi } from "../lib/api";
+import SEO from "../components/SEO";
 
 function Home() {
     const [activeTab, setActiveTab] = useState('submit');
@@ -67,6 +68,7 @@ function Home() {
 
     return (
         <div className="overflow-x-hidden min-h-screen flex flex-col w-full">
+            <SEO />
             <header className="bg-gradient-to-br from-[#da251c] to-[#991b1b] text-white py-[18px] px-5 shadow-[0_2px_10px_rgba(0,0,0,0.15)]">
                 <div className="max-w-[1200px] mx-auto flex items-center justify-between flex-nowrap md:flex-wrap px-1 md:px-0 gap-2 md:gap-[15px]">
                     <div className="flex items-center flex-row justify-start flex-1 min-w-0 md:flex-none md:gap-3 gap-2">

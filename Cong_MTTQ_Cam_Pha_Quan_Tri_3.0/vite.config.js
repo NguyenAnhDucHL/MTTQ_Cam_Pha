@@ -6,7 +6,7 @@ import legacy from '@vitejs/plugin-legacy'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(), 
+    react(),
     tailwindcss(),
     legacy({
       targets: ['defaults', 'not IE 11', 'iOS >= 9', 'Android >= 4.4'],

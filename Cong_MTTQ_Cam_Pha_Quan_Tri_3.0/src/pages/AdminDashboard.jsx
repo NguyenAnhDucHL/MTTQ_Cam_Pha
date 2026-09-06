@@ -48,6 +48,14 @@ function AdminDashboard() {
         setIsMenuOpen(false);
     };
 
+    const mobileOverlayStyles = `fixed inset-0 w-screen h-screen bg-black/50 z-[999] transition-all duration-300 md:hidden ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`;
+    const mainNavStyles = `fixed top-0 -left-[300px] w-[280px] h-screen bg-white z-[1000] transition-all duration-300 overflow-y-auto shadow-[2px_0_8px_rgba(0,0,0,0.1)] md:sticky md:left-0 md:w-auto md:h-auto md:z-[100] md:overflow-visible md:shadow-[0_2px_4px_rgba(0,0,0,0.05)] md:border-b-2 md:border-[#da251c] ${isMenuOpen ? '!left-0' : ''}`;
+    const navContainerStyles = "flex flex-col py-2.5 px-0 md:flex-row md:max-w-[1200px] md:mx-auto md:overflow-x-auto md:py-0";
+    const navItemBase = "flex items-center gap-2 cursor-pointer transition-all duration-200 justify-start text-left border-none border-b border-[#f1f5f9] rounded-none px-5 py-4 text-[1rem] whitespace-normal bg-transparent text-[#334155] hover:bg-[#f8fafc] hover:text-[#da251c] md:justify-start md:border-b-[3px] md:border-transparent md:px-[22px] md:py-[14px] md:text-[0.95rem] md:text-[#0f172a] md:whitespace-nowrap md:hover:bg-[#fef2f2] font-medium";
+    const navItemActive = "bg-[#fff5f5] !text-[#da251c] border-l-4 border-l-[#da251c] font-semibold md:border-l-0 md:border-b-[#da251c] md:font-bold md:!bg-[#fff5f5]";
+
+
+
     return (
         <div>
             {/* Top Header */}
@@ -79,33 +87,33 @@ function AdminDashboard() {
             </header>
 
             {/* Mobile Overlay */}
-            <div className={`mobile-overlay ${isMenuOpen ? 'show' : ''}`} onClick={() => setIsMenuOpen(false)}></div>
+            <div className={mobileOverlayStyles} onClick={() => setIsMenuOpen(false)}></div>
 
             {/* Navigation Bar */}
-            <nav className={`main-nav ${isMenuOpen ? 'open' : ''}`}>
-                <div className="mobile-nav-header">
-                    <span style={{ fontWeight: 700, color: 'var(--primary-red)' }}>MENU QUẢN TRỊ</span>
-                    <button className="mobile-menu-close" onClick={() => setIsMenuOpen(false)}>
+            <nav className={mainNavStyles}>
+                <div className="flex items-center justify-between p-4 border-b border-slate-200 md:hidden">
+                    <span className="font-bold text-[#da251c]">MENU QUẢN TRỊ</span>
+                    <button className="bg-transparent border-none text-slate-500 cursor-pointer flex items-center justify-center p-1" onClick={() => setIsMenuOpen(false)}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
-                <div className="nav-container">
-                    <div className={`nav-item ${activeTab === 'tong-quan' ? 'active' : ''}`} onClick={() => navItemClick('tong-quan')}>
+                <div className={navContainerStyles}>
+                    <div className={`${navItemBase} ${activeTab === 'tong-quan' ? navItemActive : ''}`} onClick={() => navItemClick('tong-quan')}>
                         Tổng quan
                     </div>
-                    <div className={`nav-item ${activeTab === 'phan-anh' ? 'active' : ''}`} onClick={() => navItemClick('phan-anh')}>
+                    <div className={`${navItemBase} ${activeTab === 'phan-anh' ? navItemActive : ''}`} onClick={() => navItemClick('phan-anh')}>
                         Phản ánh, kiến nghị
                     </div>
-                    <div className={`nav-item ${activeTab === 'khu-pho' ? 'active' : ''}`} onClick={() => navItemClick('khu-pho')}>
+                    <div className={`${navItemBase} ${activeTab === 'khu-pho' ? navItemActive : ''}`} onClick={() => navItemClick('khu-pho')}>
                         Quản lý Khu phố
                     </div>
-                    <div className={`nav-item ${activeTab === 'van-ban' ? 'active' : ''}`} onClick={() => navItemClick('van-ban')}>
+                    <div className={`${navItemBase} ${activeTab === 'van-ban' ? navItemActive : ''}`} onClick={() => navItemClick('van-ban')}>
                         Văn bản & Thông báo
                     </div>
-                    <div className={`nav-item ${activeTab === 'noi-dung' ? 'active' : ''}`} onClick={() => navItemClick('noi-dung')}>
+                    <div className={`${navItemBase} ${activeTab === 'noi-dung' ? navItemActive : ''}`} onClick={() => navItemClick('noi-dung')}>
                         Nội dung Cổng
                     </div>
-                    <div className={`nav-item ${activeTab === 'tai-khoan' ? 'active' : ''}`} onClick={() => navItemClick('tai-khoan')}>
+                    <div className={`${navItemBase} ${activeTab === 'tai-khoan' ? navItemActive : ''}`} onClick={() => navItemClick('tai-khoan')}>
                         Tài khoản
                     </div>
                 </div>

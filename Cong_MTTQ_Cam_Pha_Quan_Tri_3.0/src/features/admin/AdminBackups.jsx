@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../lib/api';
 import { toast } from 'sonner';
+import { Modal } from '../../components/ui/Modal';
+import { Button } from '../../components/ui/Button';
 
 export function AdminBackups() {
     const [backups, setBackups] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [deleteTarget, setDeleteTarget] = useState(null);
     const [creating, setCreating] = useState(false);
 
     const loadBackups = async () => {
@@ -43,11 +46,10 @@ export function AdminBackups() {
     };
 
     const handleDelete = async (filename) => {
-        if (!window.confirm(`Bạn có chắc chắn muốn xóa bản sao lưu ${filename} này không?`)) return;
-
         try {
             await fetchApi(`/mttq-api/admin/backups/${filename}`, { method: 'DELETE' });
             toast.success('Đã xóa bản sao lưu thành công');
+            setDeleteTarget(null);
             loadBackups();
         } catch (error) {
             toast.error(error.message || 'Lỗi khi xóa bản sao lưu');
@@ -108,7 +110,7 @@ export function AdminBackups() {
                                                 ⬇ Tải xuống
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(backup.filename)}
+                                                onClick={() => setDeleteTarget(backup.filename)}
                                                 className="bg-[#da251c] hover:bg-[#b71c1c] text-white px-3 py-1.5 rounded text-[0.85rem] font-medium transition-colors border-none cursor-pointer flex items-center gap-1.5"
                                             >
                                                 ❌ Xóa
@@ -121,6 +123,27 @@ export function AdminBackups() {
                     </table>
                 </div>
             )}
+
+            <Modal
+                isOpen={!!deleteTarget}
+                onClose={() => setDeleteTarget(null)}
+                title="Xác nhận xóa bản sao lưu"
+            >
+                <div className="mb-6 text-slate-600">
+                    Bạn có chắc chắn muốn xóa bản sao lưu <strong>{deleteTarget}</strong> không? Hành động này không thể hoàn tác.
+                </div>
+                <div className="flex justify-end gap-3">
+                    <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+                        Hủy bỏ
+                    </Button>
+                    <Button
+                        onClick={() => handleDelete(deleteTarget)}
+                        className="bg-[#da251c] hover:bg-[#b71c1c] text-white border-none"
+                    >
+                        Xác nhận xóa
+                    </Button>
+                </div>
+            </Modal>
         </div>
     );
 }

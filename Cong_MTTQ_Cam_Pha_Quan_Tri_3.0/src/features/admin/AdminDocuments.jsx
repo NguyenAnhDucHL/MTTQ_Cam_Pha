@@ -89,6 +89,31 @@ export const AdminDocuments = () => {
     setExistingFiles([]);
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFilesSelect(Array.from(e.dataTransfer.files));
+      e.dataTransfer.clearData();
+    }
+  };
+  
+  const handleFilesSelect = (files) => {
+    let totalSize = files.reduce((sum, f) => sum + f.size, 0);
+    if (totalSize > 25 * 1024 * 1024) {
+      toast.error('Tổng dung lượng các file vượt quá 25MB');
+      return;
+    }
+    const validFiles = files.filter(f => f.type === 'application/pdf' || f.type.startsWith('image/'));
+    if (validFiles.length !== files.length) {
+      toast.error('Có file không hợp lệ (Chỉ hỗ trợ Ảnh và PDF)');
+    }
+    setSelectedFiles(prev => [...prev, ...validFiles]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title.trim()) {
@@ -357,26 +382,33 @@ export const AdminDocuments = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     File đính kèm (Ảnh & PDF)
                   </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-xl hover:border-red-400 hover:bg-red-50/50 transition-colors relative group">
+                  <div 
+                    className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-xl hover:border-red-400 hover:bg-red-50/50 transition-colors relative group cursor-pointer"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById('file-upload').click()}
+                  >
                     <div className="space-y-1 text-center">
                       <Upload className="mx-auto h-10 w-10 text-slate-300 group-hover:text-red-400 transition-colors" />
                       <div className="flex text-sm text-slate-600 justify-center">
-                        <label className="relative cursor-pointer rounded-md font-medium text-red-600 hover:text-red-500 focus-within:outline-none">
+                        <label 
+                          htmlFor="file-upload" 
+                          className="relative cursor-pointer rounded-md font-medium text-red-600 hover:text-red-500 focus-within:outline-none"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <span>Tải file lên</span>
                           <input
+                            id="file-upload"
+                            name="file-upload"
                             type="file"
                             multiple
                             accept=".pdf,image/*"
                             className="sr-only"
                             onChange={(e) => {
-                              const files = Array.from(e.target.files);
-                              let totalSize = files.reduce((sum, f) => sum + f.size, 0);
-                              if (totalSize > 25 * 1024 * 1024) {
-                                toast.error('Tổng dung lượng các file vượt quá 25MB');
-                                return;
+                              if (e.target.files && e.target.files.length > 0) {
+                                handleFilesSelect(Array.from(e.target.files));
+                                e.target.value = null; // reset input
                               }
-                              setSelectedFiles(prev => [...prev, ...files]);
-                              e.target.value = null; // reset input
                             }}
                           />
                         </label>

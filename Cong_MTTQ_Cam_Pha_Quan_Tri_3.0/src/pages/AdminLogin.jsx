@@ -13,6 +13,12 @@ function AdminLogin() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
+    React.useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate('/admin');
+        }
+    }, [navigate]);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
